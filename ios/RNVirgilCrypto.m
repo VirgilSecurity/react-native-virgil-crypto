@@ -52,10 +52,29 @@ NSString* EncodeUtf8(NSData* data)
     return self;
 }
 
- + (BOOL)requiresMainQueueSetup
- {
-     return NO;
- }
++ (BOOL)requiresMainQueueSetup
+{
+    return NO;
+}
+
+- (NSArray<VSMVirgilPublicKey*>*) decodeAndImportPublicKeys:(NSArray<NSString*>*) publicKeysBase64 error:(NSError**) error
+{
+    NSMutableArray<VSMVirgilPublicKey*>* publicKeys = [NSMutableArray arrayWithCapacity:[publicKeysBase64 count]];
+    for (NSString* eachString in publicKeysBase64) {
+        VSMVirgilPublicKey* publicKey = [self.crypto importPublicKeyFrom:DecodeBase64(eachString) error:error];
+        if (nil == publicKey) {
+            break;
+        } else {
+            [publicKeys addObject:publicKey];
+        }
+    }
+    
+    if ([publicKeys count] < [publicKeysBase64 count]) {
+        return nil;
+    }
+    return publicKeys;
+}
+
 
 RCT_EXPORT_MODULE()
 
@@ -85,20 +104,10 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPair) {
     return CreateResponse(nil, result);
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, encrypt:(NSString*)str for:(NSArray<NSString*>*)recipients) {
-    __block NSError* importErr;
-    NSMutableArray<VSMVirgilPublicKey*>* publicKeys = [NSMutableArray arrayWithCapacity:[recipients count]];
-    [recipients enumerateObjectsUsingBlock: ^(NSString* recipient, NSUInteger idx, BOOL *stop) {
-        VSMVirgilPublicKey* publicKey = [self.crypto importPublicKeyFrom:DecodeBase64(recipient) error:&importErr];
-        if (nil == publicKey) {
-            *stop = YES;
-        } else {
-            [publicKeys addObject:publicKey];
-        }
-        
-    }];
-    
-    if ([publicKeys count] < [recipients count]) {
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, encrypt:(NSString*)str for:(NSArray<NSString*>*)recipientsBase64) {
+    NSError* importErr;
+    NSArray<VSMVirgilPublicKey*>* publicKeys = [self decodeAndImportPublicKeys:recipientsBase64 error:&importErr];
+    if (nil == publicKeys) {
         return CreateResponse(importErr, nil);
     }
     
@@ -149,5 +158,47 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, verifySignature:(NSString*) signatureBas
     
     BOOL isValid = [self.crypto verifySignature_objc:DecodeBase64(signatureBase64) of:DecodeBase64(dataBase64) with:publicKey];
     return CreateResponse(nil, @(isValid));
+}
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncrypt:(NSString*) dataUtf8 with:(NSString*) privateKeyBase64 for:(NSArray<NSString*>*) recipientsBase64)
+{
+    NSError* err;
+    VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:DecodeBase64(privateKeyBase64) error:&err];
+    if (nil == keypair) {
+        return CreateResponse(err, nil);
+    }
+    
+    NSArray<VSMVirgilPublicKey*>* publicKeys = [self decodeAndImportPublicKeys:recipientsBase64 error:&err];
+    if (nil == publicKeys) {
+        return CreateResponse(err, nil);
+    }
+    
+    NSData* encryptedData = [self.crypto signAndEncrypt:DecodeUtf8(dataUtf8) with:keypair.privateKey for:publicKeys error:&err];
+    if (nil == encryptedData) {
+        return CreateResponse(err, nil);
+    }
+    
+    return CreateResponse(nil, EncodeBase64(encryptedData));
+}
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerify:(NSString*) dataBase64 with:(NSString*)privateKeyBase64 usingOneOf:(NSArray<NSString*>*) sendersPublicKeysBase64)
+{
+    NSError* err;
+    VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:DecodeBase64(privateKeyBase64) error:&err];
+    if (nil == keypair) {
+        return CreateResponse(err, nil);
+    }
+    
+    NSArray<VSMVirgilPublicKey*>* publicKeys = [self decodeAndImportPublicKeys:sendersPublicKeysBase64 error:&err];
+    if (nil == publicKeys) {
+        return CreateResponse(err, nil);
+    }
+    
+    NSData* decryptedData = [self.crypto decryptAndVerify:DecodeBase64(dataBase64) with:keypair.privateKey usingOneOf:publicKeys error:&err];
+    if (nil == decryptedData) {
+        return CreateResponse(err, nil);
+    }
+    
+    return CreateResponse(nil, EncodeUtf8(decryptedData));
 }
 @end

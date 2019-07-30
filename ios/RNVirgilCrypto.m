@@ -201,4 +201,31 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerify:(NSString*) dataBase64 
     
     return CreateResponse(nil, EncodeUtf8(decryptedData));
 }
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, extractPublicKey:(NSString*) privateKeyBase64)
+{
+    NSError* err;
+    VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:DecodeBase64(privateKeyBase64) error:&err];
+    if (nil == keypair) {
+        return CreateResponse(err, nil);
+    }
+    
+    NSData* publicKeyData = [self.crypto exportPublicKey:keypair.publicKey error:&err];
+    if (nil == publicKeyData) {
+        return CreateResponse(err, nil);
+    }
+    
+    return CreateResponse(nil, EncodeBase64(publicKeyData));
+}
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateRandomData:(NSInteger)size)
+{
+    NSError* err;
+    NSData* randomData = [self.crypto generateRandomDataOfSize:size error:&err];
+    if (nil == randomData) {
+        return CreateResponse(err, nil);
+    }
+    
+    return CreateResponse(nil, EncodeBase64(randomData));
+}
 @end

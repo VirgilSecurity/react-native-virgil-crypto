@@ -76,6 +76,12 @@ public final class ResponseFactory {
         return response;
     }
 
+    public static final WritableMap createBooleanResponse(boolean result) {
+        WritableMap response = Arguments.createMap();
+        response.putBoolean("result", result);
+        return response;
+    }
+
     public static final WritableMap createMapResponse(Map<String, String> params) {
         WritableMap response = Arguments.createMap();
         response.putMap("result", createParametersMap(params));

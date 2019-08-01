@@ -6,11 +6,11 @@ import java.nio.charset.StandardCharsets;
 
 public final class Encodings {
     public static final String encodeBase64(byte[] data) {
-        return Base64.encodeToString(data, Base64.DEFAULT);
+        return Base64.encodeToString(data, Base64.NO_WRAP);
     }
 
     public static final byte[] decodeBase64(String str) {
-        return Base64.decode(str, Base64.DEFAULT);
+        return Base64.decode(str, Base64.NO_WRAP);
     }
 
     public static final String encodeUtf8(byte[] data) {

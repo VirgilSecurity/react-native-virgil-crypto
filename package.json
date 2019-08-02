@@ -1,6 +1,6 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "scripts": {
@@ -13,10 +13,11 @@
   "license": "BSD-3-Clause",
   "homepage": "https://github.com/VirgilSecurity/react-native-virgil-crypto",
   "peerDependencies": {
-    "react-native": "^0.41.2",
-    "react-native-windows": "0.41.0-rc.1"
+    "react-native": "0.60.x"
   },
   "devDependencies": {
+    "eslint": "^6.1.0",
     "react-native": "^0.60.4"
-  }
+  },
+  "dependencies": {}
 }

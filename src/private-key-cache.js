@@ -10,7 +10,7 @@ const hasValue = WeakMap.prototype.has;
  *
  * @hidden
  */
-export function getPrivateKeyBytes(privateKeyObj) {
+export function getPrivateKeyValue(privateKeyObj) {
   return getValue.call(privateKeys, privateKeyObj);
 }
 
@@ -23,7 +23,7 @@ export function getPrivateKeyBytes(privateKeyObj) {
  *
  * @hidden
  */
-export function setPrivateKeyBytes(privateKeyObj, bytesBase64) {
+export function setPrivateKeyValue(privateKeyObj, bytesBase64) {
   setValue.call(privateKeys, privateKeyObj, bytesBase64);
 }
 
@@ -37,6 +37,6 @@ export function setPrivateKeyBytes(privateKeyObj, bytesBase64) {
  *
  * @returns {boolean}
  */
-export function hasPrivateKeyBytes(privateKeyObj) {
+export function hasPrivateKeyValue(privateKeyObj) {
   return hasValue.call(privateKeys, privateKeyObj);
 }

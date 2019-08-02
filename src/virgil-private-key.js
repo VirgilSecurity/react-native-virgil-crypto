@@ -1,7 +1,7 @@
-import { setPrivateKeyBytes } from './private-key-cache';
+import { setPrivateKeyValue } from './private-key-cache';
 
 export class VirgilPrivateKey {
   constructor(privateKeyBase64) {
-    setPrivateKeyBytes(this, privateKeyBase64);
+    setPrivateKeyValue(this, privateKeyBase64);
   }
 }

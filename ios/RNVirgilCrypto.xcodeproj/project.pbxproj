@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		B3E7B58A1CC2AC0600A0062D /* RNVirgilCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */; };
+		DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */; };
+		DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903622F84B99001DD161 /* NSData+Encodings.m */; };
+		DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903922F84CA4001DD161 /* NSString+Encodings.m */; };
+		DD3C903C22F8533B001DD161 /* ResponseFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903B22F8533B001DD161 /* ResponseFactory.m */; };
+		DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,6 +31,16 @@
 		134814201AA4EA6300B7C361 /* libRNVirgilCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVirgilCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* RNVirgilCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVirgilCrypto.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVirgilCrypto.m; sourceTree = "<group>"; };
+		DD3C903222F83282001DD161 /* RCTConvert+HashAlgorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+HashAlgorithm.h"; sourceTree = "<group>"; };
+		DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+HashAlgorithm.m"; sourceTree = "<group>"; };
+		DD3C903522F84B99001DD161 /* NSData+Encodings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Encodings.h"; sourceTree = "<group>"; };
+		DD3C903622F84B99001DD161 /* NSData+Encodings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Encodings.m"; sourceTree = "<group>"; };
+		DD3C903822F84CA4001DD161 /* NSString+Encodings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Encodings.h"; sourceTree = "<group>"; };
+		DD3C903922F84CA4001DD161 /* NSString+Encodings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encodings.m"; sourceTree = "<group>"; };
+		DD3C903B22F8533B001DD161 /* ResponseFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResponseFactory.m; sourceTree = "<group>"; };
+		DD3C903D22F853B4001DD161 /* ResponseFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseFactory.h; sourceTree = "<group>"; };
+		DDF69F5E22F47D900016F2C0 /* RCTConvert+KeyPairType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+KeyPairType.h"; sourceTree = "<group>"; };
+		DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+KeyPairType.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +65,16 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				DD3C903D22F853B4001DD161 /* ResponseFactory.h */,
+				DD3C903B22F8533B001DD161 /* ResponseFactory.m */,
+				DD3C903822F84CA4001DD161 /* NSString+Encodings.h */,
+				DD3C903922F84CA4001DD161 /* NSString+Encodings.m */,
+				DD3C903522F84B99001DD161 /* NSData+Encodings.h */,
+				DD3C903622F84B99001DD161 /* NSData+Encodings.m */,
+				DD3C903222F83282001DD161 /* RCTConvert+HashAlgorithm.h */,
+				DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */,
+				DDF69F5E22F47D900016F2C0 /* RCTConvert+KeyPairType.h */,
+				DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */,
 				B3E7B5881CC2AC0600A0062D /* RNVirgilCrypto.h */,
 				B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -83,7 +108,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = Facebook;
+				ORGANIZATIONNAME = "Virgil Security, Inc.";
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -113,7 +138,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */,
+				DD3C903C22F8533B001DD161 /* ResponseFactory.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNVirgilCrypto.m in Sources */,
+				DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */,
+				DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */,
+				DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (Encodings)
 - (NSData*) dataUsingBase64;
-- (NSData*) dataUsingUtf8;
 @end
 
 NS_ASSUME_NONNULL_END

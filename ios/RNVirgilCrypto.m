@@ -79,13 +79,13 @@
 
 RCT_EXPORT_MODULE()
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, computeHash:(NSString *)dataUtf8) {
-    NSData* result = [self computeHashFor:[dataUtf8 dataUsingUtf8] using:VSMHashAlgorithmSha512];
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, computeHash:(NSString *)dataBase64) {
+    NSData* result = [self computeHashFor:[dataBase64 dataUsingBase64] using:VSMHashAlgorithmSha512];
     return [ResponseFactory fromResult:[result stringUsingBase64]];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, computeHashWithAlgorithm:(NSString *)dataUtf8 algorithm:(VSMHashAlgorithm) alg) {
-    NSData* result = [self computeHashFor:[dataUtf8 dataUsingUtf8] using:alg];
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, computeHashWithAlgorithm:(NSString *)dataBase64 algorithm:(VSMHashAlgorithm)alg) {
+    NSData* result = [self computeHashFor:[dataBase64 dataUsingBase64] using:alg];
     return [ResponseFactory fromResult:[result stringUsingBase64]];
 }
 
@@ -104,7 +104,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPair) {
     return [ResponseFactory fromResult:result];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPairOfType: (VSMKeyPairType)type) {
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPairOfType:(VSMKeyPairType)type) {
     NSError* err;
     VSMVirgilKeyPair* keypair = [self.crypto generateKeyPairOfType:type error:&err];
     if (nil == keypair) {
@@ -119,7 +119,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPairOfType: (VSMKeyPairType)t
     return [ResponseFactory fromResult:result];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, encrypt:(NSString*)str for:(NSArray<NSString*>*)recipientsBase64) {
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, encrypt:(NSString*)dataBase64 for:(NSArray<NSString*>*)recipientsBase64) {
     NSError* importErr;
     NSArray<VSMVirgilPublicKey*>* publicKeys = [self decodeAndImportPublicKeys:recipientsBase64 error:&importErr];
     if (nil == publicKeys) {
@@ -127,7 +127,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, encrypt:(NSString*)str for:(NSArray<NSSt
     }
     
     NSError* encryptErr;
-    NSData* encryptedData = [self.crypto encrypt:[str dataUsingUtf8] for:publicKeys error:&encryptErr];
+    NSData* encryptedData = [self.crypto encrypt:[dataBase64 dataUsingBase64] for:publicKeys error:&encryptErr];
     if (nil == encryptedData) {
         return [ResponseFactory fromError:encryptErr];
     }
@@ -145,7 +145,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decrypt:(NSString*)dataBase64 with:(NSSt
     if (nil == decryptedData) {
         return [ResponseFactory fromError:err];
     }
-    return [ResponseFactory fromResult:[decryptedData stringUsingUtf8]];
+    return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
 }
 
 RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateSignature:(NSString*)dataBase64 using:(NSString*)privateKeyBase64)
@@ -163,7 +163,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateSignature:(NSString*)dataBase64 
     return [ResponseFactory fromResult:[signature stringUsingBase64]];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, verifySignature:(NSString*) signatureBase64 of:(NSString*) dataBase64 with: (NSString*) publicKeyBase64)
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, verifySignature:(NSString*)signatureBase64 of:(NSString*)dataBase64 with:(NSString*)publicKeyBase64)
 {
     NSError* err;
     VSMVirgilPublicKey* publicKey = [self.crypto importPublicKeyFrom:[publicKeyBase64 dataUsingBase64] error:&err];
@@ -175,7 +175,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, verifySignature:(NSString*) signatureBas
     return [ResponseFactory fromResult:@(isValid)];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncrypt:(NSString*) dataUtf8 with:(NSString*) privateKeyBase64 for:(NSArray<NSString*>*) recipientsBase64)
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncrypt:(NSString*)dataBase64 with:(NSString*)privateKeyBase64 for:(NSArray<NSString*>*)recipientsBase64)
 {
     NSError* err;
     VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];
@@ -188,7 +188,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncrypt:(NSString*) dataUtf8 with
         return [ResponseFactory fromError:err];
     }
     
-    NSData* encryptedData = [self.crypto signAndEncrypt:[dataUtf8 dataUsingUtf8] with:keypair.privateKey for:publicKeys error:&err];
+    NSData* encryptedData = [self.crypto signAndEncrypt:[dataBase64 dataUsingBase64] with:keypair.privateKey for:publicKeys error:&err];
     if (nil == encryptedData) {
         return [ResponseFactory fromError:err];
     }
@@ -196,7 +196,7 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncrypt:(NSString*) dataUtf8 with
     return [ResponseFactory fromResult:[encryptedData stringUsingBase64]];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerify:(NSString*) dataBase64 with:(NSString*)privateKeyBase64 usingOneOf:(NSArray<NSString*>*) sendersPublicKeysBase64)
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerify:(NSString*)dataBase64 with:(NSString*)privateKeyBase64 usingOneOf:(NSArray<NSString*>*)sendersPublicKeysBase64)
 {
     NSError* err;
     VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];
@@ -214,10 +214,10 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerify:(NSString*) dataBase64 
         return [ResponseFactory fromError:err];
     }
     
-    return [ResponseFactory fromResult:[decryptedData stringUsingUtf8]];
+    return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
 }
 
-RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, extractPublicKey:(NSString*) privateKeyBase64)
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, extractPublicKey:(NSString*)privateKeyBase64)
 {
     NSError* err;
     VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];

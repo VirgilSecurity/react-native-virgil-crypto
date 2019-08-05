@@ -15,8 +15,4 @@
     return [self base64EncodedStringWithOptions:0];
 }
 
-- (NSString*) stringUsingUtf8
-{
-    return [[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding];
-}
 @end

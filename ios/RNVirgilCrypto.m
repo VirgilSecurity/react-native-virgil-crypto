@@ -119,6 +119,38 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPairOfType:(VSMKeyPairType)ty
     return [ResponseFactory fromResult:result];
 }
 
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPairUsingSeed:(NSString*)seedBase64)
+{
+    NSError* err;
+    VSMVirgilKeyPair* keypair = [self.crypto generateKeyPairUsingSeed:[seedBase64 dataUsingBase64] error:&err];
+    if (nil == keypair) {
+        return [ResponseFactory fromError:err];
+    }
+    
+    NSDictionary* result = [self exportAndEncodeKeyPair:keypair error:&err];
+    if (nil == result) {
+        return [ResponseFactory fromError:err];
+    }
+    
+    return [ResponseFactory fromResult:result];
+}
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateKeyPairWithTypeAndSeed:(VSMKeyPairType)type seed:(NSString*)seedBase64)
+{
+    NSError* err;
+    VSMVirgilKeyPair* keypair = [self.crypto generateKeyPairOfType:type usingSeed:[seedBase64 dataUsingBase64] error:&err];
+    if (nil == keypair) {
+        return [ResponseFactory fromError:err];
+    }
+    
+    NSDictionary* result = [self exportAndEncodeKeyPair:keypair error:&err];
+    if (nil == result) {
+        return [ResponseFactory fromError:err];
+    }
+    
+    return [ResponseFactory fromResult:result];
+}
+
 RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, encrypt:(NSString*)dataBase64 for:(NSArray<NSString*>*)recipientsBase64) {
     NSError* importErr;
     NSArray<VSMVirgilPublicKey*>* publicKeys = [self decodeAndImportPublicKeys:recipientsBase64 error:&importErr];

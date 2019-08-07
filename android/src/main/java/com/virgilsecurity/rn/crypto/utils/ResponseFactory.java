@@ -1,4 +1,4 @@
-package com.reactlibrary.utils;
+package com.virgilsecurity.rn.crypto.utils;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;

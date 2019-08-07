@@ -1,5 +1,5 @@
 
-package com.reactlibrary;
+package com.virgilsecurity.rn.crypto;
 
 import android.util.Log;
 
@@ -14,14 +14,15 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
 
-import com.reactlibrary.utils.Encodings;
+import com.virgilsecurity.sdk.crypto.HashAlgorithm;
+import com.virgilsecurity.sdk.crypto.KeyType;
 import com.virgilsecurity.sdk.crypto.VirgilCrypto;
 import com.virgilsecurity.sdk.crypto.VirgilKeyPair;
-
-import com.reactlibrary.utils.ResponseFactory;
-import com.virgilsecurity.sdk.crypto.VirgilPrivateKey;
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey;
 import com.virgilsecurity.sdk.crypto.exceptions.CryptoException;
+
+import com.virgilsecurity.rn.crypto.utils.Encodings;
+import com.virgilsecurity.rn.crypto.utils.ResponseFactory;
 
 
 public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
@@ -40,9 +41,37 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     return "RNVirgilCrypto";
   }
 
+  @Override
+  public Map<String, Object> getConstants() {
+    Map<String, String> keyPairTypeMap = new HashMap<>();
+    keyPairTypeMap.put("CURVE25519", KeyType.CURVE25519.name());
+    keyPairTypeMap.put("ED25519", KeyType.ED25519.name());
+    // TODO uncomment when ready: keyPairTypeMap.put("SECP256R1", KeyType.SECP256R1.name());
+    keyPairTypeMap.put("RSA2048", KeyType.RSA_2048.name());
+    keyPairTypeMap.put("RSA4096", KeyType.RSA_4096.name());
+    keyPairTypeMap.put("RSA8192", KeyType.RSA_8192.name());
+
+    Map<String, String> hashAlgMap = new HashMap<>();
+    hashAlgMap.put("SHA224", HashAlgorithm.SHA224.name());
+    hashAlgMap.put("SHA256", HashAlgorithm.SHA256.name());
+    hashAlgMap.put("SHA384", HashAlgorithm.SHA384.name());
+    hashAlgMap.put("SHA512", HashAlgorithm.SHA512.name());
+
+    Map<String, Object> constantsMap = new HashMap<>();
+    constantsMap.put("KeyPairType", keyPairTypeMap);
+    constantsMap.put("HashAlgorithm", hashAlgMap);
+    return constantsMap;
+  }
+
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap computeHash(String dataUtf8) {
-    byte[] hash = this.crypto.computeHash(Encodings.decodeUtf8(dataUtf8));
+  public WritableMap computeHash(String dataBase64) {
+    byte[] hash = this.crypto.computeHash(Encodings.decodeBase64(dataBase64));
+    return ResponseFactory.createStringResponse(Encodings.encodeBase64(hash));
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap computeHashWithAlgorithm(String dataBase64, String algorithm) {
+    byte[] hash = this.crypto.computeHash(Encodings.decodeBase64(dataBase64), HashAlgorithm.valueOf(algorithm));
     return ResponseFactory.createStringResponse(Encodings.encodeBase64(hash));
   }
 
@@ -50,12 +79,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   public WritableMap generateKeyPair() {
     try {
       VirgilKeyPair keypair = this.crypto.generateKeyPair();
-      final byte[] privateKeyData = this.crypto.exportPrivateKey(keypair.getPrivateKey());
-      final byte[] publicKeyData = this.crypto.exportPublicKey(keypair.getPublicKey());
-      Map<String, String> keypairMap = new HashMap<>();
-      keypairMap.put("privateKey", Encodings.encodeBase64(privateKeyData));
-      keypairMap.put("publicKey", Encodings.encodeBase64(publicKeyData));
-      return ResponseFactory.createMapResponse(keypairMap);
+      return ResponseFactory.createMapResponse(this.exportAndEncodeKeyPair(keypair));
     }
     catch (CryptoException e) {
       return ResponseFactory.createErrorResponse(e);
@@ -63,10 +87,44 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap encrypt(String dataUtf8, ReadableArray recipientsBase64) {
+  public WritableMap generateKeyPairOfType(String type) {
+    try {
+      VirgilKeyPair keypair = this.crypto.generateKeyPair(KeyType.valueOf(type));
+      return ResponseFactory.createMapResponse(this.exportAndEncodeKeyPair(keypair));
+    }
+    catch (CryptoException e) {
+      return ResponseFactory.createErrorResponse(e);
+    }
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap generateKeyPairUsingSeed(String seedBase64) {
+    try {
+      VirgilKeyPair keypair = this.crypto.generateKeyPair(Encodings.decodeBase64(seedBase64));
+      return ResponseFactory.createMapResponse(this.exportAndEncodeKeyPair(keypair));
+    }
+    catch (CryptoException e) {
+      return ResponseFactory.createErrorResponse(e);
+    }
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap generateKeyPairWithTypeAndSeed(String type, String seedBase64) {
+    try {
+      Log.d("generate_keys", "with type and seed" + KeyType.valueOf(type).name());
+      VirgilKeyPair keypair = this.crypto.generateKeyPair(KeyType.valueOf(type), Encodings.decodeBase64(seedBase64));
+      return ResponseFactory.createMapResponse(this.exportAndEncodeKeyPair(keypair));
+    }
+    catch (CryptoException e) {
+      return ResponseFactory.createErrorResponse(e);
+    }
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap encrypt(String dataBase64, ReadableArray recipientsBase64) {
     try {
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
-      byte[] encryptedData = this.crypto.encrypt(Encodings.decodeUtf8(dataUtf8), publicKeys);
+      byte[] encryptedData = this.crypto.encrypt(Encodings.decodeBase64(dataBase64), publicKeys);
       return ResponseFactory.createStringResponse(Encodings.encodeBase64(encryptedData));
     }
     catch (CryptoException e) {
@@ -80,7 +138,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       byte[] decryptedData = this.crypto.decrypt(Encodings.decodeBase64(dataBase64), keypair.getPrivateKey());
 
-      return ResponseFactory.createStringResponse(Encodings.encodeUtf8(decryptedData));
+      return ResponseFactory.createStringResponse(Encodings.encodeBase64(decryptedData));
     }
     catch (CryptoException e) {
       return ResponseFactory.createErrorResponse(e);
@@ -116,12 +174,12 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap signAndEncrypt(String dataUtf8, String privateKeyBase64, ReadableArray recipientsBase64)
+  public WritableMap signAndEncrypt(String dataBase64, String privateKeyBase64, ReadableArray recipientsBase64)
   {
     try {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
-      byte[] encryptedData = this.crypto.signThenEncrypt(Encodings.decodeUtf8(dataUtf8), keypair.getPrivateKey(), publicKeys);
+      byte[] encryptedData = this.crypto.signThenEncrypt(Encodings.decodeBase64(dataBase64), keypair.getPrivateKey(), publicKeys);
       return ResponseFactory.createStringResponse(Encodings.encodeBase64(encryptedData));
     }
     catch (CryptoException e) {
@@ -136,7 +194,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(sendersPublicKeysBase64);
       byte[] decryptedData = this.crypto.decryptThenVerify(Encodings.decodeBase64(dataBase64), keypair.getPrivateKey(), publicKeys);
-      return ResponseFactory.createStringResponse(Encodings.encodeUtf8(decryptedData));
+      return ResponseFactory.createStringResponse(Encodings.encodeBase64(decryptedData));
     }
     catch (CryptoException e) {
       return ResponseFactory.createErrorResponse(e);
@@ -167,5 +225,14 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
       publicKeys.add(this.crypto.importPublicKey(Encodings.decodeBase64((String)publicKeyBase64)));
     }
     return publicKeys;
+  }
+
+  private Map<String, String> exportAndEncodeKeyPair(VirgilKeyPair keypair) throws CryptoException {
+    final byte[] privateKeyData = this.crypto.exportPrivateKey(keypair.getPrivateKey());
+    final byte[] publicKeyData = this.crypto.exportPublicKey(keypair.getPublicKey());
+    Map<String, String> keypairMap = new HashMap<>();
+    keypairMap.put("privateKey", Encodings.encodeBase64(privateKeyData));
+    keypairMap.put("publicKey", Encodings.encodeBase64(publicKeyData));
+    return keypairMap;
   }
 }

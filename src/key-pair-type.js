@@ -1,3 +1,7 @@
+import { NativeModules } from 'react-native';
+
+const { RNVirgilCrypto } = NativeModules;
+
 export const KeyPairType = Object.freeze({
   ED25519: 'ED25519',
   CURVE25519: 'CURVE25519',
@@ -6,3 +10,14 @@ export const KeyPairType = Object.freeze({
   RSA_4096: 'RSA4096',
   RSA_8192: 'RSA8192'
 });
+
+export function checkedGetKeyPairType(keyPairType) {
+  if (!(keyPairType in RNVirgilCrypto.KeyPairType)) {
+    throw new TypeError(`Invalid type of key pair "${
+      keyPairType
+    }". Expected one of ${
+      Object.keys(RNVirgilCrypto.KeyPairType).join(', ')
+    }`);
+  }
+  return RNVirgilCrypto.KeyPairType[keyPairType];
+}

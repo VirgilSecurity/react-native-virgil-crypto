@@ -1,138 +1,147 @@
 import { NativeModules } from 'react-native';
 import { VirgilPrivateKey } from './virgil-private-key';
 import { VirgilPublicKey } from './virgil-public-key';
-import { isString, isEmptyOrWhitespace } from './utils/string';
 import { 
-  checkedGetPrivateKeyValue, 
-  checkedGetPublicKeyValue, 
-  checkedGetPublicKeyValues, 
+  checkedGetPrivateKeyValue,
+  checkedGetPublicKeyValue,
+  checkedGetPublicKeyValues,
   wrapKeyPair 
 } from './utils/keys';
 import { unwrapResponse } from './utils/response';
+import { anyToBase64, base64ToBuffer } from './utils/encoding';
+import { checkedGetHashAlgorithm } from './hash-algorithm';
+import { checkedGetKeyPairType } from './key-pair-type';
 
 const { RNVirgilCrypto } = NativeModules;
 
 export const virgilCrypto = {
-  generateRandomData(size) {
+  getRandomBytes(size) {
     if (!Number.isSafeInteger(size)) {
       throw new TypeError('Argument "size" must be an integer');
     }
 
-    return unwrapResponse(RNVirgilCrypto.generateRandomData(size));
+    return base64ToBuffer(
+      unwrapResponse(RNVirgilCrypto.generateRandomData(size))
+    );
   },
 
-  computeHash(dataUtf8) {
-    if (!isString(dataUtf8)) {
-      throw new TypeError('Argument "dataUtf8" must be a string');
+  calculateHash(data, algorithm) {
+    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    if (algorithm == null) {
+      return unwrapResponse(RNVirgilCrypto.computeHash(dataBase64));
     }
 
-    return unwrapResponse(RNVirgilCrypto.computeHash(dataUtf8));
+    const nativeAlg = checkedGetHashAlgorithm(algorithm);
+    return base64ToBuffer(
+      unwrapResponse(RNVirgilCrypto.computeHashWithAlgorithm(dataBase64, nativeAlg))
+    );
   },
 
-  generateKeyPair() {
-    const keypair = unwrapResponse(RNVirgilCrypto.generateKeyPair());
+  generateKeys(keyPairType) {
+    let keypair;
+    if (keyPairType == null) {
+      keypair = unwrapResponse(RNVirgilCrypto.generateKeyPair());
+    } else {
+      const nativeType = checkedGetKeyPairType(keyPairType);
+      keypair = unwrapResponse(RNVirgilCrypto.generateKeyPairOfType(nativeType));
+    }
+    return wrapKeyPair(keypair);
+  },
+
+  generateKeysFromKeyMaterial(seed, keyPairType) {
+    const seedBase64 = anyToBase64(seed, 'base64', 'seed');
+
+    let keypair;
+    if (keyPairType == null) {
+      keypair = unwrapResponse(RNVirgilCrypto.generateKeyPairUsingSeed(seedBase64));
+    } else {
+      const nativeType = checkedGetKeyPairType(keyPairType);
+      keypair = unwrapResponse(RNVirgilCrypto.generateKeyPairWithTypeAndSeed(nativeType, seedBase64));
+    }
     return wrapKeyPair(keypair);
   },
 
   encrypt(data, virgilPublicKeys) {
-    if (!isString(data)) {
-      throw new TypeError('Argument "data" must be a string');
-    }
-
+    const dataBase64 = anyToBase64(data, 'utf8', 'data');
     const publicKeysValues = checkedGetPublicKeyValues(virgilPublicKeys);
-    return unwrapResponse(RNVirgilCrypto.encrypt(data, publicKeysValues));
+    return base64ToBuffer(
+      unwrapResponse(RNVirgilCrypto.encrypt(dataBase64, publicKeysValues))
+    );
   },
 
   decrypt(encryptedData, virgilPrivateKey) {
-    if (!isString(encryptedData) || isEmptyOrWhitespace(encryptedData)) {
-      throw new TypeError('Argument "encryptedData" must be a string');
-    }
-
+    const encryptedDataBase64 = anyToBase64(encryptedData, 'base64', 'encryptedData');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
-    return unwrapResponse(RNVirgilCrypto.decrypt(encryptedData, privateKeyValue));
+    return base64ToBuffer(
+      unwrapResponse(RNVirgilCrypto.decrypt(encryptedDataBase64, privateKeyValue))
+    );
   },
 
-  generateSignature(dataBase64, virgilPrivateKey) {
-    if (!isString(dataBase64)) {
-      throw new TypeError('Argument "dataBase64" must be a string');
-    }
-
+  calculateSignature(data, virgilPrivateKey) {
+    const dataBase64 = anyToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
-    return unwrapResponse(RNVirgilCrypto.generateSignature(dataBase64, privateKeyValue));
+    return base64ToBuffer(
+      unwrapResponse(RNVirgilCrypto.generateSignature(dataBase64, privateKeyValue))
+    );
   },
 
-  verifySignature(signatureBase64, dataBase64, virgilPublicKey) {
-    if (!isString(signatureBase64) || isEmptyOrWhitespace(signatureBase64)) {
-      throw new TypeError('Argument "signatureBase64" must be a non-empty string');
-    }
-
-    if (!isString(dataBase64)) {
-      throw new TypeError('Argument "dataBase64" must be a string');
-    }
-
+  verifySignature(data, signature, virgilPublicKey) {
+    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const signatureBase64 = anyToBase64(signature, 'base64', 'signature');
     const publicKeyValue = checkedGetPublicKeyValue(virgilPublicKey);
 
     return unwrapResponse(RNVirgilCrypto.verifySignature(signatureBase64, dataBase64, publicKeyValue));
   },
 
-  signAndEncrypt(data, virgilPrivateKey, virgilPublicKeys) {
-    if (!isString(data)) {
-      throw new TypeError('Argument "data" must be a string');
-    }
-
+  signThenEncrypt(data, virgilPrivateKey, virgilPublicKeys) {
+    const dataBase64 = anyToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
-    return unwrapResponse(
+    return base64ToBuffer(unwrapResponse(
       RNVirgilCrypto.signAndEncrypt(
-        data, 
+        dataBase64, 
         privateKeyValue, 
         publicKeyValues
       )
-    );
+    ));
   },
 
-  decryptAndVerify(dataBase64, virgilPrivateKey, virgilPublicKeys) {
-    if (!isString(dataBase64) || isEmptyOrWhitespace(dataBase64)) {
-      throw new TypeError('Argument "dataBase64" must be a non-empty string');
-    }
-
+  decryptThenVerify(encryptedData, virgilPrivateKey, virgilPublicKeys) {
+    const dataBase64 = anyToBase64(encryptedData, 'base64', 'encryptedData');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
-    return unwrapResponse(
+    return base64ToBuffer(unwrapResponse(
       RNVirgilCrypto.decryptAndVerify(
         dataBase64,
         privateKeyValue,
         publicKeyValues
       )
-    );
+    ));
   },
 
   extractPublicKey(virgilPrivateKey) {
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
-    return unwrapResponse(RNVirgilCrypto.extractPublicKey(privateKeyValue));
+    const publicKey = unwrapResponse(RNVirgilCrypto.extractPublicKey(privateKeyValue));
+    return new VirgilPublicKey(publicKey);
   },
 
   exportPrivateKey(virgilPrivateKey) {
-    return checkedGetPrivateKeyValue(virgilPrivateKey);
+    return base64ToBuffer(checkedGetPrivateKeyValue(virgilPrivateKey));
   },
   
   exportPublicKey(virgilPublicKey) {
-    return checkedGetPublicKeyValue(virgilPublicKey);
+    return base64ToBuffer(checkedGetPublicKeyValue(virgilPublicKey));
   },
 
-  importPrivateKey(privateKeyBase64) {
-    if (!isString(privateKeyBase64) || isEmptyOrWhitespace(privateKeyBase64)) {
-      throw new TypeError('Argument "privateKeyBase64" must be a non-empty string');
-    }
+  importPrivateKey(rawPrivateKey) {
+    const privateKeyBase64 = anyToBase64(rawPrivateKey, 'base64', 'rawPrivateKey');
     return new VirgilPrivateKey(privateKeyBase64);
   },
 
-  importPublicKey(publicKeyBase64) {
-    if (!isString(publicKeyBase64) || isEmptyOrWhitespace(publicKeyBase64)) {
-      throw new TypeError('Argument "publicKeyBase64" must be a non-empty string');
-    }
+  importPublicKey(rawPublicKey) {
+    const publicKeyBase64 = anyToBase64(rawPublicKey, 'base64', 'rawPublicKey');
     return new VirgilPublicKey(publicKeyBase64);
   }
 }

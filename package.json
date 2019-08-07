@@ -19,5 +19,7 @@
     "eslint": "^6.1.0",
     "react-native": "^0.60.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "buffer": "^5.2.1"
+  }
 }

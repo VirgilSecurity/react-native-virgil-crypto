@@ -1,6 +1,7 @@
 import { VirgilPrivateKey } from '../virgil-private-key';
 import { VirgilPublicKey } from '../virgil-public-key';
 import { hasPrivateKeyValue, getPrivateKeyValue } from '../private-key-cache';
+import { toArray } from '../utils/array';
 
 export function wrapKeyPair(keypair) {
   return {

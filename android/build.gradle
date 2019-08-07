@@ -42,7 +42,7 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:'+safeExtGet('reactNativeVersion', '+')
-    implementation 'com.virgilsecurity.sdk:crypto-android:5.1.2'
-    implementation 'com.virgilsecurity.sdk:sdk:5.1.2'
+    implementation 'com.virgilsecurity.sdk:crypto-android:5.2.0'
+    implementation 'com.virgilsecurity.sdk:sdk:5.2.0'
 }
   

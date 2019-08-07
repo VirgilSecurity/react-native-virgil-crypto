@@ -46,7 +46,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     Map<String, String> keyPairTypeMap = new HashMap<>();
     keyPairTypeMap.put("CURVE25519", KeyType.CURVE25519.name());
     keyPairTypeMap.put("ED25519", KeyType.ED25519.name());
-    // TODO uncomment when ready: keyPairTypeMap.put("SECP256R1", KeyType.SECP256R1.name());
+    keyPairTypeMap.put("SECP256R1", KeyType.SECP256R1.name());
     keyPairTypeMap.put("RSA2048", KeyType.RSA_2048.name());
     keyPairTypeMap.put("RSA4096", KeyType.RSA_4096.name());
     keyPairTypeMap.put("RSA8192", KeyType.RSA_8192.name());

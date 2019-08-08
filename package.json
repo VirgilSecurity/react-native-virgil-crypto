@@ -4,19 +4,34 @@
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "lint": "eslint ."
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "security",
+    "virgil",
+    "virgilsecurity",
+    "encryption",
+    "crypto"
   ],
   "author": "VirgilSecrity, Inc.",
   "license": "BSD-3-Clause",
   "homepage": "https://github.com/VirgilSecurity/react-native-virgil-crypto",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VirgilSecurity/react-native-virgil-crypto"
+  },
   "peerDependencies": {
     "react-native": "0.60.x"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "babel-jest": "^24.8.0",
     "eslint": "^6.1.0",
+    "eslint-plugin-jest": "^22.15.0",
+    "jest": "^24.8.0",
+    "metro-react-native-babel-preset": "^0.55.0",
     "react-native": "^0.60.4"
   },
   "dependencies": {

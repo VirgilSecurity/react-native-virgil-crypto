@@ -3,103 +3,6 @@
 
 React Native bridge for Virgil Security Crypto Library for [iOS](https://github.com/VirgilSecurity/virgil-crypto-x) and [Android](https://github.com/VirgilSecurity/virgil-sdk-java-android).
 
-## Getting started
-
-`$ npm install react-native-virgil-crypto --save`
-
-### iOS Setup
-
-This library depends on the native [virgil-crypto-x](https://github.com/VirgilSecurity/virgil-crypto-x) project. To keep the React Native library agnostic of your dependency management mehtod, the native libraries are not distributed as part of the bridge.
-
-VirgilCrypto supports two options for dependency management:
-
-1. **CocoaPods**
-
-    **RN<0.60**
-
-    ```sh
-    react-native link react-native-app-auth
-    ```
-
-    Add the following line to your `Podfile`:
-
-    ```sh
-    pod 'VirgilCrypto', '~> 5.0.0'
-    ```
-
-    Make sure you have `use_frameworks!` there as well. Then run `pod install` from inside the `ios` directory.
-
-    **RN=0.60.x**
-    Unfortunately, this library cannot be used with CocoaPods and React Native 0.60 until [this PR](https://github.com/facebook/react-native/pull/25619) makes it into a release (which will probably be a 0.61.0 release). The recommended option is to install the native dependency with Carthage and link the bridge (i.e. this library) manually.
-
-2. **Carthage**
-    With [Carthage](https://github.com/Carthage/Carthage) add the following line to your `Cartfile`:
-
-    ```
-    github "VirgilSecurity/virgil-crypto-x" ~> 5.0.0
-    ```
-
-    Then run `carthage update --plaform iOS` from inside the `ios` folder.
-
-    On your application target's “General” settings tab, in the “Linked Frameworks and Libraries” section, add following frameworks from the *Carthage/Build* folder inside your project's folder:
-
-      - VirgilCrypto
-      - VirgilCryptoFoundation
-      - VSCCommon
-      - VSCFoundation
-
-    On your application target's “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script in which you specify your shell (ex: */bin/sh*), add the following contents to the script area below the shell:
-
-    ```sh
-    /usr/local/bin/carthage copy-frameworks
-    ```
-
-    and add the paths to the frameworks you want to use under “Input Files”, e.g.:
-
-    ```
-    $(SRCROOT)/Carthage/Build/iOS/VirgilCrypto.framework
-    $(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework
-    $(SRCROOT)/Carthage/Build/iOS/VSCCommon.framework
-    $(SRCROOT)/Carthage/Build/iOS/VSCFoundation.framework
-    ```
-
-### Android Setup
-
-> Important! You will have to set `minSdkVersion` to at least `21` in your project's `build.gradle` file to use this library.
-
-**RN<0.60**
-
-```sh
-react-native link react-native-app-auth
-```
-
-With React Native 0.60 and later, linking is done automatically.
-
-### Manual installation
-
-
-#### iOS
-
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-virgil-crypto` and add `RNVirgilCrypto.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNVirgilCrypto.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
-
-#### Android
-
-1. Open up `android/app/src/main/java/[...]/MainApplication.java`
-  - Add `import com.virgilsecurity.rn.crypto.RNVirgilCryptoPackage;` to the imports at the top of the file
-  - Add `new RNVirgilCryptoPackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-virgil-crypto'
-  	project(':react-native-virgil-crypto').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-virgil-crypto/android')
-  	```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
-      compile project(':react-native-virgil-crypto')
-  	```
-
 ## Library purposes
 
 * Be a replacement for [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) in React Native projects
@@ -187,6 +90,104 @@ import { Buffer } from 'react-native-virgil-crypto';
 
 console.log(Buffer.from('hello Buffer').toString('base64')); // prints aGVsbG8gQnVmZmVy
 ```
+
+## Getting started
+
+`$ npm install react-native-virgil-crypto --save`
+
+### iOS Setup
+
+This library depends on the native [virgil-crypto-x](https://github.com/VirgilSecurity/virgil-crypto-x) project. To keep the React Native library agnostic of your dependency management mehtod, the native libraries are not distributed as part of the bridge.
+
+VirgilCrypto supports two options for dependency management:
+
+1. **CocoaPods**
+
+    **RN<0.60**
+
+    ```sh
+    react-native link react-native-app-auth
+    ```
+
+    Add the following line to your `Podfile`:
+
+    ```sh
+    pod 'VirgilCrypto', '~> 5.0.0'
+    ```
+
+    Make sure you have `use_frameworks!` there as well. Then run `pod install` from inside the `ios` directory.
+
+    **RN=0.60.x**
+
+    Unfortunately, this library cannot be used with CocoaPods and React Native 0.60 until [this PR](https://github.com/facebook/react-native/pull/25619) makes it into a release (which will probably be a 0.61.0 release). The recommended option is to install the native dependency with Carthage and link the bridge (i.e. this library) manually.
+
+2. **Carthage**
+    With [Carthage](https://github.com/Carthage/Carthage) add the following line to your `Cartfile`:
+
+    ```
+    github "VirgilSecurity/virgil-crypto-x" ~> 5.0.0
+    ```
+
+    Then run `carthage update --plaform iOS` from inside the `ios` folder.
+
+    On your application target's “General” settings tab, in the “Linked Frameworks and Libraries” section, add following frameworks from the *Carthage/Build* folder inside your project's folder:
+
+      - VirgilCrypto
+      - VirgilCryptoFoundation
+      - VSCCommon
+      - VSCFoundation
+
+    On your application target's “Build Phases” settings tab, click the “+” icon and choose “New Run Script Phase”. Create a Run Script in which you specify your shell (ex: */bin/sh*), add the following contents to the script area below the shell:
+
+    ```sh
+    /usr/local/bin/carthage copy-frameworks
+    ```
+
+    and add the paths to the frameworks you want to use under “Input Files”, e.g.:
+
+    ```
+    $(SRCROOT)/Carthage/Build/iOS/VirgilCrypto.framework
+    $(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework
+    $(SRCROOT)/Carthage/Build/iOS/VSCCommon.framework
+    $(SRCROOT)/Carthage/Build/iOS/VSCFoundation.framework
+    ```
+
+### Android Setup
+
+> Important! You will have to set `minSdkVersion` to at least `21` in your project's `build.gradle` file to use this library.
+
+**RN<0.60**
+
+```sh
+react-native link react-native-app-auth
+```
+
+With React Native 0.60 and later, linking is done automatically.
+
+### Manual installation
+
+
+#### iOS
+
+1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+2. Go to `node_modules` ➜ `react-native-virgil-crypto` and add `RNVirgilCrypto.xcodeproj`
+3. In XCode, in the project navigator, select your project. Add `libRNVirgilCrypto.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+4. Run your project (`Cmd+R`)<
+
+#### Android
+
+1. Open up `android/app/src/main/java/[...]/MainApplication.java`
+  - Add `import com.virgilsecurity.rn.crypto.RNVirgilCryptoPackage;` to the imports at the top of the file
+  - Add `new RNVirgilCryptoPackage()` to the list returned by the `getPackages()` method
+2. Append the following lines to `android/settings.gradle`:
+  	```
+  	include ':react-native-virgil-crypto'
+  	project(':react-native-virgil-crypto').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-virgil-crypto/android')
+  	```
+3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+  	```
+      compile project(':react-native-virgil-crypto')
+  	```
 
 ## License
 This library is released under the [3-clause BSD License](LICENSE).

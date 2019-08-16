@@ -12,6 +12,8 @@
 		DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903622F84B99001DD161 /* NSData+Encodings.m */; };
 		DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903922F84CA4001DD161 /* NSString+Encodings.m */; };
 		DD3C903C22F8533B001DD161 /* ResponseFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903B22F8533B001DD161 /* ResponseFactory.m */; };
+		DDDF207623070E3C00F7C404 /* FSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDF207523070E3C00F7C404 /* FSUtils.m */; };
+		DDDF207923070FC200F7C404 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDF207823070FC200F7C404 /* Constants.m */; };
 		DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */; };
 /* End PBXBuildFile section */
 
@@ -39,6 +41,10 @@
 		DD3C903922F84CA4001DD161 /* NSString+Encodings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encodings.m"; sourceTree = "<group>"; };
 		DD3C903B22F8533B001DD161 /* ResponseFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResponseFactory.m; sourceTree = "<group>"; };
 		DD3C903D22F853B4001DD161 /* ResponseFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseFactory.h; sourceTree = "<group>"; };
+		DDDF207523070E3C00F7C404 /* FSUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSUtils.m; sourceTree = "<group>"; };
+		DDDF207723070E4A00F7C404 /* FSUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSUtils.h; sourceTree = "<group>"; };
+		DDDF207823070FC200F7C404 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		DDDF207A23070FD500F7C404 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		DDF69F5E22F47D900016F2C0 /* RCTConvert+KeyPairType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+KeyPairType.h"; sourceTree = "<group>"; };
 		DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+KeyPairType.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,6 +71,10 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				DDDF207A23070FD500F7C404 /* Constants.h */,
+				DDDF207823070FC200F7C404 /* Constants.m */,
+				DDDF207723070E4A00F7C404 /* FSUtils.h */,
+				DDDF207523070E3C00F7C404 /* FSUtils.m */,
 				DD3C903D22F853B4001DD161 /* ResponseFactory.h */,
 				DD3C903B22F8533B001DD161 /* ResponseFactory.m */,
 				DD3C903822F84CA4001DD161 /* NSString+Encodings.h */,
@@ -141,8 +151,10 @@
 				DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */,
 				DD3C903C22F8533B001DD161 /* ResponseFactory.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNVirgilCrypto.m in Sources */,
+				DDDF207923070FC200F7C404 /* Constants.m in Sources */,
 				DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */,
 				DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */,
+				DDDF207623070E3C00F7C404 /* FSUtils.m in Sources */,
 				DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

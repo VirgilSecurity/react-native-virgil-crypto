@@ -10,8 +10,8 @@
 
 @interface FSUtils : NSObject
 
-+ (NSString*) getPathFromUri:(NSString* _Nonnull)uri;
-+ (NSString*) getTempFilePath:(NSString* _Nullable)ext;
-+ (BOOL) prepareFileForWriting:(NSString* _Nonnull)path error:(NSError** _Nullable) outError;
++ (NSString*_Nonnull) getPathFromUri:(NSString* _Nonnull)uri;
++ (NSString*_Nonnull) getTempFilePath:(NSString* _Nullable)ext;
++ (BOOL) prepareFileForWriting:(NSString* _Nonnull)path error:(NSError*_Nullable*_Nullable) outError;
 
 @end

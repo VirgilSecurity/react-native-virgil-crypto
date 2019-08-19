@@ -284,7 +284,7 @@ RCT_EXPORT_METHOD(encryptFile:(NSString*)inputUri
 {
     NSString* inputPath = [FSUtils getPathFromUri:inputUri];
     if ([[NSFileManager defaultManager] fileExistsAtPath:inputPath] == NO) {
-        reject(@"no_such_file", [NSString stringWithFormat:@"File does not exist at path %@", inputPath], nil);
+        reject(@"invalid_input_file", [NSString stringWithFormat:@"File does not exist at path %@", inputPath], nil);
         return;
     }
     
@@ -295,7 +295,7 @@ RCT_EXPORT_METHOD(encryptFile:(NSString*)inputUri
     NSError* err = nil;
     BOOL isOutputReady = [FSUtils prepareFileForWriting:outputPath error:&err];
     if (!isOutputReady) {
-        reject(@"invalid_destination", [err description], err);
+        reject(@"invalid_output_file", [err description], err);
     }
     
     NSArray<VSMVirgilPublicKey*>* publicKeys = [self decodeAndImportPublicKeys:recipientPublicKeysBase64 error:&err];
@@ -321,7 +321,11 @@ RCT_EXPORT_METHOD(encryptFile:(NSString*)inputUri
         [outStream close];
         
         if (!isSuccessful) {
-            reject(@"failed_to_encrypt", @"Unexpected error encrypting stream", encryptErr);
+            reject(
+                   @"failed_to_encrypt",
+                   [NSString stringWithFormat:@"Could not encrypt file; %@", [encryptErr localizedDescription]],
+                   encryptErr
+            );
             return;
         }
         
@@ -337,7 +341,7 @@ RCT_EXPORT_METHOD(decryptFile:(NSString*)inputUri
 {
     NSString* inputPath = [FSUtils getPathFromUri:inputUri];
     if ([[NSFileManager defaultManager] fileExistsAtPath:inputPath] == NO) {
-        reject(@"no_such_file", [NSString stringWithFormat:@"File does not exist at path %@", inputUri], nil);
+        reject(@"invalid_input_file", [NSString stringWithFormat:@"File does not exist at path %@", inputUri], nil);
         return;
     }
     
@@ -348,7 +352,7 @@ RCT_EXPORT_METHOD(decryptFile:(NSString*)inputUri
     NSError* err = nil;
     BOOL isOutputReady = [FSUtils prepareFileForWriting:outputPath error:&err];
     if (!isOutputReady) {
-        reject(@"invalid_destination", [err description], err);
+        reject(@"invalid_output_file", [err description], err);
     }
     
     VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];
@@ -376,8 +380,11 @@ RCT_EXPORT_METHOD(decryptFile:(NSString*)inputUri
         [outputStream close];
         
         if (!isSuccessful) {
-            NSLog(@"ERROR %@", decryptErr);
-            reject(@"failed_to_decrypt", @"Unexpected error decrypting stream", decryptErr);
+            reject(
+                   @"failed_to_decrypt",
+                   [NSString stringWithFormat:@"Could not decrypt file; %@", [decryptErr localizedDescription]],
+                   decryptErr
+                   );
             return;
         }
         

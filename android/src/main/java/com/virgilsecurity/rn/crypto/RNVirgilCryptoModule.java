@@ -36,6 +36,8 @@ import com.virgilsecurity.rn.crypto.utils.Encodings;
 import com.virgilsecurity.rn.crypto.utils.ResponseFactory;
 import com.virgilsecurity.sdk.crypto.exceptions.DecryptionException;
 import com.virgilsecurity.sdk.crypto.exceptions.EncryptionException;
+import com.virgilsecurity.sdk.crypto.exceptions.SigningException;
+import com.virgilsecurity.sdk.crypto.exceptions.VerificationException;
 
 
 public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
@@ -198,8 +200,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap signAndEncrypt(String dataBase64, String privateKeyBase64, ReadableArray recipientsBase64)
-  {
+  public WritableMap signAndEncrypt(String dataBase64, String privateKeyBase64, ReadableArray recipientsBase64) {
     try {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
@@ -212,8 +213,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap decryptAndVerify(String dataBase64, String privateKeyBase64, ReadableArray sendersPublicKeysBase64)
-  {
+  public WritableMap decryptAndVerify(String dataBase64, String privateKeyBase64, ReadableArray sendersPublicKeysBase64) {
     try {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(sendersPublicKeysBase64);
@@ -244,7 +244,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void encryptFile(String inputUri, String outputUri, ReadableArray recipientsBase64, final Promise promise) {
+  public void encryptFile(final String inputPath, String outputPath, ReadableArray recipientsBase64, final Promise promise) {
     final List<VirgilPublicKey> publicKeys;
     try {
       publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
@@ -254,12 +254,11 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    final String inputPath = FS.normalizePath(inputUri);
-    final String outputPath;
-    if (outputUri == null) {
-      outputPath = FS.getTempFilePath(FS.getFileExtension(inputPath));
+    final String resolvedOutputPath;
+    if (outputPath == null) {
+      resolvedOutputPath = FS.getTempFilePath(FS.getFileExtension(inputPath));
     } else {
-      outputPath = outputUri;
+      resolvedOutputPath = outputPath;
     }
 
     final VirgilCrypto vc = this.crypto;
@@ -267,13 +266,12 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     threadPool.execute(new Runnable() {
       @Override
       public void run() {
-        try {
+        try (
           InputStream inStream = FS.getInputStreamFromPath(inputPath);
-          OutputStream outStream = FS.getOutputStreamFromPath(outputPath);
+          OutputStream outStream = FS.getOutputStreamFromPath(resolvedOutputPath)
+        ) {
           vc.encrypt(inStream, outStream, publicKeys);
-          outStream.close();
-          inStream.close();
-          promise.resolve(outputPath);
+          promise.resolve(resolvedOutputPath);
         } catch (FileNotFoundException e) {
           promise.reject(
                   "invalid_input_file",
@@ -294,7 +292,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void decryptFile(String inputUri, String outputUri, String privateKeyBase64, final Promise promise) {
+  public void decryptFile(final String inputPath, String outputPath, String privateKeyBase64, final Promise promise) {
     VirgilKeyPair keypair;
     try {
       keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
@@ -303,12 +301,11 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    final String inputPath = FS.normalizePath(inputUri);
-    final String outputPath;
-    if (outputUri == null) {
-      outputPath = FS.getTempFilePath(FS.getFileExtension(inputPath));
+    final String resolvedOutputPath;
+    if (outputPath == null) {
+      resolvedOutputPath = FS.getTempFilePath(FS.getFileExtension(inputPath));
     } else {
-      outputPath = outputUri;
+      resolvedOutputPath = outputPath;
     }
 
     final VirgilCrypto vc = this.crypto;
@@ -317,13 +314,12 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     threadPool.execute(new Runnable() {
       @Override
       public void run() {
-        try {
+        try (
           InputStream inStream = FS.getInputStreamFromPath(inputPath);
-          OutputStream outStream = FS.getOutputStreamFromPath(outputPath);
+          OutputStream outStream = FS.getOutputStreamFromPath(resolvedOutputPath)
+        ) {
           vc.decrypt(inStream, outStream, privateKey);
-          outStream.close();
-          inStream.close();
-          promise.resolve(outputPath);
+          promise.resolve(resolvedOutputPath);
         } catch (FileNotFoundException e) {
           promise.reject(
                   "invalid_input_file",
@@ -336,6 +332,73 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
                   "failed_to_decrypt",
                   String.format("Could not decrypt file; %s", e.getLocalizedMessage())
           );
+        } catch (IOException e) {
+          promise.reject("unexpected_error", e.getLocalizedMessage());
+        }
+      }
+    });
+  }
+
+  @ReactMethod
+  public void generateFileSignature(final String inputPath, String privateKeyBase64, final Promise promise) {
+    VirgilKeyPair keypair;
+    try {
+      keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
+    } catch (CryptoException e) {
+      promise.reject("invalid_private_key", "The given value is not a valid private key");
+      return;
+    }
+
+    final VirgilCrypto vc = this.crypto;
+    final VirgilPrivateKey privateKey = keypair.getPrivateKey();
+
+    threadPool.execute(new Runnable() {
+      @Override
+      public void run() {
+        try (InputStream inStream = FS.getInputStreamFromPath(inputPath)) {
+          byte[] signature = vc.generateSignature(inStream, privateKey);
+          promise.resolve(Encodings.encodeBase64(signature));
+        } catch (FileNotFoundException e) {
+          promise.reject(
+                  "invalid_input_file",
+                  String.format("File does not exist at path %s", inputPath)
+          );
+        } catch (SigningException e) {
+          promise.reject("failed_to_sign", e.getLocalizedMessage());
+        } catch (IOException e) {
+          promise.reject("unexpected_error", e.getLocalizedMessage());
+        }
+      }
+    });
+  }
+
+  @ReactMethod
+  public void verifyFileSignature(String signatureBase64, final String inputPath, String publicKeyBase64, final Promise promise) {
+    final VirgilPublicKey publicKey;
+    try {
+      publicKey = this.crypto.importPublicKey(Encodings.decodeBase64(publicKeyBase64));
+    } catch (CryptoException e) {
+      promise.reject("invalid_public_key", "The given value is not a valid public key");
+      return;
+    }
+
+    final byte[] signature = Encodings.decodeBase64(signatureBase64);
+    final VirgilCrypto vc = this.crypto;
+
+
+    threadPool.execute(new Runnable() {
+      @Override
+      public void run() {
+        try (InputStream inStream = FS.getInputStreamFromPath(inputPath)) {
+          boolean isVerified = vc.verifySignature(signature, inStream, publicKey);
+          promise.resolve(isVerified);
+        } catch (FileNotFoundException e) {
+          promise.reject(
+                  "invalid_input_file",
+                  String.format("File does not exist at path %s", inputPath)
+          );
+        } catch (VerificationException e) {
+          promise.reject("failed_to_verify", e.getLocalizedMessage());
         } catch (IOException e) {
           promise.reject("unexpected_error", e.getLocalizedMessage());
         }

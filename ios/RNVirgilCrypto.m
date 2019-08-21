@@ -391,4 +391,73 @@ RCT_EXPORT_METHOD(decryptFile:(NSString*)inputUri
         resolve(outputPath);
     });
 }
+
+RCT_EXPORT_METHOD(generateFileSignature:(NSString*)inputUri
+                  with:(NSString*)privateKeyBase64
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString* inputPath = [FSUtils getPathFromUri:inputUri];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:inputPath] == NO) {
+        reject(@"invalid_input_file", [NSString stringWithFormat:@"File does not exist at path %@", inputUri], nil);
+        return;
+    }
+    
+    NSError* err = nil;
+    VSMVirgilKeyPair* keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];
+    if (nil == keypair) {
+        reject(@"invalid_private_key", @"The given value is not a valid private key", err);
+        return;
+    }
+    
+    VSMVirgilPrivateKey* privateKey = keypair.privateKey;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSError *signErr;
+        NSInputStream *inputStream = [NSInputStream inputStreamWithFileAtPath:inputPath];
+        
+        [inputStream open];
+        NSData* signature = [self.crypto generateStreamSignatureOf:inputStream using:privateKey error:&signErr];
+        [inputStream close];
+        
+        if (nil == signature) {
+            reject(
+                   @"failed_to_sign",
+                   [NSString stringWithFormat:@"Could not generate signature of file; %@", [signErr localizedDescription]],
+                   signErr
+                   );
+            return;
+        }
+        
+        resolve([signature stringUsingBase64]);
+    });
+}
+
+RCT_EXPORT_METHOD(verifyFileSignature:(NSString*)signatureBase64
+                  ofFile:(NSString*)inputUri
+                  with:(NSString*)publicKeyBase64
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString* inputPath = [FSUtils getPathFromUri:inputUri];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:inputPath] == NO) {
+        reject(@"invalid_input_file", [NSString stringWithFormat:@"File does not exist at path %@", inputPath], nil);
+        return;
+    }
+    
+    NSError* err = nil;
+    VSMVirgilPublicKey* publicKey = [self.crypto importPublicKeyFrom:[publicKeyBase64 dataUsingBase64] error:&err];
+    if (nil == publicKey) {
+        reject(@"invalid_public_key", @"The given value is not a valid public key", err);
+        return;
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSInputStream *inStream = [NSInputStream inputStreamWithFileAtPath:inputPath];
+        [inStream open];
+        BOOL isValid = [self.crypto verifyStreamSignature_objc:[signatureBase64 dataUsingBase64] of:inStream with:publicKey];
+        [inStream close];
+        resolve(@(isValid));
+    });
+}
 @end

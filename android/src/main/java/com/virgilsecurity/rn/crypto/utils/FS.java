@@ -106,9 +106,16 @@ public final class FS {
     }
 
     public static String getFileExtension(String path) {
-        int i = path.lastIndexOf(".");
-        if (i > 0) {
-            return path.substring(i + 1);
+        path = normalizePath(path);
+        if (path == null) {
+            return null;
+        }
+
+        int dotIndex = path.lastIndexOf(".");
+        int separatorIndex = path.indexOf(File.separator);
+
+        if (dotIndex > Math.max(0, separatorIndex)) {
+            return path.substring(dotIndex + 1);
         }
         return null;
     }

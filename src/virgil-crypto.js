@@ -14,6 +14,8 @@ import { checkedGetKeyPairType } from './key-pair-type';
 
 const { RNVirgilCrypto } = NativeModules;
 
+const normalizeFilePath = (path) => (path.startsWith('file://') ? path.slice(7) : path);
+
 export const virgilCrypto = {
   getRandomBytes(size) {
     if (!Number.isSafeInteger(size)) {
@@ -143,5 +145,58 @@ export const virgilCrypto = {
   importPublicKey(rawPublicKey) {
     const publicKeyBase64 = anyToBase64(rawPublicKey, 'base64', 'rawPublicKey');
     return new VirgilPublicKey(publicKeyBase64);
+  },
+
+  encryptFile({ inputPath, outputPath, publicKeys }) {
+    if (typeof inputPath !== 'string') {
+      throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
+    }
+
+    if (outputPath != null && typeof outputPath !== 'string') {
+      throw new TypeError('Expected "outputPath" parameter to be a string. Got ' + typeof outputPath);
+    }
+
+    const publicKeysValues = checkedGetPublicKeyValues(publicKeys);
+
+    return RNVirgilCrypto.encryptFile(
+      normalizeFilePath(inputPath), 
+      outputPath != null ? normalizeFilePath(outputPath) : undefined, 
+      publicKeysValues
+    );
+  },
+
+  decryptFile({ inputPath, outputPath, privateKey}) {
+    if (typeof inputPath !== 'string') {
+      throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
+    }
+
+    if (outputPath != null && typeof outputPath !== 'string') {
+      throw new TypeError('Expected "outputPath" parameter to be a string. Got ' + typeof outputPath);
+    }
+
+    const privateKeyValue = checkedGetPrivateKeyValue(privateKey);
+
+    return RNVirgilCrypto.decryptFile(
+      normalizeFilePath(inputPath), 
+      outputPath != null ? normalizeFilePath(outputPath) : outputPath, 
+      privateKeyValue
+    );
+  },
+
+  generateFileSignature({ inputPath, privateKey }) {
+    if (typeof inputPath !== 'string') {
+      throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
+    }
+    const privateKeyValue = checkedGetPrivateKeyValue(privateKey);
+    return RNVirgilCrypto.generateFileSignature(normalizeFilePath(inputPath), privateKeyValue);
+  },
+
+  verifyFileSignature({ inputPath, signature, publicKey }) {
+    if (typeof inputPath !== 'string') {
+      throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
+    }
+    const publicKeyValue = checkedGetPublicKeyValue(publicKey);
+    const signatureBase64 = anyToBase64(signature, 'base64', 'signature');
+    return RNVirgilCrypto.verifyFileSignature(signatureBase64, normalizeFilePath(inputPath), publicKeyValue);
   }
 }

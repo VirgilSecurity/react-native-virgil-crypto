@@ -272,9 +272,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../../../React",
-					"$(SRCROOT)/../../react-native/React",
-					"$(SRCROOT)/../../../ios/Pods/Headers",
+					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../../ios/Pods/Headers/**",
 					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto/VirgilCrypto.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -295,9 +294,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../../../React",
-					"$(SRCROOT)/../../react-native/React",
-					"$(SRCROOT)/../../../ios/Pods/Headers",
+					"$(SRCROOT)/../../react-native/React/**",
+					"$(SRCROOT)/../../../ios/Pods/Headers/**",
 					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto/VirgilCrypto.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";

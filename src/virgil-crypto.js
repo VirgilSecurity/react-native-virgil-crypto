@@ -165,7 +165,7 @@ export const virgilCrypto = {
     );
   },
 
-  decryptFile({ inputPath, outputPath, privateKey}) {
+  decryptFile({ inputPath, outputPath, privateKey }) {
     if (typeof inputPath !== 'string') {
       throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
     }

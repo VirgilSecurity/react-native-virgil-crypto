@@ -46,7 +46,7 @@ function decryptImage(image, keypair) {
   return virgilCrypto.decryptFile({
     inputPath: image.downloadedFilePath, 
     // This can be a custom path that your application can write to
-    // i.e. RNFetchBlob.fs.dirs.DocumentDir + '/decrypted_downloads/' + image.id + '.jpg';
+    // e.g. RNFetchBlob.fs.dirs.DocumentDir + '/decrypted_downloads/' + image.id + '.jpg';
     // If not specified, a temporary file will be created
     outputPath: undefined,
     privateKey: keypair.privateKey

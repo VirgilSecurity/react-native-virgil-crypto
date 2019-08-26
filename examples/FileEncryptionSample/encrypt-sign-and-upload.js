@@ -16,7 +16,7 @@ function encryptImage(image, keypair) {
   return virgilCrypto.encryptFile({
     inputPath: image.uri, 
     // This can be a custom path that your application can write to
-    // e.g. OR RNFetchBlob.fs.dirs.DocumentDir + '/encrypted_uploads/' + image.fileName,
+    // e.g. RNFetchBlob.fs.dirs.DocumentDir + '/encrypted_uploads/' + image.fileName,
     // If not specified, a temporary file will be created
     outputPath: undefined,
     publicKeys: keypair.publicKey

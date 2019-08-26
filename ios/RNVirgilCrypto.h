@@ -16,6 +16,7 @@
 #import "NSData+Encodings.h"
 #import "NSString+Encodings.h"
 #import "ResponseFactory.h"
+#import "FSUtils.h"
 
 @interface RNVirgilCrypto : NSObject <RCTBridgeModule>
 

@@ -1,6 +1,6 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,12 @@
     "type": "git",
     "url": "https://github.com/VirgilSecurity/react-native-virgil-crypto"
   },
-  "peerDependencies": {
-    "react-native": "0.60.x"
-  },
+  "files": [
+    "android",
+    "ios",
+    "src",
+    "index.js"
+  ],
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "babel-jest": "^24.8.0",

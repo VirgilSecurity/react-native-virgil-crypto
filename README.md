@@ -79,7 +79,102 @@ const decryptedMessage = decryptedData.toString('utf8');
 
 ### File encryption
 
-Coming soon.
+To encrypt a file you will need to know its location in the file system. For images you can use [React Native API](https://facebook.github.io/react-native/docs/cameraroll.html), or a library such as [react-native-image-picker](https://github.com/react-native-community/react-native-image-picker) or [react-native-camera-roll-picker](https://github.com/jeanpan/react-native-camera-roll-picker).
+
+```javascript
+import { virgilCrypto } from 'react-native-virgil-crypto';
+
+const keypair = virgilCrypto.generateKeys();
+
+// this must be defined in your code
+pickAnImage()
+.then(image => {
+  return virgilCrypto.encryptFile({
+    // assuming `image` has a `uri` property that points to its location in file system
+    inputPath: image.uri, 
+    // This can be a custom path that your application can write to
+    // e.g. RNFetchBlob.fs.dirs.DocumentDir + '/encrypted_uploads/' + image.fileName,
+    // If not specified, a temporary file will be created.
+    outputPath: undefined,
+    publicKeys: keypair.publicKey
+  })
+  .then(encryptedFilePath => {
+    // encryptedFilePath is the location of the encrypted file in the file system
+    // the original image file remain intact
+    // you can now upload this file using `fetch` and `FormData`, e.g.:
+    const data = new FormData();
+    data.append('photo', {
+      uri: 'file://' + encryptedFilePath,
+      type: image.type,
+      name: image.fileName
+    });
+
+    return fetch(url, { method: 'POST', body: data });
+  });
+});
+```
+
+Decryption works similarly to encryption - you provide a path to the encrypted file in the file system (network urls are not supported). You can use a library such as [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) or [react-native-fs](https://github.com/itinance/react-native-fs) to download a file directly into file system.
+
+```javascript
+import { virgilCrypto } from 'react-native-virgil-crypto';
+
+const keypair = virgilCrypto.generateKeys();
+
+// this must be defined in your code
+downloadImage()
+.then(downloadedFilePath => {
+  return virgilCrypto.decryptFile({
+    inputPath: downloadedFilePath, 
+    // This can be a custom path that your application can write to
+    // e.g. RNFetchBlob.fs.dirs.DocumentDir + '/decrypted_downloads/' + image.id + '.jpg';
+    // If not specified, a temporary file will be created
+    outputPath: undefined,
+    privateKey: keypair.privateKey
+  })
+  .then(decryptedFilePath => {
+    return <Image src={`file://${decryptedFilePath}`} />
+  });
+});
+```
+
+It is also possible to calculate the digital signature of a file
+
+```javascript
+import { virgilCrypto } from 'react-native-virgil-crypto';
+
+const keypair = virgilCrypto.generateKeys();
+// this must be defined in your code
+pickAnImage()
+.then(image => {
+  return virgilCrypto.generateFileSignature({
+    inputPath: image.uri, 
+    privateKey: keypair.privateKey
+  })
+  .then(signature => ({ ...image, signature: signature.toString('base64') }));
+});
+```
+
+And verify the signature of a file
+
+```javascript
+import { virgilCrypto } from 'react-native-virgil-crypto';
+
+const keypair = virgilCrypto.generateKeys();
+
+// this must be defined in your code
+downloadImage()
+.then(downloadedFilePath => {
+  return virgilCrypto.verifyFileSignature({
+    inputPath: image.downloadedFilePath, 
+    signature: image.signature, 
+    publicKey: keypair.publicKey
+  })
+  .then(isSigantureVerified => ({ ...image, isSigantureVerified }));
+});
+```
+
+See the [sample project](/examples/FileEnryptionSample) for a complete example of working with encrypted files.
 
 ### Working with binary data
 
@@ -112,7 +207,7 @@ VirgilCrypto supports two options for dependency management:
     Add the following line to your `Podfile`:
 
     ```sh
-    pod 'VirgilCrypto', '~> 5.0.0'
+    pod 'VirgilCrypto', '~> 5.1.0'
     ```
 
     Make sure you have `use_frameworks!` there as well. Then run `pod install` from inside the `ios` directory.
@@ -125,10 +220,10 @@ VirgilCrypto supports two options for dependency management:
     With [Carthage](https://github.com/Carthage/Carthage) add the following line to your `Cartfile`:
 
     ```
-    github "VirgilSecurity/virgil-crypto-x" ~> 5.0.0
+    github "VirgilSecurity/virgil-crypto-x" ~> 5.1.0
     ```
 
-    Then run `carthage update --plaform iOS` from inside the `ios` folder.
+    Then run `carthage update --platform iOS` from inside the `ios` folder.
 
     On your application target's “General” settings tab, in the “Linked Frameworks and Libraries” section, add following frameworks from the *Carthage/Build* folder inside your project's folder:
 

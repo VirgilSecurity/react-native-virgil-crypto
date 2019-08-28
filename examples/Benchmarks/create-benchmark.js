@@ -12,7 +12,10 @@ export function createBenchmark() {
 
   addGenerateKeys(suite, KeyPairType.ED25519);
   addGenerateKeys(suite, KeyPairType.CURVE25519);
+  // commented out because there is currently a bug in exporting secp256r1 keys
   // addGenerateKeys(suite, KeyPairType.SECP256R1);
+
+  // commented out because it's too slow
   // addGenerateKeys(suite, KeyPairType.RSA_4096);
 
   addHash(suite, HashAlgorithm.SHA256);
@@ -31,7 +34,7 @@ export function createBenchmark() {
 }
 
 function addGenerateKeys(suite, keyPairType) {
-  suite.add(`generate keys (${keyPairType})`, () => {
+  suite.add(`generateKeys (${keyPairType})`, () => {
     virgilCrypto.generateKeys(keyPairType);
   });
 }

@@ -198,5 +198,39 @@ export const virgilCrypto = {
     const publicKeyValue = checkedGetPublicKeyValue(publicKey);
     const signatureBase64 = anyToBase64(signature, 'base64', 'signature');
     return RNVirgilCrypto.verifyFileSignature(signatureBase64, normalizeFilePath(inputPath), publicKeyValue);
-  }
+  },
+
+  signThenEncryptDetached(data, virgilPrivateKey, virgilPublicKeys) {
+    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
+    const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
+
+    const { encryptedData, metadata } = unwrapResponse(
+      RNVirgilCrypto.signAndEncryptDetached(
+        dataBase64, 
+        privateKeyValue, 
+        publicKeyValues
+      )
+    );
+    return {
+      encryptedData: base64ToBuffer(encryptedData),
+      metadata: base64ToBuffer(metadata)
+    };
+  },
+
+  decryptThenVerifyDetached(encryptedData, metadata, virgilPrivateKey, virgilPublicKeys) {
+    const dataBase64 = anyToBase64(encryptedData, 'base64', 'encryptedData');
+    const metadataBase64 = anyToBase64(metadata, 'base64', 'metadata');
+    const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
+    const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
+
+    return base64ToBuffer(unwrapResponse(
+      RNVirgilCrypto.decryptAndVerifyDetached(
+        dataBase64,
+        metadataBase64,
+        privateKeyValue,
+        publicKeyValues
+      )
+    ));
+  },
 }

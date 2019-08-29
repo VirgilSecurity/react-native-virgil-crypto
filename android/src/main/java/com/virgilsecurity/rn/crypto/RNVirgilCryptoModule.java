@@ -1,7 +1,4 @@
-
 package com.virgilsecurity.rn.crypto;
-
-import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,6 +21,8 @@ import com.facebook.react.bridge.WritableMap;
 
 import com.virgilsecurity.rn.crypto.utils.FS;
 import com.virgilsecurity.rn.crypto.utils.InvalidOutputFilePathException;
+import com.virgilsecurity.crypto.foundation.Aes256Gcm;
+import com.virgilsecurity.crypto.foundation.RecipientCipher;
 import com.virgilsecurity.sdk.crypto.HashAlgorithm;
 import com.virgilsecurity.sdk.crypto.KeyType;
 import com.virgilsecurity.sdk.crypto.VirgilCrypto;
@@ -137,7 +136,6 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   @ReactMethod(isBlockingSynchronousMethod = true)
   public WritableMap generateKeyPairWithTypeAndSeed(String type, String seedBase64) {
     try {
-      Log.d("generate_keys", "with type and seed" + KeyType.valueOf(type).name());
       VirgilKeyPair keypair = this.crypto.generateKeyPair(KeyType.valueOf(type), Encodings.decodeBase64(seedBase64));
       return ResponseFactory.createMapResponse(this.exportAndEncodeKeyPair(keypair));
     }
@@ -200,7 +198,9 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap signAndEncrypt(String dataBase64, String privateKeyBase64, ReadableArray recipientsBase64) {
+  public WritableMap signAndEncrypt(String dataBase64,
+                                    String privateKeyBase64,
+                                    ReadableArray recipientsBase64) {
     try {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
@@ -213,7 +213,9 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod(isBlockingSynchronousMethod = true)
-  public WritableMap decryptAndVerify(String dataBase64, String privateKeyBase64, ReadableArray sendersPublicKeysBase64) {
+  public WritableMap decryptAndVerify(String dataBase64,
+                                      String privateKeyBase64,
+                                      ReadableArray sendersPublicKeysBase64) {
     try {
       VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
       List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(sendersPublicKeysBase64);
@@ -243,8 +245,76 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     return ResponseFactory.createStringResponse(Encodings.encodeBase64(randomData));
   }
 
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap signAndEncryptDetached(String dataBase64,
+                                            String privateKeyBase64,
+                                            ReadableArray recipientsBase64) {
+    try {
+      VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
+      VirgilPrivateKey privateKey = keypair.getPrivateKey();
+      List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
+      byte[] data = Encodings.decodeBase64(dataBase64);
+      byte[] signature = this.crypto.generateSignature(data, privateKey);
+
+      try (
+        Aes256Gcm aesGcm = new Aes256Gcm();
+        RecipientCipher cipher = new RecipientCipher()
+      ) {
+        cipher.setEncryptionCipher(aesGcm);
+        cipher.setRandom(this.crypto.getRng());
+
+        for(VirgilPublicKey publicKey : publicKeys) {
+          cipher.addKeyRecipient(publicKey.getIdentifier(), publicKey.getPublicKey());
+        }
+
+        cipher.customParams().addData(VirgilCrypto.CUSTOM_PARAM_SIGNER_ID, privateKey.getIdentifier());
+        cipher.customParams().addData(VirgilCrypto.CUSTOM_PARAM_SIGNATURE, signature);
+
+        cipher.startEncryption();
+        byte[] meta = cipher.packMessageInfo();
+        byte[] processedData = cipher.processEncryption(data);
+        byte[] finalData = cipher.finishEncryption();
+
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("encryptedData", Encodings.encodeBase64(this.concatByteArrays(processedData, finalData)));
+        responseMap.put("metadata", Encodings.encodeBase64(meta));
+
+        return ResponseFactory.createMapResponse(responseMap);
+      }
+    }
+    catch (CryptoException e) {
+      return ResponseFactory.createErrorResponse(e);
+    }
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap decryptAndVerifyDetached(String dataBase64,
+                                              String metadataBase64,
+                                              String privateKeyBase64,
+                                              ReadableArray sendersPublicKeysBase64) {
+    try {
+      VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
+      List<VirgilPublicKey> publicKeys = this.decodeAndImportPublicKeys(sendersPublicKeysBase64);
+      byte[] data = Encodings.decodeBase64(dataBase64);
+      byte[] meta = Encodings.decodeBase64(metadataBase64);
+
+      byte[] decryptedData = this.crypto.decryptThenVerify(
+              this.concatByteArrays(meta, data),
+              keypair.getPrivateKey(),
+              publicKeys
+      );
+      return ResponseFactory.createStringResponse(Encodings.encodeBase64(decryptedData));
+    }
+    catch (CryptoException e) {
+      return ResponseFactory.createErrorResponse(e);
+    }
+  }
+
   @ReactMethod
-  public void encryptFile(final String inputPath, String outputPath, ReadableArray recipientsBase64, final Promise promise) {
+  public void encryptFile(final String inputPath,
+                          String outputPath,
+                          ReadableArray recipientsBase64,
+                          final Promise promise) {
     final List<VirgilPublicKey> publicKeys;
     try {
       publicKeys = this.decodeAndImportPublicKeys(recipientsBase64);
@@ -292,7 +362,10 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void decryptFile(final String inputPath, String outputPath, String privateKeyBase64, final Promise promise) {
+  public void decryptFile(final String inputPath,
+                          String outputPath,
+                          String privateKeyBase64,
+                          final Promise promise) {
     VirgilKeyPair keypair;
     try {
       keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
@@ -340,7 +413,9 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void generateFileSignature(final String inputPath, String privateKeyBase64, final Promise promise) {
+  public void generateFileSignature(final String inputPath,
+                                    String privateKeyBase64,
+                                    final Promise promise) {
     VirgilKeyPair keypair;
     try {
       keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
@@ -373,7 +448,10 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void verifyFileSignature(String signatureBase64, final String inputPath, String publicKeyBase64, final Promise promise) {
+  public void verifyFileSignature(String signatureBase64,
+                                  final String inputPath,
+                                  String publicKeyBase64,
+                                  final Promise promise) {
     final VirgilPublicKey publicKey;
     try {
       publicKey = this.crypto.importPublicKey(Encodings.decodeBase64(publicKeyBase64));
@@ -421,5 +499,12 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     keypairMap.put("privateKey", Encodings.encodeBase64(privateKeyData));
     keypairMap.put("publicKey", Encodings.encodeBase64(publicKeyData));
     return keypairMap;
+  }
+
+  private byte[] concatByteArrays(byte[] a, byte[] b) {
+    byte[] destination = new byte[a.length + b.length];
+    System.arraycopy(a, 0, destination, 0, a.length);
+    System.arraycopy(b, 0, destination, a.length, b.length);
+    return destination;
   }
 }

@@ -14,7 +14,10 @@ import com.facebook.react.bridge.JavaScriptModule;
 public class RNVirgilCryptoPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-      return Arrays.<NativeModule>asList(new RNVirgilCryptoModule(reactContext));
+      return Arrays.<NativeModule>asList(
+              new RNVirgilCryptoModule(reactContext),
+              new RNVirgilPythiaCryptoModule(reactContext)
+      );
     }
 
     // Deprecated from RN 0.47

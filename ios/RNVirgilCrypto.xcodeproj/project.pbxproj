@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B3E7B58A1CC2AC0600A0062D /* RNVirgilCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */; };
+		DD03E974231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = DD03E973231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m */; };
 		DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */; };
 		DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903622F84B99001DD161 /* NSData+Encodings.m */; };
 		DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903922F84CA4001DD161 /* NSString+Encodings.m */; };
@@ -33,6 +34,8 @@
 		134814201AA4EA6300B7C361 /* libRNVirgilCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVirgilCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E7B5881CC2AC0600A0062D /* RNVirgilCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVirgilCrypto.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVirgilCrypto.m; sourceTree = "<group>"; };
+		DD03E973231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNVirgilBrainKeyCrypto.m; sourceTree = "<group>"; };
+		DD03E985231D12C300E2B1FF /* RNVirgilBrainKeyCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVirgilBrainKeyCrypto.h; sourceTree = "<group>"; };
 		DD3C903222F83282001DD161 /* RCTConvert+HashAlgorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+HashAlgorithm.h"; sourceTree = "<group>"; };
 		DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+HashAlgorithm.m"; sourceTree = "<group>"; };
 		DD3C903522F84B99001DD161 /* NSData+Encodings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Encodings.h"; sourceTree = "<group>"; };
@@ -71,6 +74,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				DD03E985231D12C300E2B1FF /* RNVirgilBrainKeyCrypto.h */,
+				DD03E973231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m */,
 				DDDF207A23070FD500F7C404 /* Constants.h */,
 				DDDF207823070FC200F7C404 /* Constants.m */,
 				DDDF207723070E4A00F7C404 /* FSUtils.h */,
@@ -156,6 +161,7 @@
 				DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */,
 				DDDF207623070E3C00F7C404 /* FSUtils.m in Sources */,
 				DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */,
+				DD03E974231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +275,7 @@
 					"$(SRCROOT)/../../../ios/Carthage/build/iOS",
 					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto",
           "${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation",
+					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -277,6 +284,7 @@
 					"$(SRCROOT)/../../../ios/Pods/Headers/**",
 					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto/VirgilCrypto.framework/Headers",
           "${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation/VirgilCryptoFoundation.framework/Headers",
+					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia/VirgilCryptoPythia.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
@@ -293,6 +301,7 @@
 					"$(SRCROOT)/../../../ios/Carthage/build/iOS",
 					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto",
           "${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation",
+					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -301,6 +310,7 @@
 					"$(SRCROOT)/../../../ios/Pods/Headers/**",
 					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto/VirgilCrypto.framework/Headers",
           "${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation/VirgilCryptoFoundation.framework/Headers",
+					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia/VirgilCryptoPythia.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";

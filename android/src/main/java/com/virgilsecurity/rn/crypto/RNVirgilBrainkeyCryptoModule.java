@@ -15,10 +15,10 @@ import com.virgilsecurity.rn.crypto.utils.ResponseFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RNVirgilBrainkeyCryptoModule extends ReactContextBaseJavaModule {
+public class RNVirgilBrainKeyCryptoModule extends ReactContextBaseJavaModule {
     private final ReactApplicationContext reactContext;
 
-    public RNVirgilBrainkeyCryptoModule(ReactApplicationContext reactContext) {
+    public RNVirgilBrainKeyCryptoModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         Pythia.configure();
@@ -26,7 +26,7 @@ public class RNVirgilBrainkeyCryptoModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "RNVirgilBrainkeyCrypto";
+        return "RNVirgilBrainKeyCrypto";
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)

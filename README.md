@@ -174,7 +174,7 @@ downloadImage()
 });
 ```
 
-See the [sample project](/examples/FileEnryptionSample) for a complete example of working with encrypted files.
+See the [sample project](https://github.com/VirgilSecurity/react-native-virgil-crypto/tree/master/examples/FileEncryptionSample) for a complete example of working with encrypted files.
 
 ### Working with binary data
 
@@ -185,6 +185,10 @@ import { Buffer } from 'react-native-virgil-crypto';
 
 console.log(Buffer.from('hello Buffer').toString('base64')); // prints aGVsbG8gQnVmZmVy
 ```
+
+### Performance
+
+See the [sample project](https://github.com/VirgilSecurity/react-native-virgil-crypto/tree/master/examples/Benchmarks) for a complete example that you can use to measure performance of this library on your own devices.
 
 ## Getting started
 

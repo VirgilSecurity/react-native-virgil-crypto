@@ -16,6 +16,12 @@ Install dependencies:
 yarn install
 ```
 
+Because `react-native-virgil-crypto` is installed from file system, it includes the `node_modules` folder which leads to build errors. Removing the `node_modules` folder from `node_modules/react-native-virgil-crypto` fixes those errors:
+
+```sh
+rm -rf node_modules/react-native-virgil-crypto/node_modules
+```
+
 Start the packager:
 
 ```sh

@@ -38,28 +38,32 @@ RCT_EXPORT_MODULE()
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(blind:(NSString*)passwordBase64)
 {
-    NSError *err;
-    VSCPPythiaBlindResult *blindResult = [VSCPPythia blindWithPassword:[passwordBase64 dataUsingBase64] error:&err];
-    if (nil == blindResult) {
-        return [ResponseFactory fromError:err];
+    @autoreleasepool {
+        NSError *err;
+        VSCPPythiaBlindResult *blindResult = [VSCPPythia blindWithPassword:[passwordBase64 dataUsingBase64] error:&err];
+        if (nil == blindResult) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult:@{ @"blindedPassword": [blindResult.blindedPassword stringUsingBase64],
+                                              @"blindingSecret": [blindResult.blindingSecret stringUsingBase64]
+                                              }];
     }
-    
-    return [ResponseFactory fromResult:@{ @"blindedPassword": [blindResult.blindedPassword stringUsingBase64],
-                                          @"blindingSecret": [blindResult.blindingSecret stringUsingBase64]
-                                          }];
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(deblind:(NSString*)transformedPasswordBase64 blindingSecret:(NSString*)blindingSecretBase64)
 {
-    NSError *err;
-    NSData *deblindResult = [VSCPPythia deblindWithTransformedPassword:[transformedPasswordBase64 dataUsingBase64]
-                                                        blindingSecret:[blindingSecretBase64 dataUsingBase64]
-                                                                 error:&err];
-    if (nil == deblindResult) {
-        return [ResponseFactory fromError:err];
+    @autoreleasepool {
+        NSError *err;
+        NSData *deblindResult = [VSCPPythia deblindWithTransformedPassword:[transformedPasswordBase64 dataUsingBase64]
+                                                            blindingSecret:[blindingSecretBase64 dataUsingBase64]
+                                                                     error:&err];
+        if (nil == deblindResult) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult:[deblindResult stringUsingBase64]];
     }
-    
-    return [ResponseFactory fromResult:[deblindResult stringUsingBase64]];
 }
 
 @end

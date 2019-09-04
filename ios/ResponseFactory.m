@@ -12,16 +12,12 @@
 
 + (id) fromResult:(id)result
 {
-    NSMutableDictionary* response = [NSMutableDictionary dictionaryWithCapacity:1];
-    response[@"result"] = result;
-    return response;
+    return @{ @"result": result };
 }
 
 + (id) fromError:(NSError *)error
 {
-    NSMutableDictionary* response = [NSMutableDictionary dictionaryWithCapacity:1];
-    response[@"error"] = RCTJSErrorFromNSError(error);
-    return response;
+    return @{ @"error": RCTJSErrorFromNSError(error) };
 }
 
 @end

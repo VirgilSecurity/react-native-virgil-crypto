@@ -30,6 +30,8 @@ export function createBenchmark() {
   // addSignatures(suite, KeyPairType.SECP256R1);
   // addSignatures(suite, KeyPairType.RSA_4096);
 
+  addSignThenEncrypt(suite, KeyPairType.ED25519);
+
   return suite;
 }
 
@@ -68,5 +70,18 @@ function addSignatures(suite, keyPairType) {
 
   suite.add(`verifySignature (${keyPairType})`, () => {
     virgilCrypto.verifySignature(oneKbData, signature, keypair.publicKey);
+  });
+}
+
+function addSignThenEncrypt(suite, keyPairType) {
+  const keypair = virgilCrypto.generateKeys();
+  const encryptedData = virgilCrypto.signThenEncrypt(oneKbData, keypair.privateKey, keypair.publicKey);
+
+  suite.add(`signThenEncrypt (${keyPairType})`, () => {
+    virgilCrypto.signThenEncrypt(oneKbData, keypair.privateKey, keypair.publicKey);
+  });
+
+  suite.add(`decryptThenVerify (${keyPairType})`, () => {
+    virgilCrypto.decryptThenVerify(encryptedData, keypair.privateKey, keypair.publicKey);
   });
 }

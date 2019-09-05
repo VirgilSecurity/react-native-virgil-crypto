@@ -8,7 +8,7 @@ import {
   wrapKeyPair 
 } from './utils/keys';
 import { unwrapResponse } from './utils/response';
-import { anyToBase64, base64ToBuffer } from './utils/encoding';
+import { dataToBase64, base64ToBuffer } from './utils/encoding';
 import { checkedGetHashAlgorithm } from './hash-algorithm';
 import { checkedGetKeyPairType } from './key-pair-type';
 
@@ -28,7 +28,7 @@ export const virgilCrypto = {
   },
 
   calculateHash(data, algorithm) {
-    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
     if (algorithm == null) {
       return unwrapResponse(RNVirgilCrypto.computeHash(dataBase64));
     }
@@ -51,7 +51,7 @@ export const virgilCrypto = {
   },
 
   generateKeysFromKeyMaterial(seed, keyPairType) {
-    const seedBase64 = anyToBase64(seed, 'base64', 'seed');
+    const seedBase64 = dataToBase64(seed, 'base64', 'seed');
 
     let keypair;
     if (keyPairType == null) {
@@ -64,7 +64,7 @@ export const virgilCrypto = {
   },
 
   encrypt(data, virgilPublicKeys) {
-    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const publicKeysValues = checkedGetPublicKeyValues(virgilPublicKeys);
     return base64ToBuffer(
       unwrapResponse(RNVirgilCrypto.encrypt(dataBase64, publicKeysValues))
@@ -72,7 +72,7 @@ export const virgilCrypto = {
   },
 
   decrypt(encryptedData, virgilPrivateKey) {
-    const encryptedDataBase64 = anyToBase64(encryptedData, 'base64', 'encryptedData');
+    const encryptedDataBase64 = dataToBase64(encryptedData, 'base64', 'encryptedData');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     return base64ToBuffer(
       unwrapResponse(RNVirgilCrypto.decrypt(encryptedDataBase64, privateKeyValue))
@@ -80,7 +80,7 @@ export const virgilCrypto = {
   },
 
   calculateSignature(data, virgilPrivateKey) {
-    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     return base64ToBuffer(
       unwrapResponse(RNVirgilCrypto.generateSignature(dataBase64, privateKeyValue))
@@ -88,15 +88,15 @@ export const virgilCrypto = {
   },
 
   verifySignature(data, signature, virgilPublicKey) {
-    const dataBase64 = anyToBase64(data, 'utf8', 'data');
-    const signatureBase64 = anyToBase64(signature, 'base64', 'signature');
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
+    const signatureBase64 = dataToBase64(signature, 'base64', 'signature');
     const publicKeyValue = checkedGetPublicKeyValue(virgilPublicKey);
 
     return unwrapResponse(RNVirgilCrypto.verifySignature(signatureBase64, dataBase64, publicKeyValue));
   },
 
   signThenEncrypt(data, virgilPrivateKey, virgilPublicKeys) {
-    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
@@ -110,7 +110,7 @@ export const virgilCrypto = {
   },
 
   decryptThenVerify(encryptedData, virgilPrivateKey, virgilPublicKeys) {
-    const dataBase64 = anyToBase64(encryptedData, 'base64', 'encryptedData');
+    const dataBase64 = dataToBase64(encryptedData, 'base64', 'encryptedData');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
@@ -138,12 +138,12 @@ export const virgilCrypto = {
   },
 
   importPrivateKey(rawPrivateKey) {
-    const privateKeyBase64 = anyToBase64(rawPrivateKey, 'base64', 'rawPrivateKey');
+    const privateKeyBase64 = dataToBase64(rawPrivateKey, 'base64', 'rawPrivateKey');
     return new VirgilPrivateKey(privateKeyBase64);
   },
 
   importPublicKey(rawPublicKey) {
-    const publicKeyBase64 = anyToBase64(rawPublicKey, 'base64', 'rawPublicKey');
+    const publicKeyBase64 = dataToBase64(rawPublicKey, 'base64', 'rawPublicKey');
     return new VirgilPublicKey(publicKeyBase64);
   },
 
@@ -196,12 +196,12 @@ export const virgilCrypto = {
       throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
     }
     const publicKeyValue = checkedGetPublicKeyValue(publicKey);
-    const signatureBase64 = anyToBase64(signature, 'base64', 'signature');
+    const signatureBase64 = dataToBase64(signature, 'base64', 'signature');
     return RNVirgilCrypto.verifyFileSignature(signatureBase64, normalizeFilePath(inputPath), publicKeyValue);
   },
 
   signThenEncryptDetached(data, virgilPrivateKey, virgilPublicKeys) {
-    const dataBase64 = anyToBase64(data, 'utf8', 'data');
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
@@ -219,8 +219,8 @@ export const virgilCrypto = {
   },
 
   decryptThenVerifyDetached(encryptedData, metadata, virgilPrivateKey, virgilPublicKeys) {
-    const dataBase64 = anyToBase64(encryptedData, 'base64', 'encryptedData');
-    const metadataBase64 = anyToBase64(metadata, 'base64', 'metadata');
+    const dataBase64 = dataToBase64(encryptedData, 'base64', 'encryptedData');
+    const metadataBase64 = dataToBase64(metadata, 'base64', 'metadata');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 

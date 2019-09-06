@@ -19,12 +19,6 @@
 #import <React/RCTBridgeModule.h>
 #endif
 
-//#if __has_include(<VirgilCrypto/VirgilCrypto-Swift.h>)
-//#import <VirgilCrypto/VirgilCrypto-Swift.h>
-//#else
-//#import "VirgilCrypto-Swift.h"
-//#endif
-
 #if __has_include(<VirgilCryptoPythia/VirgilCryptoPythia-Swift.h>)
 #import <VirgilCryptoPythia/VirgilCryptoPythia-Swift.h>
 #else

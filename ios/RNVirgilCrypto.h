@@ -5,6 +5,12 @@
 #import <React/RCTBridgeModule.h>
 #endif
 
+#if __has_include(<VirgilCryptoFoundation/VirgilCryptoFoundation-Swift.h>)
+#import <VirgilCryptoFoundation/VirgilCryptoFoundation-Swift.h>
+#else
+#import "VirgilCryptoFoundation-Swift.h"
+#endif
+
 #if __has_include(<VirgilCrypto/VirgilCrypto-Swift.h>)
 #import <VirgilCrypto/VirgilCrypto-Swift.h>
 #else

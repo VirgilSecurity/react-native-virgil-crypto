@@ -300,6 +300,92 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, generateRandomData:(NSInteger)size)
     }
 }
 
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncryptDetached:(NSString*)dataBase64
+                                    with:(NSString*)privateKeyBase64
+                                    for:(NSArray<NSString*>*)recipientsBase64)
+{
+    @autoreleasepool {
+        NSError *err;
+        VSMVirgilKeyPair *keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];
+        if (nil == keypair) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSArray<VSMVirgilPublicKey*> *publicKeys = [self decodeAndImportPublicKeys:recipientsBase64 error:&err];
+        if (nil == publicKeys) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSData* signature = [self.crypto generateSignatureOf:[dataBase64 dataUsingBase64] using:keypair.privateKey error:&err];
+        if (nil == signature) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFAes256Gcm *aesGcm = [VSCFAes256Gcm new];
+        VSCFRecipientCipher *cipher = [VSCFRecipientCipher new];
+        
+        [cipher setEncryptionCipherWithEncryptionCipher:aesGcm];
+        [cipher setRandomWithRandom:self.crypto.rng];
+        
+        for (VSMVirgilPublicKey *publicKey in publicKeys) {
+            [cipher addKeyRecipientWithRecipientId:publicKey.identifier publicKey:publicKey.key];
+        }
+        
+        [[cipher customParams] addDataWithKey:VSMVirgilCrypto.CustomParamKeySignature value:signature];
+        [[cipher customParams] addDataWithKey:VSMVirgilCrypto.CustomParamKeySignerId value:keypair.privateKey.identifier];
+        
+        [cipher startEncryptionAndReturnError:&err];
+        if (err) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSData *meta = [cipher packMessageInfo];
+        NSData *processedData = [cipher processEncryptionWithData:[dataBase64 dataUsingBase64] error:&err];
+        if (nil == processedData) {
+            return [ResponseFactory fromError:err];
+        }
+        NSData *finalData = [cipher finishEncryptionAndReturnError:&err];
+        if (nil == finalData) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSMutableData *encryptedData = [NSMutableData dataWithData:processedData];
+        [encryptedData appendData:finalData];
+        
+        return [ResponseFactory fromResult:@{ @"encryptedData": [encryptedData stringUsingBase64],
+                                              @"metadata": [meta stringUsingBase64] }];
+    }
+}
+
+RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerifyDetached:(NSString*)dataBase64
+                                    withMetadata:(NSString*)metaBase64
+                                    andPrivateKey:(NSString*)privateKeyBase64
+                                    usingOneOf:(NSArray<NSString*>*)sendersPublicKeysBase64)
+{
+    @autoreleasepool {
+        NSError *err;
+        VSMVirgilKeyPair *keypair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&err];
+        if (nil == keypair) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSArray<VSMVirgilPublicKey*> *publicKeys = [self decodeAndImportPublicKeys:sendersPublicKeysBase64 error:&err];
+        if (nil == publicKeys) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSMutableData *combinedData = [NSMutableData dataWithData:[metaBase64 dataUsingBase64]];
+        [combinedData appendData:[dataBase64 dataUsingBase64]];
+        
+        NSData *decryptedData = [self.crypto decryptAndVerify:combinedData with:keypair.privateKey usingOneOf:publicKeys error:&err];
+        if (nil == decryptedData) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
+    }
+}
+
 RCT_EXPORT_METHOD(encryptFile:(NSString*)inputUri
                   toFile:(nullable NSString*)outputUri
                   for:(NSArray<NSString*>*)recipientPublicKeysBase64
@@ -337,9 +423,9 @@ RCT_EXPORT_METHOD(encryptFile:(NSString*)inputUri
         [outStream open];
         
         BOOL isSuccessful = [self.crypto encrypt:inStream
-                          to:outStream
-                         for:publicKeys
-                       error:&encryptErr];
+                                              to:outStream
+                                             for:publicKeys
+                                           error:&encryptErr];
         
         [inStream close];
         [outStream close];
@@ -349,7 +435,7 @@ RCT_EXPORT_METHOD(encryptFile:(NSString*)inputUri
                    @"failed_to_encrypt",
                    [NSString stringWithFormat:@"Could not encrypt file; %@", [encryptErr localizedDescription]],
                    encryptErr
-            );
+                   );
             return;
         }
         
@@ -396,9 +482,9 @@ RCT_EXPORT_METHOD(decryptFile:(NSString*)inputUri
         [outputStream open];
         
         BOOL isSuccessful = [self.crypto decrypt:inputStream
-                                               to:outputStream
-                                             with:privateKey
-                                            error:&decryptErr];
+                                              to:outputStream
+                                            with:privateKey
+                                           error:&decryptErr];
         
         [inputStream close];
         [outputStream close];

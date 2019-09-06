@@ -17,6 +17,10 @@ The results below were obtained by running this project in Release configuration
 |                       | verifySignature | 1kB | 2359 |
 |                       | signThenEncrypt | 1kB | 722 |
 |                       | decryptThenVerify | 1kB | 409 |
+|                       | signThenEncryptDetached | 1kB | 700 |
+|                       | decryptThenVerifyDetached | 1kB | 408 |
+|                       | BrainKeyCrypto.blind | - | 228 |
+|                       | BrainKeyCrypto.deblind | - | 208 |
 | BLU LIFE XL (Android 5.1) | generateKeys (with default alg - Ed25519 ) | - | 320 |
 |                           | calculateHash (SHA256) | 8kB | 92 |
 |                           | calculateHash (SHA512) | 8kB | 92 |
@@ -26,6 +30,10 @@ The results below were obtained by running this project in Release configuration
 |                           | verifySignature | 1kB | 141 |
 |                           | signThenEncrypt | 1kB | 50 |
 |                           | decryptThenVerify | 1kB | 56 |
+|                           | signThenEncryptDetached | 1kB | 48 |
+|                           | decryptThenVerifyDetached | 1kB | 55 |
+|                           | BrainKeyCrypto.blind | - | 22 |
+|                           | BrainKeyCrypto.deblind | - | 20 |
 
 ## Usage
 

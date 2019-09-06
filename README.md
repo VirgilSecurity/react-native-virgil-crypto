@@ -247,8 +247,10 @@ VirgilCrypto supports two options for dependency management:
     ```
     $(SRCROOT)/Carthage/Build/iOS/VirgilCrypto.framework
     $(SRCROOT)/Carthage/Build/iOS/VirgilCryptoFoundation.framework
+    $(SRCROOT)/Carthage/Build/iOS/VirgilCryptoPythia.framework
     $(SRCROOT)/Carthage/Build/iOS/VSCCommon.framework
     $(SRCROOT)/Carthage/Build/iOS/VSCFoundation.framework
+    $(SRCROOT)/Carthage/Build/iOS/VSCPythia.framework
     ```
 
 ### Android Setup

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 global._ = _;
 import _Benchmark from 'benchmark';
-import { virgilCrypto, KeyPairType, HashAlgorithm, Buffer } from 'react-native-virgil-crypto';
+import { virgilCrypto, virgilBrainKeyCrypto, KeyPairType, HashAlgorithm, Buffer } from 'react-native-virgil-crypto';
 
 const Benchmark = _Benchmark.runInContext(global);
 const eightKbData = Buffer.alloc(8192, 'benchmark data', 'utf-8');
@@ -31,6 +31,8 @@ export function createBenchmark() {
   // addSignatures(suite, KeyPairType.RSA_4096);
 
   addSignThenEncrypt(suite, KeyPairType.ED25519);
+  addKeyknoxCrypto(suite, KeyPairType.ED25519);
+  addBrainKeyCrypto(suite);
 
   return suite;
 }
@@ -83,5 +85,37 @@ function addSignThenEncrypt(suite, keyPairType) {
 
   suite.add(`decryptThenVerify (${keyPairType})`, () => {
     virgilCrypto.decryptThenVerify(encryptedData, keypair.privateKey, keypair.publicKey);
+  });
+}
+
+function addKeyknoxCrypto(suite, keyPairType) {
+  const keypair = virgilCrypto.generateKeys();
+  const { encryptedData, metadata } = virgilCrypto.signThenEncryptDetached(oneKbData, keypair.privateKey, keypair.publicKey);
+
+  suite.add(`signThenEncryptDetached (${keyPairType})`, () => {
+    virgilCrypto.signThenEncryptDetached(oneKbData, keypair.privateKey, keypair.publicKey);
+  });
+
+  suite.add(`decryptThenVerifyDetached (${keyPairType})`, () => {
+    virgilCrypto.decryptThenVerifyDetached(encryptedData, metadata, keypair.privateKey, keypair.publicKey);
+  });
+}
+
+function addBrainKeyCrypto(suite) {
+  const password = 'pa$$w0rd';
+  const { blindingSecret } = virgilBrainKeyCrypto.blind(password);
+  const transformedPassword = 'D3mcJ2QaaSqE3bB0gJ+F4ScXBiUt068X6OWE+WrFTsV6T4Gk/Ky9l2lBeDocOjifBxst'+
+  'Xm1bGgxXZqKYZ11vZjRHxCK2+PcjvFNUio2eYDVoyYUorQ4NwiSG+Umj5Lm9A5zcjCIamuAUH9hvj+SkCnaqpRbKyZHq8cT1'+
+  'Hp3Epu3snmVK2OcYl0fgfIWKsXnbD6m2UnLRPe0jrV6oFXW6eh2Bztrb3IxI++w0LmRjF8Px3YEo1AeCquDUs9zkc30hEkIX'+
+  'KbC1vz+sSSidHZJqxEwEpVb/sJeZJyiWxKSdrgaJCI0zJzS/Asx4S2Bbe02bBO3ExqMQHFT3ZcYez6SMGMCZpbES8GhR46bd'+
+  '1wcbnNFZ4+gRH7lUO766xmkfDFL9BcbGtRPbqW8c4Tfc8RXoYS/UJbiC7QbeD4rfKT6ZMYu7FUeaqEHrqT8RXKE3yoMTETgi'+
+  'rJtS58qkpwoVBz7U62plQtXaCPLylpKVtYDuYL+S7AyWtAAykDN3oAOtSxLW';
+
+  suite.add('BrainKeyCrypto.blind', () => {
+    virgilBrainKeyCrypto.blind(password);
+  });
+
+  suite.add('BrainKeyCrypto.deblind', () => {
+    virgilBrainKeyCrypto.deblind({ transformedPassword, blindingSecret });
   });
 }

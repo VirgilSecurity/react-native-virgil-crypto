@@ -34,6 +34,9 @@ export function createBenchmark() {
   addKeyknoxCrypto(suite, KeyPairType.ED25519);
   addBrainKeyCrypto(suite);
 
+  addKeyExtraction(suite, KeyPairType.ED25519);
+  addKeyExtraction(suite, KeyPairType.CURVE25519);
+
   return suite;
 }
 
@@ -117,5 +120,13 @@ function addBrainKeyCrypto(suite) {
 
   suite.add('BrainKeyCrypto.deblind', () => {
     virgilBrainKeyCrypto.deblind({ transformedPassword, blindingSecret });
+  });
+}
+
+function addKeyExtraction(suite, keyPairType) {
+  const keypair = virgilCrypto.generateKeys(keyPairType);
+  
+  suite.add(`extractPublicKey (${keyPairType})`, () => {
+    virgilCrypto.extractPublicKey(keypair.privateKey);
   });
 }

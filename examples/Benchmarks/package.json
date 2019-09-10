@@ -12,7 +12,7 @@
     "lodash": "^4.17.15",
     "react": "16.8.6",
     "react-native": "0.60.5",
-    "react-native-virgil-crypto": "file:../../"
+    "react-native-virgil-crypto": "../../"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

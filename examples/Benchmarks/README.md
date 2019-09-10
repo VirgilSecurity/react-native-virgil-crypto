@@ -19,6 +19,7 @@ The results below were obtained by running this project in Release configuration
 |                       | decryptThenVerify | 1kB | 409 |
 |                       | signThenEncryptDetached | 1kB | 700 |
 |                       | decryptThenVerifyDetached | 1kB | 408 |
+|                       | extractPublicKey | - | 8216 |
 |                       | BrainKeyCrypto.blind | - | 228 |
 |                       | BrainKeyCrypto.deblind | - | 208 |
 | BLU LIFE XL (Android 5.1) | generateKeys (with default alg - Ed25519 ) | - | 320 |
@@ -32,6 +33,7 @@ The results below were obtained by running this project in Release configuration
 |                           | decryptThenVerify | 1kB | 56 |
 |                           | signThenEncryptDetached | 1kB | 48 |
 |                           | decryptThenVerifyDetached | 1kB | 55 |
+|                           | extractPublicKey | - | 298 |
 |                           | BrainKeyCrypto.blind | - | 22 |
 |                           | BrainKeyCrypto.deblind | - | 20 |
 
@@ -43,10 +45,11 @@ Install dependencies:
 yarn install
 ```
 
-Because `react-native-virgil-crypto` is installed from file system, it includes the `node_modules` folder which leads to build errors. Removing the `node_modules` folder from `node_modules/react-native-virgil-crypto` fixes those errors:
+Because `react-native-virgil-crypto` is installed from file system, it includes the `node_modules` and `examples` folders which leads to build errors. Removing those folders from `node_modules/react-native-virgil-crypto` fixes those errors:
 
 ```sh
 rm -rf node_modules/react-native-virgil-crypto/node_modules
+rm -rf node_modules/react-native-virgil-crypto/examples
 ```
 
 Start the packager:

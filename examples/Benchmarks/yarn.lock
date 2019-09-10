@@ -988,6 +988,11 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.3.tgz#bdfd69d61e464dcc81b25159c270d75a73c1a636"
   integrity sha512-Il2DtDVRGDcqjDtE+rF8iqg1CArehSK84HZJCT7AMITlyXRBpuPhqGLDQMowraqqu1coEaimg4ZOqggt6L6L+A==
 
+"@types/node@^12.7.2":
+  version "12.7.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.4.tgz#64db61e0359eb5a8d99b55e05c729f130a678b04"
+  integrity sha512-W0+n1Y+gK/8G2P/piTkBBN38Qc5Q1ZSO6B5H3QmPCUewaiXOo2GCAWZ4ElZCcNhjJuBSUSLGFUJnmlCn5+nxOQ==
+
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
@@ -1042,6 +1047,13 @@
   dependencies:
     lodash.unescape "4.0.1"
     semver "5.5.0"
+
+"@virgilsecurity/crypto-types@^0.1.3":
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-0.1.3.tgz#cf8a25734101b7b1d19521613c8969a5c5862c94"
+  integrity sha512-56Tv111NCPAcY0FkQNZpkpaTqOg4Vx+SJKkApDXUhuK4uLaGpkUIWqhfTW3PbAS/6rH0iGnNGQmCV9ho9RwUIA==
+  dependencies:
+    "@types/node" "^12.7.2"
 
 abab@^2.0.0:
   version "2.0.0"
@@ -5183,9 +5195,10 @@ react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
   integrity sha512-tJBzzzIgnnRfEm046qRcURvwQnZVXmuCbscxUO5RWrGTXpon2d4c8mI0D8WE6ydVIm29JiLB6+RslkIvym9Rjw==
 
-"react-native-virgil-crypto@file:../..":
-  version "0.2.0"
+react-native-virgil-crypto@../../:
+  version "0.3.0"
   dependencies:
+    "@virgilsecurity/crypto-types" "^0.1.3"
     buffer "^5.2.1"
 
 react-native@0.60.5:

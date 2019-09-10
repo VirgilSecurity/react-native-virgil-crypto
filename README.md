@@ -205,13 +205,14 @@ VirgilCrypto supports two options for dependency management:
     **RN<0.60**
 
     ```sh
-    react-native link react-native-app-auth
+    react-native link react-native-virgil-crypto
     ```
 
-    Add the following line to your `Podfile`:
+    Add the following lines to your `Podfile`:
 
     ```sh
     pod 'VirgilCrypto', '~> 5.1.0'
+    pod 'VirgilCryptoPythia', '~> 0.10.0'
     ```
 
     Make sure you have `use_frameworks!` there as well. Then run `pod install` from inside the `ios` directory.
@@ -260,7 +261,7 @@ VirgilCrypto supports two options for dependency management:
 **RN<0.60**
 
 ```sh
-react-native link react-native-app-auth
+react-native link react-native-virgil-crypto
 ```
 
 With React Native 0.60 and later, linking is done automatically.

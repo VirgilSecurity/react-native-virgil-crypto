@@ -190,6 +190,41 @@ console.log(Buffer.from('hello Buffer').toString('base64')); // prints aGVsbG8gQ
 
 See the [sample project](https://github.com/VirgilSecurity/react-native-virgil-crypto/tree/master/examples/Benchmarks) for a complete example that you can use to measure performance of this library on your own devices.
 
+### Usage with `virgil-sdk`
+
+If you want this package to work with `virgil-sdk`, you'll need:
+  1. Update the `virgil-sdk` to version 6.0.0, which is currently a pre-release. You can install it with `npm install virgil-sdk@next`.
+  2. Install one more package - `npm install @virgilsecurity/sdk-crypto`
+  3. Update the `@virgilsecurity/key-storage-rn` to the latest version, which is also currently in pre-release - `npm install @virgilsecurity/key-storage-rn@next`
+  4. Install the `react-native-keychain` package, a dependency of `@virgilsecurity/key-storage-rn`
+
+Here's an example of initialization:
+
+```js
+import { virgilCrypto } from 'react-native-virgil-crypto';
+import createNativeKeyEntryStorage from '@virgilsecurity/key-storage-rn/native';
+import { VirgilCardCrypto, VirgilPrivateKeyExporter } from '@virgilsecurity/sdk-crypto';
+import { CachingJwtProvider, CardManager, VirgilCardVerifier, PrivateKeyStorage } from 'virgil-sdk';
+
+const jwtProvider = new CachingJwtProvider(getTokenFunctionDefinedInYourCode);
+const cardCrypto = new VirgilCardCrypto(virgilCrypto);
+const cardVerifier = new VirgilCardVerifier(cardCrypto);
+const cardManager = new CardManager({
+  cardCrypto,
+  cardVerifier,
+  accessTokenProvider: jwtProvider,
+  retryOnUnauthorized: true,
+});
+
+const privateKeyStroage = new PrivateKeyStorage(
+  new VirgilPrivateKeyExporter(virgilCrypto),
+  createNativeKeyEntryStorage({ username: nameOfTheStorageChosenByYou });
+);
+
+// use `cardManager` to work with cards
+// use `privateKeyStorage` to save and retrieve private keys to\from local storage
+```
+
 ## Getting started
 
 `$ npm install react-native-virgil-crypto --save`

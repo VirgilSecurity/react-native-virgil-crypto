@@ -37,6 +37,8 @@ export function createBenchmark() {
   addKeyExtraction(suite, KeyPairType.ED25519);
   addKeyExtraction(suite, KeyPairType.CURVE25519);
 
+  addGroupEncryption(suite);
+
   return suite;
 }
 
@@ -128,5 +130,32 @@ function addKeyExtraction(suite, keyPairType) {
   
   suite.add(`extractPublicKey (${keyPairType})`, () => {
     virgilCrypto.extractPublicKey(keypair.privateKey);
+  });
+}
+
+function addGroupEncryption(suite) {
+  const keypair = virgilCrypto.generateKeys();
+  const groupId = virgilCrypto.getRandomBytes(16);
+  const groupSession = virgilCrypto.generateGroupSession(groupId);
+  const numberOfEpochs = 5;
+  for (let i = 0; i < numberOfEpochs; i++) {
+    groupSession.addNewEpoch();
+  }
+  const encryptedData = groupSession.encrypt(oneKbData, keypair.privateKey);
+
+  suite.add('generateGroupSession', () => {
+    virgilCrypto.generateGroupSession(groupId);
+  });
+
+  suite.add('importGroupSession', () => {
+    virgilCrypto.importGroupSession(groupSession.export());
+  });
+
+  suite.add('groupSession#encrypt', () => {
+    groupSession.encrypt(oneKbData, keypair.privateKey);
+  });
+
+  suite.add('groupSession#decrypt', () => {
+    groupSession.decrypt(encryptedData, keypair.publicKey);
   });
 }

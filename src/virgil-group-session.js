@@ -8,10 +8,11 @@ const { RNVirgilGroupSession } = NativeModules;
 export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochMessages }) {
   let actualEpochNumber = currentEpochNumber;
   const actualEpochMessages = epochMessages.slice();
+  const actualSessionId = base64ToBuffer(sessionId).toString('hex');
 
   return {
     getSessionId() {
-      return sessionId;
+      return actualSessionId;
     },
 
     getCurrentEpochNumber() {
@@ -43,7 +44,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       actualEpochMessages.push(data);
 
       return {
-        sessionId,
+        sessionId: base64ToBuffer(sessionId).toString('hex'),
         epochNumber,
         data: base64ToBuffer(data)
       };
@@ -61,7 +62,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       );
 
       return {
-        sessionId,
+        sessionId: base64ToBuffer(sessionId).toString('hex'),
         epochNumber,
         data: base64ToBuffer(data)
       };

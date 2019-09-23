@@ -22,6 +22,10 @@ The results below were obtained by running this project in Release configuration
 |                       | extractPublicKey | - | 8216 |
 |                       | BrainKeyCrypto.blind | - | 228 |
 |                       | BrainKeyCrypto.deblind | - | 208 |
+|                       | generateGroupSession | - | 8587 |
+|                       | importGroupSession (50 epochs) | - | 243 |
+|                       | groupSession.encrypt (50 epochs) | 1kB | 607 |
+|                       | groupSession.decrypt (50 epochs) | 1kB | 647 |
 | BLU LIFE XL (Android 5.1) | generateKeys (with default alg - Ed25519 ) | - | 320 |
 |                           | calculateHash (SHA256) | 8kB | 92 |
 |                           | calculateHash (SHA512) | 8kB | 92 |
@@ -36,6 +40,10 @@ The results below were obtained by running this project in Release configuration
 |                           | extractPublicKey | - | 298 |
 |                           | BrainKeyCrypto.blind | - | 22 |
 |                           | BrainKeyCrypto.deblind | - | 20 |
+|                           | generateGroupSession | - | 712 |
+|                           | importGroupSession (50 epochs) | - | 27 |
+|                           | groupSession.encrypt (50 epochs) | 1kB | 53 |
+|                           | groupSession.decrypt (50 epochs) | 1kB | 59 |
 
 ## Usage
 

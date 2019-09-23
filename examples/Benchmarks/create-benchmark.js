@@ -137,7 +137,7 @@ function addGroupEncryption(suite) {
   const keypair = virgilCrypto.generateKeys();
   const groupId = virgilCrypto.getRandomBytes(16);
   const groupSession = virgilCrypto.generateGroupSession(groupId);
-  const numberOfEpochs = 5;
+  const numberOfEpochs = 50;
   for (let i = 0; i < numberOfEpochs; i++) {
     groupSession.addNewEpoch();
   }
@@ -151,11 +151,11 @@ function addGroupEncryption(suite) {
     virgilCrypto.importGroupSession(groupSession.export());
   });
 
-  suite.add('groupSession#encrypt', () => {
+  suite.add('groupSession.encrypt', () => {
     groupSession.encrypt(oneKbData, keypair.privateKey);
   });
 
-  suite.add('groupSession#decrypt', () => {
+  suite.add('groupSession.decrypt', () => {
     groupSession.decrypt(encryptedData, keypair.publicKey);
   });
 }

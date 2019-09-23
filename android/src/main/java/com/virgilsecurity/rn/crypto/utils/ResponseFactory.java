@@ -5,9 +5,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
-import java.util.Map;
-import java.util.Iterator;
-
 public final class ResponseFactory {
     private static final int ERROR_STACK_FRAME_LIMIT = 50;
     private static final String ERROR_DEFAULT_CODE = "EUNSPECIFIED";
@@ -24,23 +21,6 @@ public final class ResponseFactory {
     private static final String STACK_FRAME_KEY_FILE = "file";
     private static final String STACK_FRAME_KEY_LINE_NUMBER = "lineNumber";
     private static final String STACK_FRAME_KEY_METHOD_NAME = "methodName";
-
-
-    private static final WritableMap createParametersMap(Map<String, String> params) {
-        WritableMap paramsMap = Arguments.createMap();
-
-        if (!params.isEmpty()) {
-
-            Iterator<String> iterator = params.keySet().iterator();
-
-            while(iterator.hasNext()) {
-                String key = iterator.next();
-                paramsMap.putString(key, params.get(key));
-            }
-        }
-
-        return paramsMap;
-    }
 
     private static final WritableMap createErrorInfoMap(Throwable throwable) {
         WritableNativeMap errorInfo = new WritableNativeMap();
@@ -82,9 +62,9 @@ public final class ResponseFactory {
         return response;
     }
 
-    public static final WritableMap createMapResponse(Map<String, String> params) {
+    public static final WritableMap createMapResponse(WritableMap params) {
         WritableMap response = Arguments.createMap();
-        response.putMap("result", createParametersMap(params));
+        response.putMap("result", params);
         return response;
     }
 

@@ -16,7 +16,8 @@ public class RNVirgilCryptoPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       return Arrays.<NativeModule>asList(
               new RNVirgilCryptoModule(reactContext),
-              new RNVirgilBrainKeyCryptoModule(reactContext)
+              new RNVirgilBrainKeyCryptoModule(reactContext),
+              new RNVirgilGroupSessionModule(reactContext)
       );
     }
 

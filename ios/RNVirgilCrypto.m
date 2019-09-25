@@ -439,7 +439,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(importGroupSession:(NSArray<NSString*>*) 
         NSData *sessionId = [session getSessionId];
         NSNumber *epochNumber = @([session getCurrentEpoch]);
         
-        return [ResponseFactory fromResult:@{ @"sessionId": sessionId,
+        return [ResponseFactory fromResult:@{ @"sessionId": [sessionId stringUsingBase64],
                                               @"currentEpochNumber": epochNumber,
                                               @"epochMessages": sortedSerializedEpochMessages }];
     }

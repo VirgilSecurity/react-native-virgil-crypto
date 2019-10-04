@@ -5,7 +5,7 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "jest src",
+    "test": "jest index.spec.js src",
     "lint": "eslint ."
   },
   "keywords": [

@@ -32,13 +32,16 @@ export const virgilCrypto = {
 
   calculateHash(data, algorithm) {
     const dataBase64 = dataToBase64(data, 'utf8', 'data');
+    let response;
     if (algorithm == null) {
-      return unwrapResponse(RNVirgilCrypto.computeHash(dataBase64));
+      response = RNVirgilCrypto.computeHash(dataBase64);
+    } else {
+      const nativeAlg = checkedGetHashAlgorithm(algorithm);
+      response = RNVirgilCrypto.computeHashWithAlgorithm(dataBase64, nativeAlg);
     }
-
-    const nativeAlg = checkedGetHashAlgorithm(algorithm);
+    
     return base64ToBuffer(
-      unwrapResponse(RNVirgilCrypto.computeHashWithAlgorithm(dataBase64, nativeAlg))
+      unwrapResponse(response)
     );
   },
 

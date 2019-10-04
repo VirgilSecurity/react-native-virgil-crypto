@@ -1001,10 +1001,10 @@
     lodash.unescape "4.0.1"
     semver "5.5.0"
 
-"@virgilsecurity/crypto-types@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-0.1.4.tgz#4ee61c8280e6defada94c52ba44c61d7ff12da12"
-  integrity sha512-mqDsJgXLPGWMaglEWnz2dH8WePCwvtQx5TRNAu5S8sespFp44CJV/iozygUKvBdmnJ4Fw2IkjQ/At7v7aKlxdQ==
+"@virgilsecurity/crypto-types@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-0.2.0.tgz#27040fbda702389bfc8396aa663f91dadf8605ec"
+  integrity sha512-17kDAM/rMrfB5uHuK1k+2ExIulRnnsyx8PL//FcTmT/xm8KNd+/7C2JztIJ1xdpIh8sgjrgnjZ+rVHcNaM54hQ==
   dependencies:
     "@types/node" "^12.7.2"
 

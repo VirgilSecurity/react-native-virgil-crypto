@@ -40,7 +40,7 @@
     "react-native": "^0.60.4"
   },
   "dependencies": {
-    "@virgilsecurity/crypto-types": "^0.1.4",
+    "@virgilsecurity/crypto-types": "^0.2.0",
     "buffer": "^5.2.1"
   }
 }

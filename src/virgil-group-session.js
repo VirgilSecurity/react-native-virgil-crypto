@@ -46,7 +46,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       return {
         sessionId: base64ToBuffer(sessionId).toString('hex'),
         epochNumber,
-        data: base64ToBuffer(data)
+        data: data
       };
     },
 
@@ -64,7 +64,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       return {
         sessionId: base64ToBuffer(sessionId).toString('hex'),
         epochNumber,
-        data: base64ToBuffer(data)
+        data: data
       };
     }
   };

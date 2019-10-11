@@ -35,8 +35,7 @@
     "ios",
     "src",
     "index.js",
-    "index.d.ts",
-    "react-native-virgil-crypto.podspec"
+    "index.d.ts"
   ],
   "devDependencies": {
     "@babel/core": "^7.5.5",

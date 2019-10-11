@@ -204,4 +204,23 @@ module.exports = {
     );
     expect(decrypted.equals(data)).to.be.true;
   },
+
+  'brainKey - blind returns `blindedPassword` and `blindingSecret`': ({ virgilBrainKeyCrypto, Buffer }) => {
+    const result = virgilBrainKeyCrypto.blind('password');
+    expect(Object.keys(result)).to.have.length(2);
+    expect(result.blindedPassword).to.be.instanceOf(Buffer);
+    expect(result.blindingSecret).to.be.instanceOf(Buffer);
+  },
+
+  'brainKey - deblind produces correct deblinded password': ({ virgilBrainKeyCrypto, Buffer }) => {
+    const blindingSecret = 'ASCgLTvcpI1qGGLzkPf/Aq7OGuPkDCtIt7AFqR0ihfWx';
+    const transformedPassword = 'CrgNKSe3uxubXrKRGjSI9DcPSmi6qluyE9Qbd104ZzWNS7v2/sEWnXQh7ePBZ/apBGQ+PW8C8VDbcixj78hGMVsWy4cIe3qk5Mqs6U8TfLqVtk1weap9k5ntT6AFi6J7D+gp+lGvoxBeRvKQuk6xDtd5wmUPcF9O1Jzi2rpArfggyM57oT5xnWHObuf7APBxAu3XGv3L0Oc84qGq1pjS6EmYDPYBHJQfPwDSvZCHdilCZOSAy/RCzitKwwgA+JCZFerdEM1e1SGjLAJ9Bh3B4p5URCzqRLuA9csoyVSkJy0Os34HqnvrVtAO2isr8QUbA8h9ZdSL85z6wGgBUhyk663Z5HEdBgyx/rzoE1K0eNxDTnUXFUDOhtqjuEQCQnK3BzoMDYPbXn4MkC1C8e2TGkKPTViLpbo6cI1TmlzkIp/Db/egmgeGA9Ev2SWcRUCeFbefaIy4n6O+tCtdDo9+DYKCGb7F6zdxoJUjUSv0KPo9NI21bXsH0YK4jDQ/JGn5';
+    const expectedDeblindedPassword = 'EycyOOMRkmL4bTITuOtrmcCT70hzffz66WIQ9zUOCWy8fmuZLk5vcFrD8KkV0WIsFkRZZAjj0WEm3fqc5ZTp82GyHvnIIwnlcUwJvNf37FwmZlkRNMZF1F7YyXA+cY7gBf5Ll/xA9ptCRyiDHQqInNOb4EaD3TgNqg32fDgnnjuf4y9sQHgDEfLfu26J/JDvFfsseVjjhxgtx+9X9xb90VKlisHT8NGb+i94kCQzOXbGn76eJLWNbNj6ScX01kKwD445DBmfN/ezEldY7yhK4Q/Zwtp+ooBVC6zNVdrdcIc6BjvPycrJB5BCr4ilQ6bMCarta6SVTW7ozMbhFFlEMoJmYWzQD4phbw555S3dLvlwyLqPj/zjVQXcZDyOK25DChR0ptBDpNr5tir4fB1FyplNI/kI94mKP0TKe7ZCEiCHyoGTCLPYr60Xyh9hSOh1CHAzbKaOt4PImw3J2SOS9FPGUOnwkjK5/P/RwsrSSxTStJUrf1RVIpXODoVJlpE8';
+    const actual = virgilBrainKeyCrypto.deblind({
+      transformedPassword,
+      blindingSecret
+    });
+    expect(actual).to.be.instanceOf(Buffer);
+    expect(actual.toString('base64')).to.eq(expectedDeblindedPassword);
+  },
 };

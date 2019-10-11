@@ -113,7 +113,7 @@ module.exports = {
     expect(isValid).to.be.true;
   },
 
-  'STE-DTV: decrypts and verifies': ({ virgilCrypto }, expect) => {
+  'auth encryption - decrypts and verifies': ({ virgilCrypto }, expect) => {
     const senderKeyPair = virgilCrypto.generateKeys();
     const recipientKeyPair = virgilCrypto.generateKeys();
     const message = 'Secret message';
@@ -130,7 +130,7 @@ module.exports = {
     expect(decryptedMessage.toString()).to.equal(message);
   },
 
-  'STE-DTV: decrypts and verifies given the right keys': ({ virgilCrypto, Buffer }, expect) => {
+  'auth encryption - decrypts and verifies given the right keys': ({ virgilCrypto, Buffer }, expect) => {
     const data = Buffer.from('Secret message');
     const senderKeyPair = virgilCrypto.generateKeys();
     const recipientKeyPair = virgilCrypto.generateKeys();
@@ -149,7 +149,7 @@ module.exports = {
     expect(decryptedData.equals(data)).to.be.true;
   },
 
-  'STE-DTV: fails verification given the wrong keys': ({ virgilCrypto, Buffer }, expect) => {
+  'auth encryption - fails verification given the wrong keys': ({ virgilCrypto, Buffer }, expect) => {
     const data = Buffer.from('Secret message');
     const senderKeyPair = virgilCrypto.generateKeys();
     const recipientKeyPair = virgilCrypto.generateKeys();

@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import * as rnvcModule from 'react-native-virgil-crypto';
 import { expect } from 'chai';
 import testCases from './e2e/test-cases';
@@ -19,7 +19,7 @@ function evalTest(body) {
     console.log(err.message);
     return err.message;
   }
-  return 'success';
+  return 'ok';
 }
 
 class App extends Component {
@@ -40,17 +40,18 @@ class App extends Component {
   }
 
   render() {
-
     return (
       <ScrollView>
-      <View style={[styles.container, styles.horizontal]}>
-        {Object.keys(this.state).map(testCaseName => (
-          <View key={testCaseName}>
-            <Button style={styles.item} testID={testCaseName} onPress={() => this.runTest(testCaseName)} title={testCaseName} />
-            {this.state[testCaseName].result && <Text style={styles.item} testID={`${testCaseName}Result`}>{this.state[testCaseName].result}</Text>}
-          </View>
-        ))}
-      </View>
+        <View style={[styles.container, styles.horizontal]}>
+          {Object.keys(this.state).map(testCaseName => (
+            <View key={testCaseName} style={styles.case}>
+              <TouchableOpacity testID={testCaseName} onPress={() => this.runTest(testCaseName)}>
+                <Text style={styles.item}>{testCaseName}</Text>
+              </TouchableOpacity>
+              {this.state[testCaseName].result && <Text style={[styles.item, styles.result]} testID={`${testCaseName}Result`}>{this.state[testCaseName].result}</Text>}
+            </View>
+          ))}
+        </View>
       </ScrollView>
     );
   }
@@ -59,14 +60,14 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 100
+    marginTop: 60
   },
   horizontal: {
-    flexDirection: 'column-reverse',
+    flexDirection: 'column',
     padding: 10,
   },
   item: {
-    marginBottom: 10,
+    fontSize: 12,
   },
   module: {
     fontSize: 20,
@@ -75,6 +76,14 @@ const styles = StyleSheet.create({
   group: {
     fontSize: 16,
     color: 'grey',
+  },
+  case: {
+    flex: 1,
+    flexDirection: 'row',
+    marginBottom: 8,
+  },
+  result: {
+    marginLeft: 10
   }
 });
 

@@ -10,7 +10,9 @@
     "tests:ios:pod:install": "cd E2ETests && cd ios && pod install && cd ..",
     "tests:packager": "cd E2ETests && node_modules/.bin/react-native start",
     "tests:ios:build": "cd E2ETests && ./node_modules/.bin/detox build --configuration ios.sim.debug",
-    "tests:ios:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration ios.sim.debug --loglevel warn"
+    "tests:ios:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration ios.sim.debug --loglevel warn",
+    "tests:android:build": "cd E2ETests && ./node_modules/.bin/detox build --configuration android.emu.debug",
+    "tests:android:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration android.emu.debug"
   },
   "keywords": [
     "react-native",

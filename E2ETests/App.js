@@ -9,12 +9,11 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import * as rnvcModule from 'react-native-virgil-crypto';
-import { expect } from 'chai';
 import testCases from './e2e/test-cases';
 
 function evalTest(body) {
   try {
-    Function('module', 'expect', `"use strict"; (${body})(module, expect);`)(rnvcModule, expect);
+    body(rnvcModule);
   } catch (err) {
     console.log(err.message);
     return err.message;

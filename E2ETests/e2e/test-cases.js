@@ -1,19 +1,32 @@
+/**
+ * These tests are run in the context of the React Native app (see App.js) 
+ * and NOT by mocha as normal tests would. Therefore you cannot use `describe` 
+ * or `it` here and, most importantly, you CANNOT require `react-native-virgil-crypto`. 
+ * You can only "require" things that work in both React Native and Node, like `chai`.
+ * 
+ * When the E2ETests app runs, it will call these functions passing the result of 
+ * `import * as module form 'react-native-virgil-crypto'`
+ * 
+ * TODO: allow grouping of tests
+ */
+
+ const { expect } = require('chai');
+
 module.exports = {
-  'generates key pair': ({ virgilCrypto }, expect) => {
+  'generates key pair': ({ virgilCrypto }) => {
     const keyPair = virgilCrypto.generateKeys();
     expect(keyPair.privateKey).to.be.ok;
     expect(keyPair.publicKey).to.be.ok;
   },
 
-  'generates key pair from seed': ({ virgilCrypto },
-     expect) => {
+  'generates key pair from seed': ({ virgilCrypto }) => {
     const seed = virgilCrypto.getRandomBytes(32);
     const keyPair = virgilCrypto.generateKeysFromKeyMaterial(seed);
     expect(keyPair.privateKey).to.be.ok;
     expect(keyPair.publicKey).to.be.ok;
   },
 
-  'returns same keys from the same seed': ({ virgilCrypto }, expect) => {
+  'returns same keys from the same seed': ({ virgilCrypto }) => {
     const seed = virgilCrypto.getRandomBytes(32);
     const keyPair1 = virgilCrypto.generateKeysFromKeyMaterial(seed);
     const keyPair2 = virgilCrypto.generateKeysFromKeyMaterial(seed);
@@ -22,7 +35,7 @@ module.exports = {
     expect(privateKey1.equals(privateKey2)).to.be.true;
   },
 
-  'returns different keys from different seeds': ({ virgilCrypto }, expect) => {
+  'returns different keys from different seeds': ({ virgilCrypto }) => {
     const seed1 = virgilCrypto.getRandomBytes(32);
     const seed2 = virgilCrypto.getRandomBytes(32);
     const keyPair1 = virgilCrypto.generateKeysFromKeyMaterial(seed1);
@@ -32,7 +45,7 @@ module.exports = {
     expect(privateKey1.equals(privateKey2)).to.be.false;
   },
 
-  'importPrivateKey -> exportPrivateKey': ({ virgilCrypto }, expect) => {
+  'importPrivateKey -> exportPrivateKey': ({ virgilCrypto }) => {
     const privateKeyHex =
       '302e020100300506032b6570042204204ac70df9ed0d8e54c7537181097f53f30e171474d2322c3f91438d1bbef75e73';
     const privateKey = virgilCrypto.importPrivateKey({ value: privateKeyHex, encoding: 'hex' });
@@ -40,7 +53,7 @@ module.exports = {
     expect(exportedKey.toString('hex')).to.equal(privateKeyHex);
   },
 
-  'importPublicKey -> exportPublicKey': ({ virgilCrypto }, expect) => {
+  'importPublicKey -> exportPublicKey': ({ virgilCrypto }) => {
     const publicKeyHex =
       '302a300506032b65700321005da627bebb5f5edc843b649a60d2db9886c0ede6a1f24289aed4f13e59935539';
     const publicKey = virgilCrypto.importPublicKey({ value: publicKeyHex, encoding: 'hex' });
@@ -48,7 +61,7 @@ module.exports = {
     expect(exportedKey.toString('hex')).to.equal(publicKeyHex);
   },
   
-  'encrypt -> decrypt': ({ virgilCrypto }, expect) => {
+  'encrypt -> decrypt': ({ virgilCrypto }) => {
     const data = 'data';
     const keyPair = virgilCrypto.generateKeys();
     const cipherData = virgilCrypto.encrypt({ value: data, encoding: 'utf8' }, keyPair.publicKey);
@@ -56,14 +69,14 @@ module.exports = {
     expect(decryptedData.toString()).to.equal(data);
   },
 
-  'throws if `encrypt` is called with an empty array of recipients': ({ virgilCrypto }, expect) => {
+  'throws if `encrypt` is called with an empty array of recipients': ({ virgilCrypto }) => {
     const error = () => {
       virgilCrypto.encrypt({ value: 'secret message', encoding: 'utf8' }, []);
     };
     expect(error).to.throw;
   },
 
-  'produces correct hash': ({ virgilCrypto, Buffer }, expect) => {
+  'produces correct hash': ({ virgilCrypto, Buffer }) => {
     const hash = virgilCrypto.calculateHash({ value: 'data', encoding: 'utf8' });
     const expectedHash = Buffer.from(
       '77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876',
@@ -72,13 +85,13 @@ module.exports = {
     expect(hash.equals(expectedHash)).to.be.true;
   },
 
-  'produces the same hash for the same data': ({ virgilCrypto }, expect) => {
+  'produces the same hash for the same data': ({ virgilCrypto }) => {
     const hash1 = virgilCrypto.calculateHash({ value: 'data', encoding: 'utf8' });
     const hash2 = virgilCrypto.calculateHash({ value: 'data', encoding: 'utf8' });
     expect(hash1.equals(hash2)).to.be.true;
   },
 
-  'produces different hash for different algorithms': ({ virgilCrypto, HashAlgorithm }, expect) => {
+  'produces different hash for different algorithms': ({ virgilCrypto, HashAlgorithm }) => {
     const hash1 = virgilCrypto.calculateHash(
       { value: 'data', encoding: 'utf8' },
       HashAlgorithm.SHA256,
@@ -90,7 +103,7 @@ module.exports = {
     expect(hash1.equals(hash2)).to.be.false;
   },
 
-  'extractPublicKey': ({ virgilCrypto }, expect) => {
+  'extractPublicKey': ({ virgilCrypto }) => {
     const keyPair = virgilCrypto.generateKeys();
     const publicKey = virgilCrypto.extractPublicKey(keyPair.privateKey);
     const key1 = virgilCrypto.exportPublicKey(keyPair.publicKey);
@@ -98,7 +111,7 @@ module.exports = {
     expect(key1.equals(key2)).to.be.true;
   },
 
-  'calculateSignature -> verifySignature': ({ virgilCrypto }, expect) => {
+  'calculateSignature -> verifySignature': ({ virgilCrypto }) => {
     const data = 'data';
     const keyPair = virgilCrypto.generateKeys();
     const signature = virgilCrypto.calculateSignature(
@@ -113,7 +126,7 @@ module.exports = {
     expect(isValid).to.be.true;
   },
 
-  'auth encryption - decrypts and verifies': ({ virgilCrypto }, expect) => {
+  'auth encryption - decrypts and verifies': ({ virgilCrypto }) => {
     const senderKeyPair = virgilCrypto.generateKeys();
     const recipientKeyPair = virgilCrypto.generateKeys();
     const message = 'Secret message';
@@ -130,7 +143,7 @@ module.exports = {
     expect(decryptedMessage.toString()).to.equal(message);
   },
 
-  'auth encryption - decrypts and verifies given the right keys': ({ virgilCrypto, Buffer }, expect) => {
+  'auth encryption - decrypts and verifies given the right keys': ({ virgilCrypto, Buffer }) => {
     const data = Buffer.from('Secret message');
     const senderKeyPair = virgilCrypto.generateKeys();
     const recipientKeyPair = virgilCrypto.generateKeys();
@@ -149,7 +162,7 @@ module.exports = {
     expect(decryptedData.equals(data)).to.be.true;
   },
 
-  'auth encryption - fails verification given the wrong keys': ({ virgilCrypto, Buffer }, expect) => {
+  'auth encryption - fails verification given the wrong keys': ({ virgilCrypto, Buffer }) => {
     const data = Buffer.from('Secret message');
     const senderKeyPair = virgilCrypto.generateKeys();
     const recipientKeyPair = virgilCrypto.generateKeys();
@@ -169,13 +182,13 @@ module.exports = {
     expect(error).to.throw;
   },
 
-  'getRandomBytes': ({ virgilCrypto }, expect) => {
+  'getRandomBytes': ({ virgilCrypto }) => {
     const length = 4;
     const randomBytes = virgilCrypto.getRandomBytes(length);
     expect(randomBytes.byteLength).to.eq(length);
   },
 
-  'signThenEncryptDetached -> decryptThenVerifyDetached': ({ virgilCrypto, Buffer }, expect) => {
+  'signThenEncryptDetached -> decryptThenVerifyDetached': ({ virgilCrypto, Buffer }) => {
     const data = Buffer.from('data', 'utf8');
     const { privateKey, publicKey } = virgilCrypto.generateKeys();
     const { encryptedData, metadata } = virgilCrypto.signThenEncryptDetached(

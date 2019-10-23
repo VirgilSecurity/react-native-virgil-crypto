@@ -1,12 +1,19 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
     "test": "jest index.spec.js src",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "tests:install": "cd E2ETests && yarn install && cd ios && pod install",
+    "tests:ios:pod:install": "cd E2ETests && cd ios && pod install",
+    "tests:packager": "cd E2ETests && node_modules/.bin/react-native start",
+    "tests:ios:build": "cd E2ETests && ./node_modules/.bin/detox build --configuration ios.sim.debug",
+    "tests:ios:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration ios.sim.debug --loglevel warn",
+    "tests:android:build": "cd E2ETests && ./node_modules/.bin/detox build --configuration android.emu.debug",
+    "tests:android:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration android.emu.debug"
   },
   "keywords": [
     "react-native",

@@ -1,0 +1,5 @@
+--recursive
+--timeout 30000
+--slow 2000
+--bail
+--file e2e/init.js

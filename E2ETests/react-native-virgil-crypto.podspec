@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.static_framework = true
   s.dependency 'React'
-  s.dependency 'VirgilCrypto', '5.1.0'
-  s.dependency 'VirgilCryptoFoundation', '~> 0.10.0'
-  s.dependency 'VirgilCryptoPythia', '~> 0.10.0'
+  s.dependency 'VirgilCrypto', '5.2.0'
+  s.dependency 'VirgilCryptoFoundation', '~> 0.11.0'
+  s.dependency 'VirgilCryptoPythia', '~> 0.11.0'
 end

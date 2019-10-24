@@ -10,7 +10,7 @@
  * TODO: allow grouping of tests
  */
 
- const { expect } = require('chai');
+const { expect } = require('chai');
 
 module.exports = {
   'generates key pair': ({ virgilCrypto }) => {
@@ -222,5 +222,37 @@ module.exports = {
     });
     expect(actual).to.be.instanceOf(Buffer);
     expect(actual.toString('base64')).to.eq(expectedDeblindedPassword);
+  },
+
+  'throws correct error when decryption fails': ({ virgilCrypto, RNVirgilCryptoError }) => {
+    const senderKeyPair = virgilCrypto.generateKeys();
+    const receiverKeyPair = virgilCrypto.generateKeys();
+    const unexpectedKeyPair = virgilCrypto.generateKeys();
+    const enc = virgilCrypto.signThenEncrypt('hello', senderKeyPair.privateKey, receiverKeyPair.publicKey);
+    try {
+      virgilCrypto.decryptThenVerify(enc, unexpectedKeyPair.privateKey, senderKeyPair.publicKey);
+    } catch (err) {
+      expect(err).to.be.instanceOf(RNVirgilCryptoError);
+      expect(err.name).to.eq('FoundationError');
+      expect(err.message).to.match(/recipient defined with id is not found/i);
+      return;
+    }
+    expect.fail('should have thrown an error');
+  },
+
+  'throws correct error when group decryption fails': ({ virgilCrypto, RNVirgilCryptoError }) => {
+    const keyPair1 = virgilCrypto.generateKeys();
+    const keyPair2 = virgilCrypto.generateKeys();
+    const group = virgilCrypto.generateGroupSession('qwertyuiop');
+    const enc = group.encrypt('hello', keyPair1.privateKey);
+    try {
+      group.decrypt(enc, keyPair2.publicKey);
+    } catch(err) {
+      expect(err).to.be.instanceOf(RNVirgilCryptoError);
+      expect(err.name).to.eq('FoundationError');
+      expect(err.message).to.match(/invalid signature/i);
+      return;
+    }
+    expect.fail('should have thrown an error');
   },
 };

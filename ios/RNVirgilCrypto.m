@@ -174,6 +174,10 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decrypt:(NSString*)dataBase64 with:(NSSt
         NSData *decryptedData = [self.crypto decrypt:[dataBase64 dataUsingBase64]
                                                 with:keypair.privateKey
                                                error:&err];
+        if (nil == decryptedData) {
+            return [ResponseFactory fromError:err];
+        }
+        
         return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
     }
 }

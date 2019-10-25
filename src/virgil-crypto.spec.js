@@ -10,7 +10,7 @@ import { KeyPairType } from './key-pair-type';
 jest.mock('react-native', () => ({
   NativeModules: {
     RNVirgilCrypto: {
-      HashAlgorithm: { SHA256: 'NativeHashAlgorigthm.SHA256' },
+      HashAlgorithm: { SHA256: 'NativeHashAlgorigthm.SHA256', SHA512: 'NativeHashAlgorigthm.SHA512' },
       KeyPairType: { SECP256R1: 'NativeKeyPairType.SECP256R1' },
       computeHash: jest.fn(),
       computeHashWithAlgorithm: jest.fn(),
@@ -869,6 +869,189 @@ describe('virgilCrypto', () => {
 
       expect(Buffer.isBuffer(result)).toBe(true);
       expect(result.toString()).toBe('plaintext');
+    });
+  });
+
+  describe('generateGroupSession', () => {
+    it('throws if groupId is less than 10 bytes long', () => {
+      expect(() => virgilCrypto.generateGroupSession('id')).toThrow(/group id is too short/i);
+    });
+
+    it('creates group with correct session id', () => {
+      NativeModules.RNVirgilCrypto.generateGroupSession.mockReturnValue({
+        result: {
+          sessionId: Buffer.from('sessionId').toString('base64'), 
+          currentEpochNumber: 1, 
+          epochMessages: [Buffer.from('epochMessage').toString('base64')]
+        }
+      });
+      const group = virgilCrypto.generateGroupSession('long_enough_to_be_a_group_id');
+      expect(group).toBeDefined();
+      expect(NativeModules.RNVirgilCrypto.generateGroupSession).toHaveBeenCalledWith(
+        Buffer.from('long_enough_to_be_a_group_id').toString('base64')
+      );
+      expect(group.getSessionId()).toBe(Buffer.from('sessionId').toString('hex'));
+      expect(group.getCurrentEpochNumber()).toBe(1);
+    });
+
+    it('accepts group id as Buffer', () => {
+      NativeModules.RNVirgilCrypto.generateGroupSession.mockReturnValue({
+        result: {
+          sessionId: Buffer.from('sessionId').toString('base64'), 
+          currentEpochNumber: 1, 
+          epochMessages: [Buffer.from('epochMessage').toString('base64')]
+        }
+      });
+      virgilCrypto.generateGroupSession(Buffer.from('long_enough_to_be_a_group_id'));
+      expect(NativeModules.RNVirgilCrypto.generateGroupSession).toHaveBeenCalledWith(
+        Buffer.from('long_enough_to_be_a_group_id').toString('base64')
+      );
+    });
+
+    it('accepts group id as object with value and encoding', () => {
+      NativeModules.RNVirgilCrypto.generateGroupSession.mockReturnValue({
+        result: {
+          sessionId: Buffer.from('sessionId').toString('base64'), 
+          currentEpochNumber: 1, 
+          epochMessages: [Buffer.from('epochMessage').toString('base64')]
+        }
+      });
+      virgilCrypto.generateGroupSession({ value: 'long_enough_to_be_a_group_id', encoding: 'utf8' });
+      expect(NativeModules.RNVirgilCrypto.generateGroupSession).toHaveBeenCalledWith(
+        Buffer.from('long_enough_to_be_a_group_id').toString('base64')
+      );
+    });
+  });
+
+  describe('importGroupSession', () => {
+    it('throws if epoch messages array is empty', () => {
+      expect(() => virgilCrypto.importGroupSession(undefined)).toThrow(/epoch messages must be an array/i);
+      expect(() => virgilCrypto.importGroupSession([])).toThrow(/epoch messages must not be empty/i);
+    });
+
+    it('re-constructs the group from epoch messages', () => {
+      NativeModules.RNVirgilCrypto.importGroupSession.mockReturnValue({
+        result: {
+          sessionId: Buffer.from('sessionId').toString('base64'), 
+          currentEpochNumber: 3, 
+          epochMessages: [
+            Buffer.from('epochMessage1').toString('base64'),
+            Buffer.from('epochMessage2').toString('base64'),
+            Buffer.from('epochMessage3').toString('base64'),
+          ]
+        }
+      });
+      const group = virgilCrypto.importGroupSession([
+        Buffer.from('epochMessage1').toString('base64'),
+        Buffer.from('epochMessage2').toString('base64'),
+        Buffer.from('epochMessage3').toString('base64'),
+      ]);
+      expect(NativeModules.RNVirgilCrypto.importGroupSession).toHaveBeenCalledWith(
+        [
+          Buffer.from('epochMessage1').toString('base64'),
+          Buffer.from('epochMessage2').toString('base64'),
+          Buffer.from('epochMessage3').toString('base64'),
+        ]
+      );
+      expect(group.getSessionId()).toBe(Buffer.from('sessionId').toString('hex'));
+      expect(group.getCurrentEpochNumber()).toBe(3);
+    });
+
+    it('accepts group messages as Buffers', () => {
+      NativeModules.RNVirgilCrypto.importGroupSession.mockReturnValue({
+        result: {
+          sessionId: Buffer.from('sessionId').toString('base64'), 
+          currentEpochNumber: 3, 
+          epochMessages: [
+            Buffer.from('epochMessage1').toString('base64'),
+            Buffer.from('epochMessage2').toString('base64'),
+            Buffer.from('epochMessage3').toString('base64'),
+          ]
+        }
+      });
+      virgilCrypto.importGroupSession([
+        Buffer.from('epochMessage1'),
+        Buffer.from('epochMessage2'),
+        Buffer.from('epochMessage3'),
+      ]);
+      expect(NativeModules.RNVirgilCrypto.importGroupSession).toHaveBeenCalledWith(
+        [
+          Buffer.from('epochMessage1').toString('base64'),
+          Buffer.from('epochMessage2').toString('base64'),
+          Buffer.from('epochMessage3').toString('base64'),
+        ]
+      );
+    });
+
+    it('accepts group messages as objects with value and encoding', () => {
+      NativeModules.RNVirgilCrypto.importGroupSession.mockReturnValue({
+        result: {
+          sessionId: Buffer.from('sessionId').toString('base64'), 
+          currentEpochNumber: 3, 
+          epochMessages: [
+            Buffer.from('epochMessage1').toString('base64'),
+            Buffer.from('epochMessage2').toString('base64'),
+            Buffer.from('epochMessage3').toString('base64'),
+          ]
+        }
+      });
+      virgilCrypto.importGroupSession([
+        { value: 'epochMessage1', encoding: 'utf8' },
+        { value: 'epochMessage2', encoding: 'utf8' },
+        { value: 'epochMessage3', encoding: 'utf8' },
+      ]);
+      expect(NativeModules.RNVirgilCrypto.importGroupSession).toHaveBeenCalledWith(
+        [
+          Buffer.from('epochMessage1').toString('base64'),
+          Buffer.from('epochMessage2').toString('base64'),
+          Buffer.from('epochMessage3').toString('base64'),
+        ]
+      );
+    });
+  });
+
+  describe('calculateGroupSessionId', () => {
+    it('throws if groupId is less than 10 bytes long', () => {
+      expect(() => virgilCrypto.calculateGroupSessionId('short_id')).toThrow(/group id is too short/i);
+    });
+
+    it('returns correct session id as hex string', () => {
+      const groupIdHash = Buffer.from('x'.repeat(64), 'ascii');
+      const expectedSessionId = groupIdHash.slice(0, 32).toString('hex');
+      NativeModules.RNVirgilCrypto.computeHashWithAlgorithm.mockReturnValue({
+        result: groupIdHash.toString('base64')
+      })
+
+      const groupSessionId = virgilCrypto.calculateGroupSessionId('long_enough_to_be_a_group_id');
+      expect(NativeModules.RNVirgilCrypto.computeHashWithAlgorithm).toHaveBeenCalledWith(
+        Buffer.from('long_enough_to_be_a_group_id').toString('base64'),
+        'NativeHashAlgorigthm.SHA512'
+      );
+      expect(groupSessionId).toBe(expectedSessionId);
+    });
+
+    it('accepts group id as Buffer', () => {
+      const groupIdHash = Buffer.from('x'.repeat(64), 'ascii');
+      NativeModules.RNVirgilCrypto.computeHashWithAlgorithm.mockReturnValue({
+        result: groupIdHash.toString('base64')
+      })
+      virgilCrypto.calculateGroupSessionId(Buffer.from('long_enough_to_be_a_group_id'));
+      expect(NativeModules.RNVirgilCrypto.computeHashWithAlgorithm).toHaveBeenCalledWith(
+        Buffer.from('long_enough_to_be_a_group_id').toString('base64'),
+        'NativeHashAlgorigthm.SHA512'
+      );
+    });
+
+    it('accepts group id as object with value and encoding', () => {
+      const groupIdHash = Buffer.from('x'.repeat(64), 'ascii');
+      NativeModules.RNVirgilCrypto.computeHashWithAlgorithm.mockReturnValue({
+        result: groupIdHash.toString('base64')
+      })
+      virgilCrypto.calculateGroupSessionId({ value: 'long_enough_to_be_a_group_id', encoding: 'utf8' });
+      expect(NativeModules.RNVirgilCrypto.computeHashWithAlgorithm).toHaveBeenCalledWith(
+        Buffer.from('long_enough_to_be_a_group_id').toString('base64'),
+        'NativeHashAlgorigthm.SHA512'
+      );
     });
   });
 });

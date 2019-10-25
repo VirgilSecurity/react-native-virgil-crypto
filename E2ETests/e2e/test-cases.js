@@ -255,4 +255,139 @@ module.exports = {
     }
     expect.fail('should have thrown an error');
   },
+
+  'generateGroupSession: creates group with correct id': ({ virgilCrypto, HashAlgorithm }) => {
+    const expectedId = virgilCrypto
+      .calculateHash('i_am_long_enough_to_be_a_group_id', HashAlgorithm.SHA512)
+      .slice(0, 32);
+    const group = virgilCrypto.generateGroupSession('i_am_long_enough_to_be_a_group_id');
+    expect(group.getSessionId()).to.equal(expectedId.toString('hex'));
+  },
+
+  'generateGroupSession: creates group with one epoch': ({ virgilCrypto }) => {
+    const group = virgilCrypto.generateGroupSession('i_am_long_enough_to_be_a_group_id');
+    expect(group.export()).to.have.length(1);
+  },
+
+  'importGroupSession: reconstructs the group session object from epoch messages': ({ virgilCrypto, Buffer }) => {
+    const myGroup = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    myGroup.addNewEpoch();
+    const epochMessages = myGroup.export();
+    const theirGroup = virgilCrypto.importGroupSession(epochMessages);
+
+    expect(myGroup.getSessionId()).to.equal(theirGroup.getSessionId());
+    expect(myGroup.getCurrentEpochNumber()).to.equal(theirGroup.getCurrentEpochNumber());
+  },
+
+  'calculateGroupSessionId: returns correct session id as hex string': ({ virgilCrypto, HashAlgorithm }) => {
+    const expectedId = virgilCrypto
+      .calculateHash('i_am_long_enough_to_be_a_group_id', HashAlgorithm.SHA512)
+      .slice(0, 32);
+    const groupSessionId = virgilCrypto.calculateGroupSessionId(
+      'i_am_long_enough_to_be_a_group_id',
+    );
+    expect(groupSessionId).to.equal(expectedId.toString('hex'));
+  },
+
+  'groupSession.addNewEpoch(): adds new epoch message': ({ virgilCrypto, Buffer }) => {
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    group.addNewEpoch();
+    group.addNewEpoch();
+    expect(group.export()).to.have.length(3);
+  },
+
+  'groupSession.addNewEpoch(): increments the currentEpochNumber': ({ virgilCrypto, Buffer }) => {
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const oldEpochNumber = group.getCurrentEpochNumber();
+    group.addNewEpoch();
+    expect(group.getCurrentEpochNumber()).not.to.equal(oldEpochNumber);
+  },
+
+  'groupSession.addNewEpoch(): returns epochNumber, sessionId and data from epoch message': ({ virgilCrypto, Buffer }) => {
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const { epochNumber, sessionId, data } = group.addNewEpoch();
+    expect(epochNumber).to.equal(group.getCurrentEpochNumber());
+    expect(sessionId).to.equal(group.getSessionId());
+    const lastEpochData = group.export().pop();
+    expect(lastEpochData).not.to.be.undefined;
+    expect(lastEpochData.toString('base64')).to.equal(data);
+  },
+
+  'groupSession.getCurrentEpochNumber(): returns zero for new group': ({ virgilCrypto, Buffer }) => {
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    expect(group.getCurrentEpochNumber()).to.equal(0);
+  },
+
+  'groupSession.getCurrentEpochNumber(): increments after adding new epoch': ({ virgilCrypto, Buffer }) => {
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    group.addNewEpoch();
+    expect(group.getCurrentEpochNumber()).to.equal(1);
+  },
+
+  'groupSession.parseMessage(): returns epochNumber, sessionId and data from encrypted message': ({ virgilCrypto, Buffer }) => {
+    const keypair = virgilCrypto.generateKeys();
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const encrypted = group.encrypt('secret', keypair.privateKey);
+    const { epochNumber, sessionId, data } = group.parseMessage(encrypted);
+    expect(epochNumber).to.equal(group.getCurrentEpochNumber());
+    expect(sessionId).to.equal(group.getSessionId());
+    expect(encrypted.toString('base64')).to.equal(data);
+  },
+
+  'groupSession:encryption: can encrypt and decrypt data': ({ virgilCrypto, Buffer }) => {
+    const plaintext = 'secret';
+    const keypair = virgilCrypto.generateKeys();
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const encrypted = group.encrypt(plaintext, keypair.privateKey);
+    const decrypted = group.decrypt(encrypted, keypair.publicKey);
+    expect(decrypted.toString('utf8')).to.equal(plaintext);
+  },
+
+  'groupSession:encryption: decrypt throws if given a wrong public key': ({ virgilCrypto, Buffer }) => {
+    const plaintext = 'secret';
+    const keypair1 = virgilCrypto.generateKeys();
+    const keypair2 = virgilCrypto.generateKeys();
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const encrypted = group.encrypt(plaintext, keypair1.privateKey);
+    expect(() => group.decrypt(encrypted, keypair2.publicKey)).throws(/Invalid signature/);
+  },
+
+  'groupSession:encryption: cannot decrypt data encrypted by another group': ({ virgilCrypto, Buffer }) => {
+    const plaintext = 'secret';
+    const keypair = virgilCrypto.generateKeys();
+    const group1 = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const group2 = virgilCrypto.generateGroupSession(Buffer.from('y'.repeat(10)));
+    const encrypted = group1.encrypt(plaintext, keypair.privateKey);
+    expect(() => group2.decrypt(encrypted, keypair.publicKey)).throws(/Session id doesnt match/);
+  },
+
+  'groupSession:encryption: can decrypt data from previous epoch': ({ virgilCrypto, Buffer }) => {
+    const plaintext = 'secret';
+    const keypair = virgilCrypto.generateKeys();
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const encrypted = group.encrypt(plaintext, keypair.privateKey);
+    group.addNewEpoch();
+    const decrypted = group.decrypt(encrypted, keypair.publicKey);
+    expect(decrypted.toString('utf8')).to.equal(plaintext);
+  },
+
+  'groupSession:encryption: cannot decrypt data from future epochs': ({ virgilCrypto, Buffer }) => {
+    const plaintext = 'secret';
+    const keypair = virgilCrypto.generateKeys();
+
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    const outdatedGroup = virgilCrypto.importGroupSession(group.export());
+    group.addNewEpoch();
+    const encrypted = group.encrypt(plaintext, keypair.privateKey);
+    expect(() => outdatedGroup.decrypt(encrypted, keypair.publicKey)).throws(/Epoch not found/);
+  },
+
+  'groupSession.export(): returns current epoch messages as array': ({ virgilCrypto, Buffer }) => {
+    const group = virgilCrypto.generateGroupSession(Buffer.from('x'.repeat(10)));
+    group.addNewEpoch();
+    group.addNewEpoch();
+    group.addNewEpoch();
+    const epochMessages = group.export();
+    expect(epochMessages).to.have.length(4); // 1 initial and 3 added manually
+  },
 };

@@ -7,7 +7,7 @@ const { RNVirgilGroupSession } = NativeModules;
 
 export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochMessages }) {
   let actualEpochNumber = currentEpochNumber;
-  const actualEpochMessages = epochMessages.slice();
+  let actualEpochMessages = epochMessages.slice();
   const actualSessionId = base64ToBuffer(sessionId).toString('hex');
 
   return {
@@ -28,7 +28,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
     },
 
     decrypt(encryptedData, verifyingPublicKey) {
-      const encryptedDataBase64 = dataToBase64(encryptedData, 'utf8', 'encryptedData');
+      const encryptedDataBase64 = dataToBase64(encryptedData, 'base64', 'encryptedData');
       const publicKeyValue = checkedGetPublicKeyValue(verifyingPublicKey);
       return base64ToBuffer(
         unwrapResponse(RNVirgilGroupSession.decrypt(encryptedDataBase64, publicKeyValue, actualEpochMessages))
@@ -41,12 +41,12 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       );
       
       actualEpochNumber = epochNumber;
-      actualEpochMessages.push(data);
+      actualEpochMessages = actualEpochMessages.concat(data);
 
       return {
         sessionId: base64ToBuffer(sessionId).toString('hex'),
         epochNumber,
-        data: data
+        data
       };
     },
 
@@ -64,7 +64,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       return {
         sessionId: base64ToBuffer(sessionId).toString('hex'),
         epochNumber,
-        data: data
+        data
       };
     }
   };

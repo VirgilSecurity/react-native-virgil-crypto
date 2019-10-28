@@ -63,85 +63,93 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(encrypt:(NSString *)dataBase64
                                        withSigningKey:(NSString *)signingKeyBase64
                                        andEpochMessages:(NSArray<NSString *> *) epochMessagesBase64)
 {
-    NSError *err;
-    id<VSCFPrivateKey> privateKey = [self.keyProvider importPrivateKeyWithKeyData:[signingKeyBase64 dataUsingBase64] error:&err];
-    if (nil == privateKey) {
-        return [ResponseFactory fromError:err];
+    @autoreleasepool {
+        NSError *err;
+        id<VSCFPrivateKey> privateKey = [self.keyProvider importPrivateKeyWithKeyData:[signingKeyBase64 dataUsingBase64] error:&err];
+        if (nil == privateKey) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSession *session = [self createSession:epochMessagesBase64 error:&err];
+        if (nil == session) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSessionMessage *message = [session encryptWithPlainText:[dataBase64 dataUsingBase64] privateKey:privateKey error:&err];
+        if (nil == message) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult:[[message serialize] stringUsingBase64]];
     }
-    
-    VSCFGroupSession *session = [self createSession:epochMessagesBase64 error:&err];
-    if (nil == session) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    VSCFGroupSessionMessage *message = [session encryptWithPlainText:[dataBase64 dataUsingBase64] privateKey:privateKey error:&err];
-    if (nil == message) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    return [ResponseFactory fromResult:[[message serialize] stringUsingBase64]];
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(decrypt: (NSString *)encryptedMessageBase64
                                        withVerifyingKey:(NSString *)verifyingKeyBase64
                                        andEpochMessages:(NSArray<NSString *> *) epochMessagesBase64)
 {
-    NSError *err;
-    id<VSCFPublicKey> publicKey = [self.keyProvider importPublicKeyWithKeyData:[verifyingKeyBase64 dataUsingBase64] error:&err];
-    if (nil == publicKey) {
-        return [ResponseFactory fromError:err];
+    @autoreleasepool {
+        NSError *err;
+        id<VSCFPublicKey> publicKey = [self.keyProvider importPublicKeyWithKeyData:[verifyingKeyBase64 dataUsingBase64] error:&err];
+        if (nil == publicKey) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSessionMessage *encryptedMessage = [VSCFGroupSessionMessage deserializeWithInput:[encryptedMessageBase64 dataUsingBase64]
+                                                                                            error:&err];
+        if (nil == encryptedMessage) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSession *session = [self createSession:epochMessagesBase64 error:&err];
+        if (nil == session) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        NSData* decrypted = [session decryptWithMessage:encryptedMessage publicKey:publicKey error:&err];
+        if (nil == decrypted) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult:[decrypted stringUsingBase64]];
     }
-    
-    VSCFGroupSessionMessage *encryptedMessage = [VSCFGroupSessionMessage deserializeWithInput:[encryptedMessageBase64 dataUsingBase64]
-                                                                                        error:&err];
-    if (nil == encryptedMessage) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    VSCFGroupSession *session = [self createSession:epochMessagesBase64 error:&err];
-    if (nil == session) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    NSData* decrypted = [session decryptWithMessage:encryptedMessage publicKey:publicKey error:&err];
-    if (nil == decrypted) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    return [ResponseFactory fromResult:[decrypted stringUsingBase64]];
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(addNewEpoch:(NSArray<NSString *> *) epochMessagesBase64)
 {
-    NSError *err;
-    VSCFGroupSession *session = [self createSession:epochMessagesBase64 error:&err];
-    if (nil == session) {
-        return [ResponseFactory fromError:err];
+    @autoreleasepool {
+        NSError *err;
+        VSCFGroupSession *session = [self createSession:epochMessagesBase64 error:&err];
+        if (nil == session) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSessionTicket *epochTicket = [session createGroupTicketAndReturnError:&err];
+        if (nil == epochTicket) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSessionMessage *epochMessage = [epochTicket getTicketMessage];
+        
+        if (![session addEpochWithMessage:epochMessage error:&err]) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult: [self groupSessionMessageToDictionary:epochMessage]];
     }
-    
-    VSCFGroupSessionTicket *epochTicket = [session createGroupTicketAndReturnError:&err];
-    if (nil == epochTicket) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    VSCFGroupSessionMessage *epochMessage = [epochTicket getTicketMessage];
-    
-    if (![session addEpochWithMessage:epochMessage error:&err]) {
-        return [ResponseFactory fromError:err];
-    }
-    
-    return [ResponseFactory fromResult: [self groupSessionMessageToDictionary:epochMessage]];
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(parseMessage:(NSString *)messageBase64)
 {
-    NSError *err;
-    VSCFGroupSessionMessage *message = [VSCFGroupSessionMessage deserializeWithInput:[messageBase64 dataUsingBase64]
-                                                                               error:&err];
-    if (nil == message) {
-        return [ResponseFactory fromError:err];
+    @autoreleasepool {
+        NSError *err;
+        VSCFGroupSessionMessage *message = [VSCFGroupSessionMessage deserializeWithInput:[messageBase64 dataUsingBase64]
+                                                                                   error:&err];
+        if (nil == message) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        return [ResponseFactory fromResult: [self groupSessionMessageToDictionary:message]];
     }
-    
-    return [ResponseFactory fromResult: [self groupSessionMessageToDictionary:message]];
 }
 @end

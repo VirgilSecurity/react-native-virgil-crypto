@@ -24,34 +24,58 @@ function evalTest(body) {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = Object.keys(testCases).reduce((state, name) => {
-      state[name] = {
-        result: null
-      };
-      return state;
-    }, {});
+    this.state = {
+      testCases: Object.keys(testCases).reduce((acc, name) => {
+        acc[name] = {
+          result: null
+        };
+        return acc;
+      }, {}),
+    };
   }
 
   runTest(name) {
     const body = testCases[name];
     const result = evalTest(body);
-    this.setState({ [name]: { result } });
+    this.setState(({ testCases }) => {
+      testCases[name] = { result };
+      return { testCases };
+    });
+  }
+
+  removePassedTests() {
+    this.setState(({ testCases }) => {
+      const pending = Object.keys(testCases)
+      .filter(name => testCases[name].result == null)
+      .reduce((acc, name) => {
+        acc[name] = testCases[name];
+        return acc;
+      }, {});
+
+      return { testCases: pending };
+    });
   }
 
   render() {
+    const { testCases } = this.state;
     return (
-      <ScrollView>
-        <View style={[styles.container, styles.horizontal]}>
-          {Object.keys(this.state).map(testCaseName => (
-            <View key={testCaseName} style={styles.case}>
-              <TouchableOpacity testID={testCaseName} onPress={() => this.runTest(testCaseName)}>
-                <Text style={styles.item}>{testCaseName}</Text>
-              </TouchableOpacity>
-              {this.state[testCaseName].result && <Text style={[styles.item, styles.result]} testID={`${testCaseName}Result`}>{this.state[testCaseName].result}</Text>}
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.horizontal}>
+            {Object.keys(testCases).map(testCaseName => (
+              <View key={testCaseName} style={styles.case}>
+                <TouchableOpacity testID={testCaseName} onPress={() => this.runTest(testCaseName)}>
+                  <Text style={styles.item}>{testCaseName}</Text>
+                </TouchableOpacity>
+                {testCases[testCaseName].result && <Text style={[styles.item, styles.result]} testID={`${testCaseName}Result`}>{testCases[testCaseName].result}</Text>}
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+        <TouchableOpacity testID={'removePassed'} style={styles.bottomButton} onPress={() => this.removePassedTests()}>
+          <Text>{'Remove passed tests'}</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -59,7 +83,14 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 60
+    marginTop: 50
+  },
+  scrollView: {
+    flex: 1
+  },
+  bottomButton: {
+    flex: 0,
+    alignSelf: 'center'
   },
   horizontal: {
     flexDirection: 'column',

@@ -20,6 +20,10 @@
 		2DCD954D1E0B4F2C00145EB5 /* FileEncryptionSampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FileEncryptionSampleTests.m */; };
 		6421D3B9690D7BB839A1DBDD /* libPods-FileEncryptionSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 54FF05F1CF404CAA3B1523CC /* libPods-FileEncryptionSample.a */; };
 		B3CD438F81FA5083E11BBBB7 /* libPods-FileEncryptionSampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC26090BDB238DD025B1B09D /* libPods-FileEncryptionSampleTests.a */; };
+		DD5B552623670A0200006E2D /* VSCPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD5B552323670A0100006E2D /* VSCPythia.framework */; };
+		DD5B552723670A0200006E2D /* VSCPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD5B552323670A0100006E2D /* VSCPythia.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DD5B552823670A0200006E2D /* VirgilCryptoPythia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD5B552523670A0100006E2D /* VirgilCryptoPythia.framework */; };
+		DD5B552923670A0200006E2D /* VirgilCryptoPythia.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD5B552523670A0100006E2D /* VirgilCryptoPythia.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DDFAD59D230FFD3C001616A8 /* VirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDFAD599230FFD3C001616A8 /* VirgilCrypto.framework */; };
 		DDFAD59E230FFD3C001616A8 /* VSCFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDFAD59A230FFD3C001616A8 /* VSCFoundation.framework */; };
 		DDFAD59F230FFD3C001616A8 /* VirgilCryptoFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDFAD59B230FFD3C001616A8 /* VirgilCryptoFoundation.framework */; };
@@ -51,6 +55,21 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		DD5B552A23670A0200006E2D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DD5B552723670A0200006E2D /* VSCPythia.framework in Embed Frameworks */,
+				DD5B552923670A0200006E2D /* VirgilCryptoPythia.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* FileEncryptionSampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FileEncryptionSampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +94,8 @@
 		A43F283BF525F2224649415E /* Pods-FileEncryptionSample.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FileEncryptionSample.debug.xcconfig"; path = "Target Support Files/Pods-FileEncryptionSample/Pods-FileEncryptionSample.debug.xcconfig"; sourceTree = "<group>"; };
 		B11A1A9CA08AB2ACAD74036F /* libPods-FileEncryptionSample-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileEncryptionSample-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC26090BDB238DD025B1B09D /* libPods-FileEncryptionSampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FileEncryptionSampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD5B552323670A0100006E2D /* VSCPythia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCPythia.framework; path = Carthage/Build/iOS/VSCPythia.framework; sourceTree = "<group>"; };
+		DD5B552523670A0100006E2D /* VirgilCryptoPythia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoPythia.framework; path = Carthage/Build/iOS/VirgilCryptoPythia.framework; sourceTree = "<group>"; };
 		DDFAD599230FFD3C001616A8 /* VirgilCrypto.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCrypto.framework; path = Carthage/Build/iOS/VirgilCrypto.framework; sourceTree = "<group>"; };
 		DDFAD59A230FFD3C001616A8 /* VSCFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VSCFoundation.framework; path = Carthage/Build/iOS/VSCFoundation.framework; sourceTree = "<group>"; };
 		DDFAD59B230FFD3C001616A8 /* VirgilCryptoFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VirgilCryptoFoundation.framework; path = Carthage/Build/iOS/VirgilCryptoFoundation.framework; sourceTree = "<group>"; };
@@ -103,6 +124,8 @@
 				DDFAD59E230FFD3C001616A8 /* VSCFoundation.framework in Frameworks */,
 				DDFAD59F230FFD3C001616A8 /* VirgilCryptoFoundation.framework in Frameworks */,
 				DDFAD5A0230FFD3C001616A8 /* VSCCommon.framework in Frameworks */,
+				DD5B552623670A0200006E2D /* VSCPythia.framework in Frameworks */,
+				DD5B552823670A0200006E2D /* VirgilCryptoPythia.framework in Frameworks */,
 				DDFAD5B22310276C001616A8 /* libRNVirgilCrypto.a in Frameworks */,
 				6421D3B9690D7BB839A1DBDD /* libPods-FileEncryptionSample.a in Frameworks */,
 			);
@@ -161,6 +184,8 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DD5B552523670A0100006E2D /* VirgilCryptoPythia.framework */,
+				DD5B552323670A0100006E2D /* VSCPythia.framework */,
 				DDFAD599230FFD3C001616A8 /* VirgilCrypto.framework */,
 				DDFAD59B230FFD3C001616A8 /* VirgilCryptoFoundation.framework */,
 				DDFAD59C230FFD3C001616A8 /* VSCCommon.framework */,
@@ -265,6 +290,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				DDFAD5A1230FFD50001616A8 /* ShellScript */,
+				DD5B552A23670A0200006E2D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

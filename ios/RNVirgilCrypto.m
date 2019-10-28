@@ -174,6 +174,10 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decrypt:(NSString*)dataBase64 with:(NSSt
         NSData *decryptedData = [self.crypto decrypt:[dataBase64 dataUsingBase64]
                                                 with:keypair.privateKey
                                                error:&err];
+        if (nil == decryptedData) {
+            return [ResponseFactory fromError:err];
+        }
+        
         return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
     }
 }
@@ -321,8 +325,8 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncryptDetached:(NSString*)dataBa
             return [ResponseFactory fromError:err];
         }
         
-        VSCFAes256Gcm *aesGcm = [VSCFAes256Gcm new];
-        VSCFRecipientCipher *cipher = [VSCFRecipientCipher new];
+        VSCFAes256Gcm *aesGcm = [[VSCFAes256Gcm alloc] init];
+        VSCFRecipientCipher *cipher = [[VSCFRecipientCipher alloc] init];
         
         [cipher setEncryptionCipherWithEncryptionCipher:aesGcm];
         [cipher setRandomWithRandom:self.crypto.rng];
@@ -383,6 +387,65 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, decryptAndVerifyDetached:(NSString*)data
         }
         
         return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
+    }
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(generateGroupSession:(NSString*)groupIdBase64)
+{
+    @autoreleasepool {
+        NSError *err;
+        NSData *sessionId = [self computeHashFor:[groupIdBase64 dataUsingBase64] using:VSMHashAlgorithmSha512];
+        sessionId = [sessionId subdataWithRange:NSMakeRange(0, 32)];
+        VSCFGroupSessionTicket *initialEpochTicket = [[VSCFGroupSessionTicket alloc] init];
+        [initialEpochTicket setRngWithRng: self.crypto.rng];
+        if ([initialEpochTicket setupTicketAsNewWithSessionId:sessionId error:&err] == NO) {
+            return [ResponseFactory fromError:err];
+        }
+        
+        VSCFGroupSessionMessage *initalEpochMessage = [initialEpochTicket getTicketMessage];
+        NSNumber *epochNumber = @([initalEpochMessage getEpoch]);
+        NSData *data = [initalEpochMessage serialize];
+        return [ResponseFactory fromResult:@{ @"sessionId": [sessionId stringUsingBase64],
+                                              @"currentEpochNumber": epochNumber,
+                                              @"epochMessages": @[[data stringUsingBase64]] }];
+    }
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(importGroupSession:(NSArray<NSString*>*) epochMessagesBase64)
+{
+    @autoreleasepool {
+        NSError *err;
+        NSMutableArray<VSCFGroupSessionMessage*> *epochMessages = [NSMutableArray arrayWithCapacity:[epochMessagesBase64 count]];
+        for (NSString *epochMessageBase64 in epochMessagesBase64) {
+            VSCFGroupSessionMessage *epochMessage = [VSCFGroupSessionMessage deserializeWithInput:[epochMessageBase64 dataUsingBase64]
+                                                                                            error:&err];
+            if (nil == epochMessage) {
+                return [ResponseFactory fromError:err];
+            }
+            [epochMessages addObject:epochMessage];
+        }
+        NSArray<VSCFGroupSessionMessage*> *sortedEpochMessages = [epochMessages sortedArrayUsingComparator:^NSComparisonResult(VSCFGroupSessionMessage* a, VSCFGroupSessionMessage* b) {
+            uint32_t aEpoch = [a getEpoch];
+            uint32_t bEpoch = [b getEpoch];
+            return aEpoch - bEpoch;
+        }];
+        
+        NSMutableArray<NSString *> *sortedSerializedEpochMessages = [NSMutableArray arrayWithCapacity:[sortedEpochMessages count]];
+        
+        VSCFGroupSession *session = [[VSCFGroupSession alloc] init];
+        [session setRngWithRng:self.crypto.rng];
+        for (VSCFGroupSessionMessage* epochMessage in sortedEpochMessages) {
+            if ([session addEpochWithMessage:epochMessage error:&err] == NO) {
+                return [ResponseFactory fromError:err];
+            }
+            [sortedSerializedEpochMessages addObject:[[epochMessage serialize] stringUsingBase64]];
+        }
+        NSData *sessionId = [session getSessionId];
+        NSNumber *epochNumber = @([session getCurrentEpoch]);
+        
+        return [ResponseFactory fromResult:@{ @"sessionId": [sessionId stringUsingBase64],
+                                              @"currentEpochNumber": epochNumber,
+                                              @"epochMessages": sortedSerializedEpochMessages }];
     }
 }
 

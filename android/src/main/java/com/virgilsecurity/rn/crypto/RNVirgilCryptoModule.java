@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +15,19 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
+import com.virgilsecurity.crypto.foundation.FoundationException;
+import com.virgilsecurity.crypto.foundation.GroupSession;
+import com.virgilsecurity.crypto.foundation.GroupSessionMessage;
+import com.virgilsecurity.crypto.foundation.GroupSessionTicket;
 import com.virgilsecurity.rn.crypto.utils.FS;
 import com.virgilsecurity.rn.crypto.utils.InvalidOutputFilePathException;
 import com.virgilsecurity.crypto.foundation.Aes256Gcm;
@@ -275,9 +284,9 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
         byte[] processedData = cipher.processEncryption(data);
         byte[] finalData = cipher.finishEncryption();
 
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("encryptedData", Encodings.encodeBase64(this.concatByteArrays(processedData, finalData)));
-        responseMap.put("metadata", Encodings.encodeBase64(meta));
+        WritableMap responseMap = Arguments.createMap();
+        responseMap.putString("encryptedData", Encodings.encodeBase64(this.concatByteArrays(processedData, finalData)));
+        responseMap.putString("metadata", Encodings.encodeBase64(meta));
 
         return ResponseFactory.createMapResponse(responseMap);
       }
@@ -308,6 +317,77 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     catch (CryptoException e) {
       return ResponseFactory.createErrorResponse(e);
     }
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap generateGroupSession(String groupIdBase64) {
+      byte[] sessionId = this.crypto.computeHash(
+              Encodings.decodeBase64(groupIdBase64),
+              HashAlgorithm.SHA512
+      );
+      sessionId = Arrays.copyOfRange(sessionId, 0, 32);
+      GroupSessionTicket initialEpochTicket = new GroupSessionTicket();
+      initialEpochTicket.setRng(this.crypto.getRng());
+      try {
+        initialEpochTicket.setupTicketAsNew(sessionId);
+      } catch (FoundationException e) {
+          return ResponseFactory.createErrorResponse(e);
+      }
+
+      GroupSessionMessage initialEpochMessage = initialEpochTicket.getTicketMessage();
+      int epochNumber = (int)initialEpochMessage.getEpoch();
+      byte[] data = initialEpochMessage.serialize();
+
+      WritableArray epochMessages = Arguments.createArray();
+      epochMessages.pushString(Encodings.encodeBase64(data));
+
+      WritableMap responseMap = Arguments.createMap();
+      responseMap.putString("sessionId", Encodings.encodeBase64(sessionId));
+      responseMap.putInt("currentEpochNumber", epochNumber);
+      responseMap.putArray("epochMessages", epochMessages);
+      return ResponseFactory.createMapResponse(responseMap);
+  }
+
+  @ReactMethod(isBlockingSynchronousMethod = true)
+  public WritableMap importGroupSession(ReadableArray epochMessagesBase64) {
+      List<GroupSessionMessage> epochMessages = new ArrayList<>(epochMessagesBase64.size());
+      try {
+          for(Object epochMessageBase64 : epochMessagesBase64.toArrayList()) {
+              epochMessages.add(GroupSessionMessage.deserialize(Encodings.decodeBase64((String)epochMessageBase64)));
+          }
+      } catch (FoundationException e) {
+          return ResponseFactory.createErrorResponse(e);
+      }
+
+      Collections.sort(epochMessages, new Comparator<GroupSessionMessage>() {
+          @Override
+          public int compare(GroupSessionMessage a, GroupSessionMessage b) {
+              return (int)(a.getEpoch() - b.getEpoch());
+          }
+      });
+
+      WritableArray serializedEpochMessages = Arguments.createArray();
+
+      GroupSession session = new GroupSession();
+      session.setRng(this.crypto.getRng());
+
+      for(GroupSessionMessage epochMessage : epochMessages) {
+          try {
+              session.addEpoch(epochMessage);
+          } catch (FoundationException e) {
+              return ResponseFactory.createErrorResponse(e);
+          }
+          serializedEpochMessages.pushString(Encodings.encodeBase64(epochMessage.serialize()));
+      }
+
+      byte[] sessionId = session.getSessionId();
+      int currentEpochNumber = (int)session.getCurrentEpoch();
+
+      WritableMap responseMap = Arguments.createMap();
+      responseMap.putString("sessionId", Encodings.encodeBase64(sessionId));
+      responseMap.putInt("currentEpochNumber", currentEpochNumber);
+      responseMap.putArray("epochMessages", serializedEpochMessages);
+      return ResponseFactory.createMapResponse(responseMap);
   }
 
   @ReactMethod
@@ -492,12 +572,12 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     return publicKeys;
   }
 
-  private Map<String, String> exportAndEncodeKeyPair(VirgilKeyPair keypair) throws CryptoException {
+  private WritableMap exportAndEncodeKeyPair(VirgilKeyPair keypair) throws CryptoException {
     final byte[] privateKeyData = this.crypto.exportPrivateKey(keypair.getPrivateKey());
     final byte[] publicKeyData = this.crypto.exportPublicKey(keypair.getPublicKey());
-    Map<String, String> keypairMap = new HashMap<>();
-    keypairMap.put("privateKey", Encodings.encodeBase64(privateKeyData));
-    keypairMap.put("publicKey", Encodings.encodeBase64(publicKeyData));
+    WritableMap keypairMap = Arguments.createMap();
+    keypairMap.putString("privateKey", Encodings.encodeBase64(privateKeyData));
+    keypairMap.putString("publicKey", Encodings.encodeBase64(publicKeyData));
     return keypairMap;
   }
 

@@ -92,14 +92,3 @@ yarn tests:android:test
 ```bash
 yarn tests:ios:test
 ```
-
-### Running specific tests
-
-Mocha supports the `.only` syntax, e.g. instead of `describe(...) || it(...)` you can use `describe.only(...) || it.only(...)` to only run that specific context or test.
-
-Another way to do this is via adding a `--grep` option to e2e/mocha.opts file, e.g. `--grep auth` for all tests that have auth in the file path or tests descriptions.
-
-> 💡 Don't forget to remove these before committing your code and submitting a pull request
-
-For more Mocha options see https://mochajs.org/#usage
-

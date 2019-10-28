@@ -182,11 +182,11 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
   - React-jsinspector (0.61.2)
-  - react-native-virgil-crypto (0.3.1-test.1):
+  - react-native-virgil-crypto (0.3.2):
     - React
-    - VirgilCrypto (= 5.1.0)
-    - VirgilCryptoFoundation (~> 0.10.0)
-    - VirgilCryptoPythia (~> 0.10.0)
+    - VirgilCrypto (= 5.2.0)
+    - VirgilCryptoFoundation (~> 0.11.0)
+    - VirgilCryptoPythia (~> 0.11.0)
   - React-RCTActionSheet (0.61.2):
     - React-Core/RCTActionSheetHeaders (= 0.61.2)
   - React-RCTAnimation (0.61.2):
@@ -222,19 +222,19 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
-  - VirgilCrypto (5.1.0):
-    - VirgilCryptoFoundation (~> 0.10.0)
-  - VirgilCryptoFoundation (0.10.0):
-    - VSCCrypto/Common (= 0.10.0)
-    - VSCCrypto/Foundation (= 0.10.0)
-  - VirgilCryptoPythia (0.10.0):
-    - VirgilCryptoFoundation (= 0.10.0)
-    - VSCCrypto/Common (= 0.10.0)
-    - VSCCrypto/Foundation (= 0.10.0)
-    - VSCCrypto/Pythia (= 0.10.0)
-  - VSCCrypto/Common (0.10.0)
-  - VSCCrypto/Foundation (0.10.0)
-  - VSCCrypto/Pythia (0.10.0)
+  - VirgilCrypto (5.2.0):
+    - VirgilCryptoFoundation (~> 0.11.0)
+  - VirgilCryptoFoundation (0.11.0):
+    - VSCCrypto/Common (= 0.11.0)
+    - VSCCrypto/Foundation (= 0.11.0)
+  - VirgilCryptoPythia (0.11.0):
+    - VirgilCryptoFoundation (= 0.11.0)
+    - VSCCrypto/Common (= 0.11.0)
+    - VSCCrypto/Foundation (= 0.11.0)
+    - VSCCrypto/Pythia (= 0.11.0)
+  - VSCCrypto/Common (0.11.0)
+  - VSCCrypto/Foundation (0.11.0)
+  - VSCCrypto/Pythia (0.11.0)
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -254,7 +254,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-virgil-crypto (from `../.`)
+  - react-native-virgil-crypto (from `../node_modules/react-native-virgil-crypto`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -306,7 +306,7 @@ EXTERNAL SOURCES:
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-virgil-crypto:
-    :path: "../."
+    :path: "../node_modules/react-native-virgil-crypto"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -346,7 +346,7 @@ SPEC CHECKSUMS:
   React-jsi: 32285a21b1b24c36060493ed3057a34677d58d09
   React-jsiexecutor: 8909917ff7d8f21a57e443a866fd8d4560e50c65
   React-jsinspector: 111d7d342b07a904c400592e02a2b958f1098b60
-  react-native-virgil-crypto: cda02a1d573b50a2eb3abcda795d828c8cdec8f1
+  react-native-virgil-crypto: 269dbc3153c7f18fd054ea73cfbb130e6ac7463d
   React-RCTActionSheet: 89b037c0fb7d2671607cb645760164e7e0c013f6
   React-RCTAnimation: e3cefa93c38c004c318f7ec04b883eb14b8b8235
   React-RCTBlob: d26ac0e313fbf14e7203473fd593ccaaeee8329e
@@ -357,10 +357,10 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
-  VirgilCrypto: dfd6040fe9b16f6e7f115eedb2c2bedb4db43305
-  VirgilCryptoFoundation: 2aa49c5233c60aa2fabc5e9c1745f711c87cf9f6
-  VirgilCryptoPythia: dd59ccd2125afd5e446fe76d3fd7076ebeafa5d6
-  VSCCrypto: abb9bfb16e4b7a30d33f75d620f1f3029f49bdb6
+  VirgilCrypto: 309fa760ba0f21f160e7c54c58fca3d33a3913fe
+  VirgilCryptoFoundation: f182fd5859739dbe4e1a43432cb8c87f21f775e1
+  VirgilCryptoPythia: 1df83bc002b5a036559c10690a9d6d45c56ad6fa
+  VSCCrypto: 9ffdbed1f9c3fdd4baee7d02aa2baab4ca5d8dd2
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
 PODFILE CHECKSUM: 6cbd9f77a624263d5459d303acc5ab9ee9269be6

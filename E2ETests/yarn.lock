@@ -839,9 +839,9 @@
     "@types/istanbul-lib-report" "*"
 
 "@types/node@^12.7.2":
-  version "12.7.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.12.tgz#7c6c571cc2f3f3ac4a59a5f2bd48f5bdbc8653cc"
-  integrity sha512-KPYGmfD0/b1eXurQ59fXD1GBzhSQfz6/lKBxkaHX9dKTzjXbK68Zt7yGUxUsCS1jeTy/8aL+d9JEr+S54mpkWQ==
+  version "12.11.7"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.7.tgz#57682a9771a3f7b09c2497f28129a0462966524a"
+  integrity sha512-JNbGaHFCLwgHn/iCckiGSOZ1XYHsKFwREtzPwSGCVld1SGhOlmZw2D4ZI94HQCrBHbADzW9m4LER/8olJTRGHA==
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -860,10 +860,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@virgilsecurity/crypto-types@^0.1.3":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-0.1.4.tgz#4ee61c8280e6defada94c52ba44c61d7ff12da12"
-  integrity sha512-mqDsJgXLPGWMaglEWnz2dH8WePCwvtQx5TRNAu5S8sespFp44CJV/iozygUKvBdmnJ4Fw2IkjQ/At7v7aKlxdQ==
+"@virgilsecurity/crypto-types@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-0.2.0.tgz#27040fbda702389bfc8396aa663f91dadf8605ec"
+  integrity sha512-17kDAM/rMrfB5uHuK1k+2ExIulRnnsyx8PL//FcTmT/xm8KNd+/7C2JztIJ1xdpIh8sgjrgnjZ+rVHcNaM54hQ==
   dependencies:
     "@types/node" "^12.7.2"
 
@@ -4200,9 +4200,9 @@ react-is@^16.8.1, react-is@^16.8.4:
   integrity sha512-INBT1QEgtcCCgvccr5/86CfD71fw9EPmDxgiJX4I2Ddr6ZsV6iFXsuby+qWJPtmNuMY0zByTsG4468P7nHuNWA==
 
 react-native-virgil-crypto@../:
-  version "0.3.1-test.1"
+  version "0.3.2"
   dependencies:
-    "@virgilsecurity/crypto-types" "^0.1.3"
+    "@virgilsecurity/crypto-types" "^0.2.0"
     buffer "^5.2.1"
 
 react-native@0.61.2:

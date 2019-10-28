@@ -11,10 +11,20 @@ import { unwrapResponse } from './utils/response';
 import { dataToBase64, base64ToBuffer } from './utils/encoding';
 import { checkedGetHashAlgorithm } from './hash-algorithm';
 import { checkedGetKeyPairType } from './key-pair-type';
+import { createVirgilGroupSession } from './virgil-group-session';
 
 const { RNVirgilCrypto } = NativeModules;
 
 const normalizeFilePath = (path) => (path.startsWith('file://') ? path.slice(7) : path);
+const validateGroupId = (groupIdBase64) => {
+  if (base64ToBuffer(groupIdBase64).byteLength < MIN_GROUP_ID_BYTE_LENGTH) {
+    throw new Error(
+      `The given group Id is too short. Must be at least ${MIN_GROUP_ID_BYTE_LENGTH} bytes.`,
+    );
+  }
+};
+
+export const MIN_GROUP_ID_BYTE_LENGTH = 10;
 
 export const virgilCrypto = {
   getRandomBytes(size) {
@@ -236,4 +246,39 @@ export const virgilCrypto = {
       )
     ));
   },
+
+  generateGroupSession(groupId) {
+    const groupIdBase64 = dataToBase64(groupId, 'utf8', 'groupId');
+    validateGroupId(groupIdBase64);
+    const groupSessionInfo = unwrapResponse(
+      RNVirgilCrypto.generateGroupSession(groupIdBase64)
+    );
+    return createVirgilGroupSession(groupSessionInfo);
+  },
+
+  importGroupSession(epochMessages) {
+    if (!Array.isArray(epochMessages)) {
+      throw new TypeError('Epoch messages must be an array.');
+    }
+
+    if (epochMessages.length === 0) {
+      throw new Error('Epoch messages must not be empty.');
+    }
+
+    const epochMessagesBase64 = epochMessages.map((m, i) => dataToBase64(m, 'base64', `epochMessages[${i}]`));
+    const groupSessionInfo = unwrapResponse(
+      RNVirgilCrypto.importGroupSession(epochMessagesBase64)
+    );
+
+    return createVirgilGroupSession(groupSessionInfo);
+  },
+
+  calculateGroupSessionId(groupId) {
+    const groupIdBase64 = dataToBase64(groupId, 'utf8', 'groupId');
+    validateGroupId(groupIdBase64);
+    const hash = base64ToBuffer(
+      unwrapResponse(RNVirgilCrypto.computeHashWithAlgorithm(groupIdBase64, RNVirgilCrypto.HashAlgorithm.SHA512))
+    );
+    return hash.slice(0, 32).toString('hex');
+  }
 }

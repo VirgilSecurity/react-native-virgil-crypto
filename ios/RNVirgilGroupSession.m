@@ -18,8 +18,8 @@
 - (instancetype)init
 {
     self = [super init];
-    self.rng = [VSCFCtrDrbg new];
-    self.keyProvider = [VSCFKeyProvider new];
+    self.rng = [[VSCFCtrDrbg alloc] init];
+    self.keyProvider = [[VSCFKeyProvider alloc] init];
     [self.rng setupDefaultsAndReturnError:nil];
     [self.keyProvider setupDefaultsAndReturnError:nil];
     return self;
@@ -37,7 +37,7 @@
         [epochMessages addObject:epochMessage];
     }
     
-    VSCFGroupSession *session = [VSCFGroupSession new];
+    VSCFGroupSession *session = [[VSCFGroupSession alloc] init];
     [session setRngWithRng:self.rng];
     for (VSCFGroupSessionMessage* epochMessage in epochMessages) {
         if (![session addEpochWithMessage:epochMessage error:err]) {

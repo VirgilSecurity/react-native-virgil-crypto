@@ -325,8 +325,8 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(id, signAndEncryptDetached:(NSString*)dataBa
             return [ResponseFactory fromError:err];
         }
         
-        VSCFAes256Gcm *aesGcm = [VSCFAes256Gcm new];
-        VSCFRecipientCipher *cipher = [VSCFRecipientCipher new];
+        VSCFAes256Gcm *aesGcm = [[VSCFAes256Gcm alloc] init];
+        VSCFRecipientCipher *cipher = [[VSCFRecipientCipher alloc] init];
         
         [cipher setEncryptionCipherWithEncryptionCipher:aesGcm];
         [cipher setRandomWithRandom:self.crypto.rng];
@@ -396,7 +396,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(generateGroupSession:(NSString*)groupIdBa
         NSError *err;
         NSData *sessionId = [self computeHashFor:[groupIdBase64 dataUsingBase64] using:VSMHashAlgorithmSha512];
         sessionId = [sessionId subdataWithRange:NSMakeRange(0, 32)];
-        VSCFGroupSessionTicket *initialEpochTicket = [VSCFGroupSessionTicket new];
+        VSCFGroupSessionTicket *initialEpochTicket = [[VSCFGroupSessionTicket alloc] init];
         [initialEpochTicket setRngWithRng: self.crypto.rng];
         if ([initialEpochTicket setupTicketAsNewWithSessionId:sessionId error:&err] == NO) {
             return [ResponseFactory fromError:err];
@@ -432,7 +432,7 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(importGroupSession:(NSArray<NSString*>*) 
         
         NSMutableArray<NSString *> *sortedSerializedEpochMessages = [NSMutableArray arrayWithCapacity:[sortedEpochMessages count]];
         
-        VSCFGroupSession *session = [VSCFGroupSession new];
+        VSCFGroupSession *session = [[VSCFGroupSession alloc] init];
         [session setRngWithRng:self.crypto.rng];
         for (VSCFGroupSessionMessage* epochMessage in sortedEpochMessages) {
             if ([session addEpochWithMessage:epochMessage error:&err] == NO) {

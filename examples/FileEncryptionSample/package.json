@@ -6,8 +6,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "fix": "rimraf node_modules/react-native-virgil-crypto/examples",
-    "postinstall": "npm run fix",
+    "prepare": "rimraf node_modules/react-native-virgil-crypto/examples && rimraf node_modules/react-native-virgil-crypto/E2ETests && rimraf node_modules/react-native-virgil-crypto/node_modules/react-native",
+    "postinstall": "cd server && npm install",
     "serve": "cd server && npm run start"
   },
   "dependencies": {
@@ -15,7 +15,7 @@
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-image-picker": "^1.0.2",
-    "react-native-virgil-crypto": "file:../../",
+    "react-native-virgil-crypto": "../../",
     "rn-fetch-blob": "^0.10.16"
   },
   "devDependencies": {

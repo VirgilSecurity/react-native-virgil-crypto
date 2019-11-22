@@ -292,7 +292,7 @@ const cardManager = new CardManager({
   retryOnUnauthorized: true,
 });
 
-const privateKeyStroage = new PrivateKeyStorage(
+const privateKeyStorage = new PrivateKeyStorage(
   new VirgilPrivateKeyExporter(virgilCrypto),
   createNativeKeyEntryStorage({ username: nameOfTheStorageChosenByYou });
 );

@@ -3,16 +3,18 @@ def safeExtGet(prop, fallback) {
 }
 
 buildscript {
-    repositories {
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
+    // The Android Gradle plugin is only required when opening the android folder stand-alone.
+    // This avoids unnecessary downloads and potential conflicts when the library is included as a
+    // module dependency in an application project.
+    if (project == rootProject) {
+        repositories {
+            google()
+            jcenter()
         }
-        jcenter()
-    }
-
-    dependencies {
-        classpath('com.android.tools.build:gradle:3.4.2')
+        
+        dependencies {
+            classpath("com.android.tools.build:gradle:3.5.3")
+        }
     }
 }
 
@@ -33,10 +35,7 @@ android {
 }
 
 repositories {
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
-    }
+    google()
     jcenter()
 }
 

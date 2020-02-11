@@ -2,7 +2,7 @@
 Use this project as a reference for your own React Native 0.59.x project.
 > We use CocoaPods all the way for this version. Please have a look at [this article](https://engineering.brigad.co/demystifying-react-native-modules-linking-ae6c017a6b4a) to find out more.
 >
-> Also we highly suggest you to upgrade to 0.60.x or higher and use [this example](../Example61) as a reference to setup your project.
+> Also we highly suggest you to upgrade to 0.61.x or higher and use [this example](../Example61) as a reference to setup your project.
 
 ## Install
 1. Install JavaScript dependencies:

@@ -39,12 +39,17 @@ export function createBenchmark() {
   // addSignatures(suite, KeyPairType.SECP256R1);
   // addSignatures(suite, KeyPairType.RSA_4096);
 
+  addSignAndEncrypt(suite, KeyPairType.ED25519);
+  addSignAndEncrypt(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
   addSignThenEncrypt(suite, KeyPairType.ED25519);
+  addSignThenEncrypt(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
   addKeyknoxCrypto(suite, KeyPairType.ED25519);
+  addKeyknoxCrypto(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
   addBrainKeyCrypto(suite);
 
   addKeyExtraction(suite, KeyPairType.ED25519);
   addKeyExtraction(suite, KeyPairType.CURVE25519);
+  addKeyExtraction(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
 
   addGroupEncryption(suite);
 
@@ -89,6 +94,39 @@ function addSignatures(suite, keyPairType) {
 
   suite.add(`verifySignature (${keyPairType})`, () => {
     virgilCrypto.verifySignature(oneKbData, signature, keypair.publicKey);
+  });
+}
+
+function addSignAndEncrypt(suite, keyPairType) {
+  const keypair = virgilCrypto.generateKeys();
+  const encryptedData = virgilCrypto.signAndEncrypt(
+    oneKbData,
+    keypair.privateKey,
+    keypair.publicKey,
+  );
+
+  suite.add(`signAndEncrypt (${keyPairType})`, () => {
+    try {
+      virgilCrypto.signAndEncrypt(
+        oneKbData,
+        keypair.privateKey,
+        keypair.publicKey,
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  suite.add(`decryptAndVerify (${keyPairType})`, () => {
+    try {
+      virgilCrypto.decryptAndVerify(
+        encryptedData,
+        keypair.privateKey,
+        keypair.publicKey,
+      );
+    } catch (error) {
+      console.log(error);
+    }
   });
 }
 

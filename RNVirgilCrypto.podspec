@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.name         = 'RNVirgilCrypto'
   s.version      = package['version']
   s.summary      = package['description']
-  s.homepage     = package['repository']
+  s.homepage     = 'https://github.com/VirgilSecurity/react-native-virgil-crypto'
   s.license      = package['license']
   s.authors      = { 'Virgil Security Inc.': 'support@virgilsecurity.com' }
   s.platforms    = { ios: '9.0' }

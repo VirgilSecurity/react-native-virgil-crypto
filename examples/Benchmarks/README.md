@@ -56,8 +56,7 @@ yarn install
 Install iOS native dependencies:
 
 ```sh
-cd ios/
-carthage update --platform iOS
+cd ios && pod install
 ```
 
 Start the packager:

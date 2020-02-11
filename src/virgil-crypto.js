@@ -1,11 +1,11 @@
 import { NativeModules } from 'react-native';
 import { VirgilPrivateKey } from './virgil-private-key';
 import { VirgilPublicKey } from './virgil-public-key';
-import { 
+import {
   checkedGetPrivateKeyValue,
   checkedGetPublicKeyValue,
   checkedGetPublicKeyValues,
-  wrapKeyPair 
+  wrapKeyPair
 } from './utils/keys';
 import { unwrapResponse } from './utils/response';
 import { dataToBase64, base64ToBuffer } from './utils/encoding';
@@ -46,7 +46,7 @@ export const virgilCrypto = {
       const nativeAlg = checkedGetHashAlgorithm(algorithm);
       response = RNVirgilCrypto.computeHashWithAlgorithm(dataBase64, nativeAlg);
     }
-    
+
     return base64ToBuffer(
       unwrapResponse(response)
     );
@@ -76,11 +76,11 @@ export const virgilCrypto = {
     return wrapKeyPair(keypair);
   },
 
-  encrypt(data, virgilPublicKeys) {
+  encrypt(data, virgilPublicKeys, enablePadding) {
     const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const publicKeysValues = checkedGetPublicKeyValues(virgilPublicKeys);
     return base64ToBuffer(
-      unwrapResponse(RNVirgilCrypto.encrypt(dataBase64, publicKeysValues))
+      unwrapResponse(RNVirgilCrypto.encrypt(dataBase64, publicKeysValues, enablePadding || false))
     );
   },
 
@@ -108,16 +108,46 @@ export const virgilCrypto = {
     return unwrapResponse(RNVirgilCrypto.verifySignature(signatureBase64, dataBase64, publicKeyValue));
   },
 
-  signThenEncrypt(data, virgilPrivateKey, virgilPublicKeys) {
+  signAndEncrypt(data, virgilPrivateKey, virgilPublicKeys, enablePadding) {
     const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
     return base64ToBuffer(unwrapResponse(
       RNVirgilCrypto.signAndEncrypt(
-        dataBase64, 
-        privateKeyValue, 
+        dataBase64,
+        privateKeyValue,
+        publicKeyValues,
+        enablePadding || false
+      )
+    ));
+  },
+
+  decryptAndVerify(encryptedData, virgilPrivateKey, virgilPublicKeys) {
+    const dataBase64 = dataToBase64(encryptedData, 'base64', 'encryptedData');
+    const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
+    const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
+
+    return base64ToBuffer(unwrapResponse(
+      RNVirgilCrypto.decryptAndVerify(
+        dataBase64,
+        privateKeyValue,
         publicKeyValues
+      )
+    ));
+  },
+
+  signThenEncrypt(data, virgilPrivateKey, virgilPublicKeys, enablePadding) {
+    const dataBase64 = dataToBase64(data, 'utf8', 'data');
+    const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
+    const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
+
+    return base64ToBuffer(unwrapResponse(
+      RNVirgilCrypto.signThenEncrypt(
+        dataBase64,
+        privateKeyValue,
+        publicKeyValues,
+        enablePadding || false
       )
     ));
   },
@@ -128,7 +158,7 @@ export const virgilCrypto = {
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
     return base64ToBuffer(unwrapResponse(
-      RNVirgilCrypto.decryptAndVerify(
+      RNVirgilCrypto.decryptThenVerify(
         dataBase64,
         privateKeyValue,
         publicKeyValues
@@ -145,7 +175,7 @@ export const virgilCrypto = {
   exportPrivateKey(virgilPrivateKey) {
     return base64ToBuffer(checkedGetPrivateKeyValue(virgilPrivateKey));
   },
-  
+
   exportPublicKey(virgilPublicKey) {
     return base64ToBuffer(checkedGetPublicKeyValue(virgilPublicKey));
   },
@@ -172,8 +202,8 @@ export const virgilCrypto = {
     const publicKeysValues = checkedGetPublicKeyValues(publicKeys);
 
     return RNVirgilCrypto.encryptFile(
-      normalizeFilePath(inputPath), 
-      outputPath != null ? normalizeFilePath(outputPath) : undefined, 
+      normalizeFilePath(inputPath),
+      outputPath != null ? normalizeFilePath(outputPath) : undefined,
       publicKeysValues
     );
   },
@@ -190,8 +220,8 @@ export const virgilCrypto = {
     const privateKeyValue = checkedGetPrivateKeyValue(privateKey);
 
     return RNVirgilCrypto.decryptFile(
-      normalizeFilePath(inputPath), 
-      outputPath != null ? normalizeFilePath(outputPath) : outputPath, 
+      normalizeFilePath(inputPath),
+      outputPath != null ? normalizeFilePath(outputPath) : outputPath,
       privateKeyValue
     );
   },
@@ -213,16 +243,17 @@ export const virgilCrypto = {
     return RNVirgilCrypto.verifyFileSignature(signatureBase64, normalizeFilePath(inputPath), publicKeyValue);
   },
 
-  signThenEncryptDetached(data, virgilPrivateKey, virgilPublicKeys) {
+  signThenEncryptDetached(data, virgilPrivateKey, virgilPublicKeys, enablePadding) {
     const dataBase64 = dataToBase64(data, 'utf8', 'data');
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
     const { encryptedData, metadata } = unwrapResponse(
-      RNVirgilCrypto.signAndEncryptDetached(
-        dataBase64, 
-        privateKeyValue, 
-        publicKeyValues
+      RNVirgilCrypto.signThenEncryptDetached(
+        dataBase64,
+        privateKeyValue,
+        publicKeyValues,
+        enablePadding || false
       )
     );
     return {
@@ -238,7 +269,7 @@ export const virgilCrypto = {
     const publicKeyValues = checkedGetPublicKeyValues(virgilPublicKeys);
 
     return base64ToBuffer(unwrapResponse(
-      RNVirgilCrypto.decryptAndVerifyDetached(
+      RNVirgilCrypto.decryptThenVerifyDetached(
         dataBase64,
         metadataBase64,
         privateKeyValue,

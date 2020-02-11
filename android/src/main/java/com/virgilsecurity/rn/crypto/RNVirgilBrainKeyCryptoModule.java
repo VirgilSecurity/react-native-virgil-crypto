@@ -9,7 +9,6 @@ import com.facebook.react.bridge.WritableMap;
 import com.virgilsecurity.crypto.pythia.Pythia;
 import com.virgilsecurity.crypto.pythia.PythiaBlindResult;
 
-
 import com.virgilsecurity.rn.crypto.utils.Encodings;
 import com.virgilsecurity.rn.crypto.utils.ResponseFactory;
 

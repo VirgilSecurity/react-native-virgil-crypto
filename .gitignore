@@ -1,17 +1,13 @@
-
 # OSX
-#
 .DS_Store
 
-# node.js
-#
-node_modules/
-npm-debug.log
-yarn-error.log
-  
+# Node.js
+node_modules
+package-lock.json
+yarn.lock
+*.log
 
 # Xcode
-#
 build/
 *.pbxuser
 !default.pbxuser
@@ -29,10 +25,12 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
-      
+
+# CocoaPods
+ios/Pods
+ios/Podfile.lock
 
 # Android/IntelliJ
-#
 build/
 .idea
 .gradle
@@ -43,4 +41,3 @@ local.properties
 buck-out/
 \.buckd/
 *.keystore
-      

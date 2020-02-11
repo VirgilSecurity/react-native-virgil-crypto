@@ -1,0 +1,45 @@
+platform :ios, '9.0'
+
+target 'Example59' do
+  use_frameworks!
+
+  # Pods for Example59
+  pod 'React', path: '../node_modules/react-native', subspecs: [
+    'Core',
+    'CxxBridge',
+    'DevSupport',
+    'RCTActionSheet',
+    'RCTAnimation',
+    'RCTBlob',
+    'RCTGeolocation',
+    'RCTImage',
+    'RCTLinkingIOS',
+    'RCTNetwork',
+    'RCTSettings',
+    'RCTText',
+    'RCTVibration',
+    'RCTWebSocket'
+  ]
+  pod 'yoga', path: '../node_modules/react-native/ReactCommon/yoga'
+  pod 'DoubleConversion', podspec: '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'Folly', podspec: '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+  pod 'glog', podspec: '../node_modules/react-native/third-party-podspecs/glog.podspec'
+
+  pod 'RNVirgilCrypto', path: '../node_modules/react-native-virgil-crypto'
+
+  target 'Example59Tests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+end
+
+target 'Example59-tvOS' do
+  use_frameworks!
+
+  # Pods for Example59-tvOS
+
+  target 'Example59-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+end

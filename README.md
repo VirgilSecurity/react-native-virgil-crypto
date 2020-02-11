@@ -1,4 +1,6 @@
 # React Native Virgil Crypto
+> This README is for 0.5.x version of the library. Check the [0.4.x branch](https://github.com/VirgilSecurity/react-native-virgil-crypto/tree/0.4.x) for 0.4.x docs.
+
 React Native bridge for Virgil Security Crypto Library for [iOS](https://github.com/VirgilSecurity/virgil-crypto-x) and [Android](https://github.com/VirgilSecurity/virgil-sdk-java-android).
 
 This library is a replacement for [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) and should be used in React Native projects. The main difference is that in [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) library a class named `VirgilCrypto` is exported from the module that you need to create instances of, whereas this library exports an "instance" of that class ready to be used. Also, stream encryption is not available as there is no stream implementation in React Native. We're investigating the options to support file encryption though.

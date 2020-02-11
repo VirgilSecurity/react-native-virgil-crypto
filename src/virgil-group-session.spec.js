@@ -156,8 +156,8 @@ describe('groupSession', () => {
     it('calls native method correctly', () => {
       NativeModules.RNVirgilGroupSession.addNewEpoch.mockReturnValue({
         result: {
-          sessionId: defaultSessionId.toString('base64'), 
-          epochNumber: 2, 
+          sessionId: defaultSessionId.toString('base64'),
+          epochNumber: 2,
           data: Buffer.from('epochMessage_2').toString('base64')
         }
       });
@@ -177,8 +177,8 @@ describe('groupSession', () => {
     it('updates the current epoch number', () => {
       NativeModules.RNVirgilGroupSession.addNewEpoch.mockReturnValue({
         result: {
-          sessionId: defaultSessionId.toString('base64'), 
-          epochNumber: 2, 
+          sessionId: defaultSessionId.toString('base64'),
+          epochNumber: 2,
           data: Buffer.from('epochMessage_2').toString('base64')
         }
       });
@@ -193,8 +193,8 @@ describe('groupSession', () => {
     it('adds new message to the internal messages list', () => {
       NativeModules.RNVirgilGroupSession.addNewEpoch.mockReturnValue({
         result: {
-          sessionId: defaultSessionId.toString('base64'), 
-          epochNumber: 2, 
+          sessionId: defaultSessionId.toString('base64'),
+          epochNumber: 2,
           data: Buffer.from('epochMessage_2').toString('base64')
         }
       });
@@ -219,8 +219,8 @@ describe('groupSession', () => {
       const sessionId = Buffer.from('z'.repeat(32), 'ascii');
       NativeModules.RNVirgilGroupSession.parseMessage.mockReturnValue({
         result: {
-          sessionId: sessionId.toString('base64'), 
-          epochNumber: 99, 
+          sessionId: sessionId.toString('base64'),
+          epochNumber: 99,
           data: Buffer.from('epochMessage_99').toString('base64')
         }
       });
@@ -244,8 +244,8 @@ describe('groupSession', () => {
       const sessionId = Buffer.from('z'.repeat(32), 'ascii');
       NativeModules.RNVirgilGroupSession.parseMessage.mockReturnValue({
         result: {
-          sessionId: sessionId.toString('base64'), 
-          epochNumber: 99, 
+          sessionId: sessionId.toString('base64'),
+          epochNumber: 99,
           data: Buffer.from('epochMessage_99').toString('base64')
         }
       });
@@ -263,8 +263,8 @@ describe('groupSession', () => {
       const sessionId = Buffer.from('z'.repeat(32), 'ascii');
       NativeModules.RNVirgilGroupSession.parseMessage.mockReturnValue({
         result: {
-          sessionId: sessionId.toString('base64'), 
-          epochNumber: 99, 
+          sessionId: sessionId.toString('base64'),
+          epochNumber: 99,
           data: Buffer.from('epochMessage_99').toString('base64')
         }
       });

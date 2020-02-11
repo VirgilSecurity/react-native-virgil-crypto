@@ -39,7 +39,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
       const { sessionId, epochNumber, data } = unwrapResponse(
         RNVirgilGroupSession.addNewEpoch(actualEpochMessages)
       );
-      
+
       actualEpochNumber = epochNumber;
       actualEpochMessages = actualEpochMessages.concat(data);
 
@@ -56,7 +56,7 @@ export function createVirgilGroupSession({ sessionId, currentEpochNumber, epochM
 
     parseMessage(messageData) {
       const messageDataBase64 = dataToBase64(messageData, 'base64', 'messageData');
-      
+
       const { sessionId, epochNumber, data } = unwrapResponse(
         RNVirgilGroupSession.parseMessage(messageDataBase64)
       );

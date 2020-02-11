@@ -40,4 +40,4 @@ export function dataToBase64(value, defaultEncoding, label) {
 
 export function base64ToBuffer(b64) {
   return Buffer.from(b64, 'base64');
-} 
+}

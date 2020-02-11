@@ -1,20 +1,20 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "typings": "index.d.ts",
-  "scripts": {
-    "test": "jest index.spec.js src",
-    "lint": "eslint .",
-    "tests:install": "cd E2ETests && yarn install && cd ios && pod install",
-    "tests:ios:pod:install": "cd E2ETests && cd ios && pod install",
-    "tests:packager": "cd E2ETests && node_modules/.bin/react-native start",
-    "tests:ios:build": "cd E2ETests && ./node_modules/.bin/detox build --configuration ios.sim.debug",
-    "tests:ios:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration ios.sim.debug --loglevel warn",
-    "tests:android:build": "cd E2ETests && ./node_modules/.bin/detox build --configuration android.emu.debug",
-    "tests:android:test": "cd E2ETests && ./node_modules/.bin/detox test --configuration android.emu.debug"
-  },
+  "files": [
+    "android",
+    "ios",
+    "src",
+    "index.js",
+    "index.d.ts",
+    "RNVirgilCrypto.podspec"
+  ],
+  "repository": "https://github.com/VirgilSecurity/react-native-virgil-crypto",
+  "author": "Virgil Security Inc. <support@virgilsecurity.com>",
+  "license": "BSD-3-Clause",
   "keywords": [
     "react-native",
     "security",
@@ -23,32 +23,27 @@
     "encryption",
     "crypto"
   ],
-  "author": "VirgilSecrity, Inc.",
-  "license": "BSD-3-Clause",
-  "homepage": "https://github.com/VirgilSecurity/react-native-virgil-crypto",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/VirgilSecurity/react-native-virgil-crypto"
-  },
-  "files": [
-    "android",
-    "ios",
-    "src",
-    "index.js",
-    "index.d.ts",
-    "react-native-virgil-crypto.podspec"
-  ],
-  "devDependencies": {
-    "@babel/core": "^7.5.5",
-    "babel-jest": "^24.8.0",
-    "eslint": "^6.1.0",
-    "eslint-plugin-jest": "^22.15.0",
-    "jest": "^24.8.0",
-    "metro-react-native-babel-preset": "^0.55.0",
-    "react-native": "^0.61.2"
+  "scripts": {
+    "test": "jest index.spec.js src"
   },
   "dependencies": {
-    "@virgilsecurity/crypto-types": "^0.2.0",
-    "buffer": "^5.2.1"
+    "@virgilsecurity/crypto-types": "0.3.0",
+    "buffer": "^5.4.3"
+  },
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
+    "babel-jest": "^25.1.0",
+    "jest": "^25.1.0",
+    "metro-react-native-babel-preset": "^0.58.0",
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }

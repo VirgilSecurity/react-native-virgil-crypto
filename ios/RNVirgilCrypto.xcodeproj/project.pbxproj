@@ -7,16 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		979CC7B423EB433E00A14837 /* RNVirgilBrainKeyCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7B323EB433E00A14837 /* RNVirgilBrainKeyCrypto.m */; };
+		979CC7B923EB449D00A14837 /* ResponseFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7B823EB449D00A14837 /* ResponseFactory.m */; };
+		979CC7C023EB480C00A14837 /* NSData+Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7BF23EB480C00A14837 /* NSData+Encoding.m */; };
+		979CC7C223EB481800A14837 /* NSString+Encoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7C123EB481800A14837 /* NSString+Encoding.m */; };
+		979CC7C623EB4B3200A14837 /* RCTConvert+HashAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7C523EB4B3200A14837 /* RCTConvert+HashAlgorithm.m */; };
+		979CC7C823EB4B4500A14837 /* RCTConvert+KeyPairType.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7C723EB4B4500A14837 /* RCTConvert+KeyPairType.m */; };
+		979CC7CA23EB59B300A14837 /* RNVirgilGroupSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7C923EB59B300A14837 /* RNVirgilGroupSession.m */; };
+		979CC7CE23EB7E2F00A14837 /* FSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7CD23EB7E2F00A14837 /* FSUtils.m */; };
+		979CC7D023EB804D00A14837 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7CF23EB804D00A14837 /* Constants.m */; };
+		979CC7D423EB885600A14837 /* KeyPairType.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7D323EB885600A14837 /* KeyPairType.m */; };
+		979CC7D723EB88F600A14837 /* HashAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = 979CC7D623EB88F600A14837 /* HashAlgorithm.m */; };
+		AF79F60BE8DBB6A124FEF2FE /* Pods_RNVirgilCrypto.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49E72641726A8C3474D7C466 /* Pods_RNVirgilCrypto.framework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNVirgilCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */; };
-		DD03E974231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = DD03E973231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m */; };
-		DD0F90FF233395E3002F9008 /* RNVirgilGroupSession.m in Sources */ = {isa = PBXBuildFile; fileRef = DD0F90FE233395E3002F9008 /* RNVirgilGroupSession.m */; };
-		DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */; };
-		DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903622F84B99001DD161 /* NSData+Encodings.m */; };
-		DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903922F84CA4001DD161 /* NSString+Encodings.m */; };
-		DD3C903C22F8533B001DD161 /* ResponseFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = DD3C903B22F8533B001DD161 /* ResponseFactory.m */; };
-		DDDF207623070E3C00F7C404 /* FSUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDF207523070E3C00F7C404 /* FSUtils.m */; };
-		DDDF207923070FC200F7C404 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = DDDF207823070FC200F7C404 /* Constants.m */; };
-		DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,26 +36,33 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNVirgilCrypto.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNVirgilCrypto.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		49E72641726A8C3474D7C466 /* Pods_RNVirgilCrypto.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNVirgilCrypto.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5251AC3BDD5CC4E828D1CFBA /* Pods-RNVirgilCrypto.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNVirgilCrypto.release.xcconfig"; path = "Target Support Files/Pods-RNVirgilCrypto/Pods-RNVirgilCrypto.release.xcconfig"; sourceTree = "<group>"; };
+		9323B6F41AEEA3992C38DBB4 /* Pods-RNVirgilCrypto.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNVirgilCrypto.debug.xcconfig"; path = "Target Support Files/Pods-RNVirgilCrypto/Pods-RNVirgilCrypto.debug.xcconfig"; sourceTree = "<group>"; };
+		979CC7B323EB433E00A14837 /* RNVirgilBrainKeyCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNVirgilBrainKeyCrypto.m; sourceTree = "<group>"; };
+		979CC7B623EB438000A14837 /* RNVirgilBrainKeyCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVirgilBrainKeyCrypto.h; sourceTree = "<group>"; };
+		979CC7B723EB448F00A14837 /* ResponseFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseFactory.h; sourceTree = "<group>"; };
+		979CC7B823EB449D00A14837 /* ResponseFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResponseFactory.m; sourceTree = "<group>"; };
+		979CC7BD23EB476700A14837 /* NSData+Encoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Encoding.h"; sourceTree = "<group>"; };
+		979CC7BE23EB478E00A14837 /* NSString+Encoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Encoding.h"; sourceTree = "<group>"; };
+		979CC7BF23EB480C00A14837 /* NSData+Encoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Encoding.m"; sourceTree = "<group>"; };
+		979CC7C123EB481800A14837 /* NSString+Encoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encoding.m"; sourceTree = "<group>"; };
+		979CC7C323EB4AA300A14837 /* RCTConvert+HashAlgorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+HashAlgorithm.h"; sourceTree = "<group>"; };
+		979CC7C423EB4B1800A14837 /* RCTConvert+KeyPairType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+KeyPairType.h"; sourceTree = "<group>"; };
+		979CC7C523EB4B3200A14837 /* RCTConvert+HashAlgorithm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+HashAlgorithm.m"; sourceTree = "<group>"; };
+		979CC7C723EB4B4500A14837 /* RCTConvert+KeyPairType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+KeyPairType.m"; sourceTree = "<group>"; };
+		979CC7C923EB59B300A14837 /* RNVirgilGroupSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNVirgilGroupSession.m; sourceTree = "<group>"; };
+		979CC7CB23EB59BD00A14837 /* RNVirgilGroupSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVirgilGroupSession.h; sourceTree = "<group>"; };
+		979CC7CC23EB7E2400A14837 /* FSUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSUtils.h; sourceTree = "<group>"; };
+		979CC7CD23EB7E2F00A14837 /* FSUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSUtils.m; sourceTree = "<group>"; };
+		979CC7CF23EB804D00A14837 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		979CC7D123EB805600A14837 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		979CC7D223EB884D00A14837 /* KeyPairType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyPairType.h; sourceTree = "<group>"; };
+		979CC7D323EB885600A14837 /* KeyPairType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeyPairType.m; sourceTree = "<group>"; };
+		979CC7D523EB88EC00A14837 /* HashAlgorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HashAlgorithm.h; sourceTree = "<group>"; };
+		979CC7D623EB88F600A14837 /* HashAlgorithm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HashAlgorithm.m; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNVirgilCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNVirgilCrypto.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNVirgilCrypto.m; sourceTree = "<group>"; };
-		DD03E973231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNVirgilBrainKeyCrypto.m; sourceTree = "<group>"; };
-		DD03E985231D12C300E2B1FF /* RNVirgilBrainKeyCrypto.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVirgilBrainKeyCrypto.h; sourceTree = "<group>"; };
-		DD0F90FE233395E3002F9008 /* RNVirgilGroupSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNVirgilGroupSession.m; sourceTree = "<group>"; };
-		DD0F9100233395FC002F9008 /* RNVirgilGroupSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNVirgilGroupSession.h; sourceTree = "<group>"; };
-		DD3C903222F83282001DD161 /* RCTConvert+HashAlgorithm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+HashAlgorithm.h"; sourceTree = "<group>"; };
-		DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+HashAlgorithm.m"; sourceTree = "<group>"; };
-		DD3C903522F84B99001DD161 /* NSData+Encodings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+Encodings.h"; sourceTree = "<group>"; };
-		DD3C903622F84B99001DD161 /* NSData+Encodings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+Encodings.m"; sourceTree = "<group>"; };
-		DD3C903822F84CA4001DD161 /* NSString+Encodings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+Encodings.h"; sourceTree = "<group>"; };
-		DD3C903922F84CA4001DD161 /* NSString+Encodings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+Encodings.m"; sourceTree = "<group>"; };
-		DD3C903B22F8533B001DD161 /* ResponseFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResponseFactory.m; sourceTree = "<group>"; };
-		DD3C903D22F853B4001DD161 /* ResponseFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseFactory.h; sourceTree = "<group>"; };
-		DDDF207523070E3C00F7C404 /* FSUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FSUtils.m; sourceTree = "<group>"; };
-		DDDF207723070E4A00F7C404 /* FSUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FSUtils.h; sourceTree = "<group>"; };
-		DDDF207823070FC200F7C404 /* Constants.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
-		DDDF207A23070FD500F7C404 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		DDF69F5E22F47D900016F2C0 /* RCTConvert+KeyPairType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RCTConvert+KeyPairType.h"; sourceTree = "<group>"; };
-		DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "RCTConvert+KeyPairType.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +70,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF79F60BE8DBB6A124FEF2FE /* Pods_RNVirgilCrypto.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -74,31 +85,54 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		2A252946B32E676F01FEFE67 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				49E72641726A8C3474D7C466 /* Pods_RNVirgilCrypto.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-				DD0F9100233395FC002F9008 /* RNVirgilGroupSession.h */,
-				DD0F90FE233395E3002F9008 /* RNVirgilGroupSession.m */,
-				DD03E985231D12C300E2B1FF /* RNVirgilBrainKeyCrypto.h */,
-				DD03E973231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m */,
-				DDDF207A23070FD500F7C404 /* Constants.h */,
-				DDDF207823070FC200F7C404 /* Constants.m */,
-				DDDF207723070E4A00F7C404 /* FSUtils.h */,
-				DDDF207523070E3C00F7C404 /* FSUtils.m */,
-				DD3C903D22F853B4001DD161 /* ResponseFactory.h */,
-				DD3C903B22F8533B001DD161 /* ResponseFactory.m */,
-				DD3C903822F84CA4001DD161 /* NSString+Encodings.h */,
-				DD3C903922F84CA4001DD161 /* NSString+Encodings.m */,
-				DD3C903522F84B99001DD161 /* NSData+Encodings.h */,
-				DD3C903622F84B99001DD161 /* NSData+Encodings.m */,
-				DD3C903222F83282001DD161 /* RCTConvert+HashAlgorithm.h */,
-				DD3C903322F83282001DD161 /* RCTConvert+HashAlgorithm.m */,
-				DDF69F5E22F47D900016F2C0 /* RCTConvert+KeyPairType.h */,
-				DDF69F5F22F47D900016F2C0 /* RCTConvert+KeyPairType.m */,
+				979CC7D623EB88F600A14837 /* HashAlgorithm.m */,
+				979CC7D523EB88EC00A14837 /* HashAlgorithm.h */,
+				979CC7D323EB885600A14837 /* KeyPairType.m */,
+				979CC7D223EB884D00A14837 /* KeyPairType.h */,
+				979CC7D123EB805600A14837 /* Constants.h */,
+				979CC7CF23EB804D00A14837 /* Constants.m */,
+				979CC7CD23EB7E2F00A14837 /* FSUtils.m */,
+				979CC7CC23EB7E2400A14837 /* FSUtils.h */,
+				979CC7CB23EB59BD00A14837 /* RNVirgilGroupSession.h */,
+				979CC7C923EB59B300A14837 /* RNVirgilGroupSession.m */,
+				979CC7C723EB4B4500A14837 /* RCTConvert+KeyPairType.m */,
+				979CC7C523EB4B3200A14837 /* RCTConvert+HashAlgorithm.m */,
+				979CC7C423EB4B1800A14837 /* RCTConvert+KeyPairType.h */,
+				979CC7C323EB4AA300A14837 /* RCTConvert+HashAlgorithm.h */,
+				979CC7C123EB481800A14837 /* NSString+Encoding.m */,
+				979CC7BF23EB480C00A14837 /* NSData+Encoding.m */,
+				979CC7BE23EB478E00A14837 /* NSString+Encoding.h */,
+				979CC7BD23EB476700A14837 /* NSData+Encoding.h */,
+				979CC7B823EB449D00A14837 /* ResponseFactory.m */,
+				979CC7B723EB448F00A14837 /* ResponseFactory.h */,
+				979CC7B623EB438000A14837 /* RNVirgilBrainKeyCrypto.h */,
+				979CC7B323EB433E00A14837 /* RNVirgilBrainKeyCrypto.m */,
 				B3E7B5881CC2AC0600A0062D /* RNVirgilCrypto.h */,
 				B3E7B5891CC2AC0600A0062D /* RNVirgilCrypto.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				6E2A94790FA728B0DBFD4A13 /* Pods */,
+				2A252946B32E676F01FEFE67 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		6E2A94790FA728B0DBFD4A13 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9323B6F41AEEA3992C38DBB4 /* Pods-RNVirgilCrypto.debug.xcconfig */,
+				5251AC3BDD5CC4E828D1CFBA /* Pods-RNVirgilCrypto.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,6 +142,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "RNVirgilCrypto" */;
 			buildPhases = (
+				9BBD1664FC1C0F9EFC8200B1 /* [CP] Check Pods Manifest.lock */,
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
 				58B511D91A9E6C8500147676 /* CopyFiles */,
@@ -127,8 +162,8 @@
 		58B511D31A9E6C8500147676 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
-				ORGANIZATIONNAME = "Virgil Security, Inc.";
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -153,21 +188,48 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9BBD1664FC1C0F9EFC8200B1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RNVirgilCrypto-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD3C903A22F84CA4001DD161 /* NSString+Encodings.m in Sources */,
-				DD3C903C22F8533B001DD161 /* ResponseFactory.m in Sources */,
+				979CC7C223EB481800A14837 /* NSString+Encoding.m in Sources */,
+				979CC7D723EB88F600A14837 /* HashAlgorithm.m in Sources */,
+				979CC7CE23EB7E2F00A14837 /* FSUtils.m in Sources */,
+				979CC7C623EB4B3200A14837 /* RCTConvert+HashAlgorithm.m in Sources */,
+				979CC7C823EB4B4500A14837 /* RCTConvert+KeyPairType.m in Sources */,
+				979CC7B423EB433E00A14837 /* RNVirgilBrainKeyCrypto.m in Sources */,
+				979CC7D023EB804D00A14837 /* Constants.m in Sources */,
+				979CC7C023EB480C00A14837 /* NSData+Encoding.m in Sources */,
+				979CC7D423EB885600A14837 /* KeyPairType.m in Sources */,
+				979CC7B923EB449D00A14837 /* ResponseFactory.m in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* RNVirgilCrypto.m in Sources */,
-				DDDF207923070FC200F7C404 /* Constants.m in Sources */,
-				DD3C903722F84B99001DD161 /* NSData+Encodings.m in Sources */,
-				DD3C903422F83282001DD161 /* RCTConvert+HashAlgorithm.m in Sources */,
-				DDDF207623070E3C00F7C404 /* FSUtils.m in Sources */,
-				DDF69F6022F47D900016F2C0 /* RCTConvert+KeyPairType.m in Sources */,
-				DD03E974231D128C00E2B1FF /* RNVirgilBrainKeyCrypto.m in Sources */,
-				DD0F90FF233395E3002F9008 /* RNVirgilGroupSession.m in Sources */,
+				979CC7CA23EB59B300A14837 /* RNVirgilGroupSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,7 +240,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -187,14 +248,12 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -220,7 +279,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -231,7 +290,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -240,14 +298,12 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -266,7 +322,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -275,23 +331,13 @@
 		};
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9323B6F41AEEA3992C38DBB4 /* Pods-RNVirgilCrypto.debug.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../../../ios/Carthage/build/iOS",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia",
-				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
-					"$(SRCROOT)/../../../ios/Pods/Headers/Public",
-					"$(SRCROOT)/../../../ios/Pods/Headers/Public/React-Core",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto/VirgilCrypto.framework/Headers",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation/VirgilCryptoFoundation.framework/Headers",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia/VirgilCryptoPythia.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";
@@ -302,23 +348,13 @@
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5251AC3BDD5CC4E828D1CFBA /* Pods-RNVirgilCrypto.release.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../../../ios/Carthage/build/iOS",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia",
-				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
-					"$(SRCROOT)/../../../ios/Pods/Headers/Public",
-					"$(SRCROOT)/../../../ios/Pods/Headers/Public/React-Core",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCrypto/VirgilCrypto.framework/Headers",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoFoundation/VirgilCryptoFoundation.framework/Headers",
-					"${BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/VirgilCryptoPythia/VirgilCryptoPythia.framework/Headers",
 				);
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "-ObjC";

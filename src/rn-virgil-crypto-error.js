@@ -84,5 +84,5 @@ export class RNVirgilCryptoError extends Error {
     this.code = nativeErrorInfo.code;
     this.userInfo = nativeErrorInfo.userInfo;
     this.nativeStack = Platform.OS === 'ios' ? nativeErrorInfo.nativeStackIOS : nativeErrorInfo.nativeStackAndroid;
-  } 
+  }
 }

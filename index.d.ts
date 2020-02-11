@@ -1,4 +1,4 @@
-import { ICrypto, IBrainKeyCrypto, NodeBuffer } from "@virgilsecurity/crypto-types";
+import { ICrypto, IBrainKeyCrypto, NodeBuffer } from '@virgilsecurity/crypto-types';
 
 export const Buffer: NodeBuffer;
 export const virgilCrypto: ICrypto;
@@ -9,7 +9,9 @@ export enum KeyPairType {
   SECP256R1,
   RSA_2048,
   RSA_4096,
-  RSA_8192
+  RSA_8192,
+  CURVE25519_ED25519,
+  CURVE25519_ROUND5_ED25519_FALCON,
 }
 export enum HashAlgorithm {
   SHA224,

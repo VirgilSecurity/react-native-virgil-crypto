@@ -23,15 +23,15 @@ jest.mock('react-native', () => ({
       decrypt: jest.fn(),
       generateSignature: jest.fn(),
       verifySignature: jest.fn(),
-      signAndEncrypt: jest.fn(),
-      decryptAndVerify: jest.fn(),
+      signThenEncrypt: jest.fn(),
+      decryptThenVerify: jest.fn(),
       extractPublicKey: jest.fn(),
       encryptFile: jest.fn(),
       decryptFile: jest.fn(),
       generateFileSignature: jest.fn(),
       verifyFileSignature: jest.fn(),
-      signAndEncryptDetached: jest.fn(),
-      decryptAndVerifyDetached: jest.fn(),
+      signThenEncryptDetached: jest.fn(),
+      decryptThenVerifyDetached: jest.fn(),
       generateGroupSession: jest.fn(),
       importGroupSession: jest.fn(),
     },
@@ -57,15 +57,15 @@ describe('virgilCrypto', () => {
     NativeModules.RNVirgilCrypto.decrypt.mockReset();
     NativeModules.RNVirgilCrypto.generateSignature.mockReset();
     NativeModules.RNVirgilCrypto.verifySignature.mockReset();
-    NativeModules.RNVirgilCrypto.signAndEncrypt.mockReset();
-    NativeModules.RNVirgilCrypto.decryptAndVerify.mockReset();
+    NativeModules.RNVirgilCrypto.signThenEncrypt.mockReset();
+    NativeModules.RNVirgilCrypto.decryptThenVerify.mockReset();
     NativeModules.RNVirgilCrypto.extractPublicKey.mockReset();
     NativeModules.RNVirgilCrypto.encryptFile.mockReset();
     NativeModules.RNVirgilCrypto.decryptFile.mockReset();
     NativeModules.RNVirgilCrypto.generateFileSignature.mockReset();
     NativeModules.RNVirgilCrypto.verifyFileSignature.mockReset();
-    NativeModules.RNVirgilCrypto.signAndEncryptDetached.mockReset();
-    NativeModules.RNVirgilCrypto.decryptAndVerifyDetached.mockReset();
+    NativeModules.RNVirgilCrypto.signThenEncryptDetached.mockReset();
+    NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReset();
     NativeModules.RNVirgilCrypto.generateGroupSession.mockReset();
     NativeModules.RNVirgilCrypto.importGroupSession.mockReset();
   });
@@ -80,7 +80,7 @@ describe('virgilCrypto', () => {
     });
     it('accepts "data" as utf8 string', () => {
       NativeModules.RNVirgilCrypto.computeHash.mockReturnValue({ result: Buffer.from('hash').toString('base64') });
-      const data = 'data'; 
+      const data = 'data';
       const result = virgilCrypto.calculateHash(data);
       expect(Buffer.isBuffer(result)).toBe(true);
       expect(NativeModules.RNVirgilCrypto.computeHash).toHaveBeenCalledWith(Buffer.from('data').toString('base64'));
@@ -93,7 +93,7 @@ describe('virgilCrypto', () => {
       expect(NativeModules.RNVirgilCrypto.computeHash).toHaveBeenCalledWith(Buffer.from('data').toString('base64'));
     });
     it('returns Buffer when algorithm is not specified', () => {
-      NativeModules.RNVirgilCrypto.computeHash.mockReturnValue({ result: Buffer.from('hash_of_data').toString('base64') }); 
+      NativeModules.RNVirgilCrypto.computeHash.mockReturnValue({ result: Buffer.from('hash_of_data').toString('base64') });
       const result = virgilCrypto.calculateHash('data');
       expect(Buffer.isBuffer(result)).toBe(true);
       expect(result.toString('utf8')).toBe('hash_of_data');
@@ -143,7 +143,7 @@ describe('virgilCrypto', () => {
 
   describe('generateKeys', () => {
     it('generates key pair with default type', () => {
-      NativeModules.RNVirgilCrypto.generateKeyPair.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.generateKeyPair.mockReturnValue({
         result: {
           privateKey: Buffer.from('private_key').toString('base64'),
           publicKey: Buffer.from('public_key').toString('base64')
@@ -180,7 +180,7 @@ describe('virgilCrypto', () => {
 
   describe('generateKeysFromKeyMaterial', () => {
     it('accepts "seed" as Buffer', () => {
-      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({
         result: {
           privateKey: Buffer.from('private_key').toString('base64'),
           publicKey: Buffer.from('public_key').toString('base64')
@@ -191,7 +191,7 @@ describe('virgilCrypto', () => {
       expect(NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed).toHaveBeenCalledWith(seed.toString('base64'));
     });
     it('accepts "seed" as base64 string', () => {
-      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({
         result: {
           privateKey: Buffer.from('private_key').toString('base64'),
           publicKey: Buffer.from('public_key').toString('base64')
@@ -202,7 +202,7 @@ describe('virgilCrypto', () => {
       expect(NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed).toHaveBeenCalledWith(Buffer.from('seed').toString('base64'));
     });
     it('accepts "seed" as object with string value and encoding', () => {
-      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({
         result: {
           privateKey: Buffer.from('private_key').toString('base64'),
           publicKey: Buffer.from('public_key').toString('base64')
@@ -213,7 +213,7 @@ describe('virgilCrypto', () => {
       expect(NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed).toHaveBeenCalledWith(Buffer.from('seed').toString('base64'));
     });
     it('generates key pair from seed with default type', () => {
-      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mockReturnValue({
         result: {
           privateKey: Buffer.from('private_key').toString('base64'),
           publicKey: Buffer.from('public_key').toString('base64')
@@ -226,7 +226,7 @@ describe('virgilCrypto', () => {
       expect(NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed.mock.calls[0][0]).toBe(expectedSeed);
     });
     it('generates key pair from seed with specific type', () => {
-      NativeModules.RNVirgilCrypto.generateKeyPairWithTypeAndSeed.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.generateKeyPairWithTypeAndSeed.mockReturnValue({
         result: {
           privateKey: Buffer.from('private_key').toString('base64'),
           publicKey: Buffer.from('public_key').toString('base64')
@@ -257,19 +257,19 @@ describe('virgilCrypto', () => {
       NativeModules.RNVirgilCrypto.encrypt.mockReturnValue({ result: Buffer.from('ciphertext').toString('base64')});
       const data = 'data';
       virgilCrypto.encrypt(data, new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey']);
+      expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey'], false);
     });
     it('accepts data as Buffer', () => {
       NativeModules.RNVirgilCrypto.encrypt.mockReturnValue({ result: Buffer.from('ciphertext').toString('base64')});
       const data = Buffer.from('data');
       virgilCrypto.encrypt(data, new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey']);
+      expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey'], false);
     });
     it('accepts data as object with string value and encoding', () => {
       NativeModules.RNVirgilCrypto.encrypt.mockReturnValue({ result: Buffer.from('ciphertext').toString('base64')});
       const data = { value: Buffer.from('data').toString('base64'), encoding: 'base64' };
       virgilCrypto.encrypt(data, new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey']);
+      expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey'], false);
     });
     it('returns result as Buffer', () => {
       NativeModules.RNVirgilCrypto.encrypt.mockReturnValue({ result: Buffer.from('ciphertext').toString('base64')});
@@ -329,7 +329,7 @@ describe('virgilCrypto', () => {
       const data = { value: 'data', encoding: 'utf8' };
       virgilCrypto.calculateSignature(data, new VirgilPrivateKey('privatekey'));
       expect(NativeModules.RNVirgilCrypto.generateSignature).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+        Buffer.from('data').toString('base64'),
         'privatekey'
       );
     });
@@ -350,8 +350,8 @@ describe('virgilCrypto', () => {
       const signature = Buffer.from('signature').toString('base64');
       virgilCrypto.verifySignature(data, signature, new VirgilPublicKey('pubkey'));
       expect(NativeModules.RNVirgilCrypto.verifySignature).toHaveBeenCalledWith(
-        signature, 
-        Buffer.from(data).toString('base64'), 
+        signature,
+        Buffer.from(data).toString('base64'),
         'pubkey'
       );
     });
@@ -361,8 +361,8 @@ describe('virgilCrypto', () => {
       const signature = Buffer.from('signature');
       virgilCrypto.verifySignature(data, signature, new VirgilPublicKey('pubkey'));
       expect(NativeModules.RNVirgilCrypto.verifySignature).toHaveBeenCalledWith(
-        signature.toString('base64'), 
-        data.toString('base64'), 
+        signature.toString('base64'),
+        data.toString('base64'),
         'pubkey'
       );
     });
@@ -372,8 +372,8 @@ describe('virgilCrypto', () => {
       const signature = { value: 'signature', encoding: 'utf8' };
       virgilCrypto.verifySignature(data, signature, new VirgilPublicKey('pubkey'));
       expect(NativeModules.RNVirgilCrypto.verifySignature).toHaveBeenCalledWith(
-        Buffer.from('signature').toString('base64'), 
-        Buffer.from('data').toString('base64'), 
+        Buffer.from('signature').toString('base64'),
+        Buffer.from('data').toString('base64'),
         'pubkey'
       );
     });
@@ -388,43 +388,46 @@ describe('virgilCrypto', () => {
 
   describe('signThenEncrypt', () => {
     it('accepts data as utf8 string', () => {
-      NativeModules.RNVirgilCrypto.signAndEncrypt.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.signThenEncrypt.mockReturnValue({
         result: Buffer.from('ciphertext').toString('base64')
       });
       const data = 'data';
       virgilCrypto.signThenEncrypt(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.signAndEncrypt).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.signThenEncrypt).toHaveBeenCalledWith(
+        Buffer.from('data').toString('base64'),
         'privatekey',
-        ['pubkey']
+        ['pubkey'],
+        false
       );
     });
     it('accepts data as Buffer', () => {
-      NativeModules.RNVirgilCrypto.signAndEncrypt.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.signThenEncrypt.mockReturnValue({
         result: Buffer.from('ciphertext').toString('base64')
       });
       const data = Buffer.from('data');
       virgilCrypto.signThenEncrypt(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.signAndEncrypt).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.signThenEncrypt).toHaveBeenCalledWith(
+        Buffer.from('data').toString('base64'),
         'privatekey',
-        ['pubkey']
+        ['pubkey'],
+        false
       );
     });
     it('accepts data as object with string value and encoding', () => {
-      NativeModules.RNVirgilCrypto.signAndEncrypt.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.signThenEncrypt.mockReturnValue({
         result: Buffer.from('ciphertext').toString('base64')
       });
       const data = { value: 'data', encoding: 'utf8' };
       virgilCrypto.signThenEncrypt(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.signAndEncrypt).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.signThenEncrypt).toHaveBeenCalledWith(
+        Buffer.from('data').toString('base64'),
         'privatekey',
-        ['pubkey']
+        ['pubkey'],
+        false
       );
     });
     it('returns Buffer', () => {
-      NativeModules.RNVirgilCrypto.signAndEncrypt.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.signThenEncrypt.mockReturnValue({
         result: Buffer.from('ciphertext').toString('base64')
       });
       const data = 'data';
@@ -436,43 +439,43 @@ describe('virgilCrypto', () => {
 
   describe('decryptThenVerify', () => {
     it('accepts data as base64 string', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerify.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerify.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = Buffer.from('ciphertext').toString('base64');
       virgilCrypto.decryptThenVerify(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.decryptAndVerify).toHaveBeenCalledWith(
-        Buffer.from('ciphertext').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.decryptThenVerify).toHaveBeenCalledWith(
+        Buffer.from('ciphertext').toString('base64'),
         'privatekey',
         ['pubkey']
       );
     });
     it('accepts data as Buffer', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerify.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerify.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = Buffer.from('ciphertext');
       virgilCrypto.decryptThenVerify(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.decryptAndVerify).toHaveBeenCalledWith(
-        Buffer.from('ciphertext').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.decryptThenVerify).toHaveBeenCalledWith(
+        Buffer.from('ciphertext').toString('base64'),
         'privatekey',
         ['pubkey']
       );
     });
     it('accepts data as object with string value and encoding', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerify.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerify.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = { value: 'ciphertext', encoding: 'utf8' };
       virgilCrypto.decryptThenVerify(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.decryptAndVerify).toHaveBeenCalledWith(
-        Buffer.from('ciphertext').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.decryptThenVerify).toHaveBeenCalledWith(
+        Buffer.from('ciphertext').toString('base64'),
         'privatekey',
         ['pubkey']
       );
     });
     it('returns Buffer', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerify.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerify.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const ciphertext = 'ciphertext';
@@ -739,53 +742,56 @@ describe('virgilCrypto', () => {
 
   describe('signThenEncryptDetached', () => {
     it('accepts data as utf8 string', () => {
-      NativeModules.RNVirgilCrypto.signAndEncryptDetached.mockReturnValue({ 
-        result: { 
+      NativeModules.RNVirgilCrypto.signThenEncryptDetached.mockReturnValue({
+        result: {
           encryptedData: Buffer.from('ciphertext').toString('base64'),
           metadata: Buffer.from('metadata').toString('base64')
         }
       });
       const data = 'data';
       virgilCrypto.signThenEncryptDetached(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.signAndEncryptDetached).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.signThenEncryptDetached).toHaveBeenCalledWith(
+        Buffer.from('data').toString('base64'),
         'privatekey',
-        ['pubkey']
+        ['pubkey'],
+        false
       );
     });
     it('accepts data as Buffer', () => {
-      NativeModules.RNVirgilCrypto.signAndEncryptDetached.mockReturnValue({ 
-        result: { 
+      NativeModules.RNVirgilCrypto.signThenEncryptDetached.mockReturnValue({
+        result: {
           encryptedData: Buffer.from('ciphertext').toString('base64'),
           metadata: Buffer.from('metadata').toString('base64')
         }
       });
       const data = Buffer.from('data');
       virgilCrypto.signThenEncryptDetached(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.signAndEncryptDetached).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.signThenEncryptDetached).toHaveBeenCalledWith(
+        Buffer.from('data').toString('base64'),
         'privatekey',
-        ['pubkey']
+        ['pubkey'],
+        false
       );
     });
     it('accepts data as object with string value and encoding', () => {
-      NativeModules.RNVirgilCrypto.signAndEncryptDetached.mockReturnValue({ 
-        result: { 
+      NativeModules.RNVirgilCrypto.signThenEncryptDetached.mockReturnValue({
+        result: {
           encryptedData: Buffer.from('ciphertext').toString('base64'),
           metadata: Buffer.from('metadata').toString('base64')
         }
       });
       const data = { value: 'data', encoding: 'utf8' };
       virgilCrypto.signThenEncryptDetached(data, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey'));
-      expect(NativeModules.RNVirgilCrypto.signAndEncryptDetached).toHaveBeenCalledWith(
-        Buffer.from('data').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.signThenEncryptDetached).toHaveBeenCalledWith(
+        Buffer.from('data').toString('base64'),
         'privatekey',
-        ['pubkey']
+        ['pubkey'],
+        false
       );
     });
     it('returns enceryptedData and metadata as Buffers', () => {
-      NativeModules.RNVirgilCrypto.signAndEncryptDetached.mockReturnValue({ 
-        result: { 
+      NativeModules.RNVirgilCrypto.signThenEncryptDetached.mockReturnValue({
+        result: {
           encryptedData: Buffer.from('ciphertext').toString('base64'),
           metadata: Buffer.from('metadata').toString('base64')
         }
@@ -803,7 +809,7 @@ describe('virgilCrypto', () => {
 
   describe('decryptThenVerifyDetached', () => {
     it('accepts encrypted data and metadata as base64 strings', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerifyDetached.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = Buffer.from('ciphertext').toString('base64');
@@ -812,8 +818,8 @@ describe('virgilCrypto', () => {
       virgilCrypto.decryptThenVerifyDetached(
         data, metadata, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey')
       );
-      expect(NativeModules.RNVirgilCrypto.decryptAndVerifyDetached).toHaveBeenCalledWith(
-        Buffer.from('ciphertext').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.decryptThenVerifyDetached).toHaveBeenCalledWith(
+        Buffer.from('ciphertext').toString('base64'),
         Buffer.from('metadata').toString('base64'),
         'privatekey',
         ['pubkey']
@@ -821,7 +827,7 @@ describe('virgilCrypto', () => {
     });
 
     it('accepts encrypted data and metadata as Buffers', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerifyDetached.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = Buffer.from('ciphertext');
@@ -830,8 +836,8 @@ describe('virgilCrypto', () => {
       virgilCrypto.decryptThenVerifyDetached(
         data, metadata, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey')
       );
-      expect(NativeModules.RNVirgilCrypto.decryptAndVerifyDetached).toHaveBeenCalledWith(
-        Buffer.from('ciphertext').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.decryptThenVerifyDetached).toHaveBeenCalledWith(
+        Buffer.from('ciphertext').toString('base64'),
         Buffer.from('metadata').toString('base64'),
         'privatekey',
         ['pubkey']
@@ -839,7 +845,7 @@ describe('virgilCrypto', () => {
     });
 
     it('accepts encrypted data and metadata as objects with string value and encoding', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerifyDetached.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = { value: 'ciphertext', encoding: 'utf8' };
@@ -848,8 +854,8 @@ describe('virgilCrypto', () => {
       virgilCrypto.decryptThenVerifyDetached(
         data, metadata, new VirgilPrivateKey('privatekey'), new VirgilPublicKey('pubkey')
       );
-      expect(NativeModules.RNVirgilCrypto.decryptAndVerifyDetached).toHaveBeenCalledWith(
-        Buffer.from('ciphertext').toString('base64'), 
+      expect(NativeModules.RNVirgilCrypto.decryptThenVerifyDetached).toHaveBeenCalledWith(
+        Buffer.from('ciphertext').toString('base64'),
         Buffer.from('metadata').toString('base64'),
         'privatekey',
         ['pubkey']
@@ -857,7 +863,7 @@ describe('virgilCrypto', () => {
     });
 
     it('returns result as Buffer', () => {
-      NativeModules.RNVirgilCrypto.decryptAndVerifyDetached.mockReturnValue({ 
+      NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
       const data = Buffer.from('ciphertext');
@@ -880,8 +886,8 @@ describe('virgilCrypto', () => {
     it('creates group with correct session id', () => {
       NativeModules.RNVirgilCrypto.generateGroupSession.mockReturnValue({
         result: {
-          sessionId: Buffer.from('sessionId').toString('base64'), 
-          currentEpochNumber: 1, 
+          sessionId: Buffer.from('sessionId').toString('base64'),
+          currentEpochNumber: 1,
           epochMessages: [Buffer.from('epochMessage').toString('base64')]
         }
       });
@@ -897,8 +903,8 @@ describe('virgilCrypto', () => {
     it('accepts group id as Buffer', () => {
       NativeModules.RNVirgilCrypto.generateGroupSession.mockReturnValue({
         result: {
-          sessionId: Buffer.from('sessionId').toString('base64'), 
-          currentEpochNumber: 1, 
+          sessionId: Buffer.from('sessionId').toString('base64'),
+          currentEpochNumber: 1,
           epochMessages: [Buffer.from('epochMessage').toString('base64')]
         }
       });
@@ -911,8 +917,8 @@ describe('virgilCrypto', () => {
     it('accepts group id as object with value and encoding', () => {
       NativeModules.RNVirgilCrypto.generateGroupSession.mockReturnValue({
         result: {
-          sessionId: Buffer.from('sessionId').toString('base64'), 
-          currentEpochNumber: 1, 
+          sessionId: Buffer.from('sessionId').toString('base64'),
+          currentEpochNumber: 1,
           epochMessages: [Buffer.from('epochMessage').toString('base64')]
         }
       });
@@ -932,8 +938,8 @@ describe('virgilCrypto', () => {
     it('re-constructs the group from epoch messages', () => {
       NativeModules.RNVirgilCrypto.importGroupSession.mockReturnValue({
         result: {
-          sessionId: Buffer.from('sessionId').toString('base64'), 
-          currentEpochNumber: 3, 
+          sessionId: Buffer.from('sessionId').toString('base64'),
+          currentEpochNumber: 3,
           epochMessages: [
             Buffer.from('epochMessage1').toString('base64'),
             Buffer.from('epochMessage2').toString('base64'),
@@ -960,8 +966,8 @@ describe('virgilCrypto', () => {
     it('accepts group messages as Buffers', () => {
       NativeModules.RNVirgilCrypto.importGroupSession.mockReturnValue({
         result: {
-          sessionId: Buffer.from('sessionId').toString('base64'), 
-          currentEpochNumber: 3, 
+          sessionId: Buffer.from('sessionId').toString('base64'),
+          currentEpochNumber: 3,
           epochMessages: [
             Buffer.from('epochMessage1').toString('base64'),
             Buffer.from('epochMessage2').toString('base64'),
@@ -986,8 +992,8 @@ describe('virgilCrypto', () => {
     it('accepts group messages as objects with value and encoding', () => {
       NativeModules.RNVirgilCrypto.importGroupSession.mockReturnValue({
         result: {
-          sessionId: Buffer.from('sessionId').toString('base64'), 
-          currentEpochNumber: 3, 
+          sessionId: Buffer.from('sessionId').toString('base64'),
+          currentEpochNumber: 3,
           epochMessages: [
             Buffer.from('epochMessage1').toString('base64'),
             Buffer.from('epochMessage2').toString('base64'),

@@ -15,38 +15,44 @@ import {
   Text,
   StatusBar,
   Button,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import {
-  Colors,
-} from 'react-native/Libraries/NewAppScreen';
-
-import { createBenchmark } from './create-benchmark';
+import {createBenchmark} from './createBenchmark';
 
 class App extends React.Component {
   state = {
     isRunning: false,
-    benchmarks: []
+    benchmarks: [],
   };
 
   runBenchmark = () => {
     const suite = createBenchmark();
 
-    suite.on('cycle', (event) => {
-      this.setState(state => ({ benchmarks: state.benchmarks.concat(event.target) }));
+    suite.on('cycle', event => {
+      this.setState(state => ({
+        benchmarks: state.benchmarks.concat(event.target),
+      }));
     });
 
-    suite.on('complete', (event) => {
-      this.setState({ isRunning: false });
+    suite.on('complete', event => {
+      this.setState({
+        isRunning: false,
+      });
     });
 
-    suite.run({ async: true });
-    this.setState({ isRunning: true, benchmarks: [] });
-  }
+    suite.run({
+      async: true,
+    });
+    this.setState({
+      isRunning: true,
+      benchmarks: [],
+    });
+  };
 
   render() {
-    const { isRunning, benchmarks } = this.state;
+    const {isRunning, benchmarks} = this.state;
     return (
       <Fragment>
         <StatusBar barStyle="dark-content" />
@@ -66,10 +72,22 @@ class App extends React.Component {
                   Tap the button and wait for results to appear...
                 </Text>
                 <View style={styles.buttonContainer}>
-                  <Button title="Run" disabled={isRunning} onPress={this.runBenchmark} />
+                  <Button
+                    title="Run"
+                    disabled={isRunning}
+                    onPress={this.runBenchmark}
+                  />
                 </View>
-                <Fragment>{benchmarks.map(b => (<Text style={styles.benchmark} key={b.name}>{String(b)}</Text>))}</Fragment>
-                { isRunning && <ActivityIndicator size="large" color="#333333" /> }
+                <Fragment>
+                  {benchmarks.map(b => (
+                    <Text style={styles.benchmark} key={b.name}>
+                      {String(b)}
+                    </Text>
+                  ))}
+                </Fragment>
+                {isRunning && (
+                  <ActivityIndicator size="large" color="#333333" />
+                )}
               </View>
             </View>
           </ScrollView>
@@ -106,11 +124,11 @@ const styles = StyleSheet.create({
     color: Colors.dark,
   },
   buttonContainer: {
-    marginVertical: 16
+    marginVertical: 16,
   },
   benchmark: {
-    marginBottom: 8
-  }
+    marginBottom: 8,
+  },
 });
 
 export default App;

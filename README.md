@@ -165,7 +165,7 @@ downloadImage()
 });
 ```
 
-See the [demo project](examples/FileEncryptionDemo) for a complete example of working with encrypted files.
+See the [demo project](examples/FileEncryptionSample) for a complete example of working with encrypted files.
 
 ### Group encryption
 This library only provides crypto primitives to implement group chats.

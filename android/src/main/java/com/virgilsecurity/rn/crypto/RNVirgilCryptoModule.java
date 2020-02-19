@@ -436,6 +436,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     public void encryptFile(final String inputPath,
                             String outputPath,
                             ReadableArray recipientsBase64,
+                            final boolean enablePadding,
                             final Promise promise) {
         final List<VirgilPublicKey> publicKeys;
         try {
@@ -462,7 +463,7 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
                         InputStream inStream = FS.getInputStreamFromPath(inputPath);
                         OutputStream outStream = FS.getOutputStreamFromPath(resolvedOutputPath)
                 ) {
-                    vc.encrypt(inStream, outStream, publicKeys);
+                    vc.encrypt(inStream, outStream, publicKeys, enablePadding);
                     promise.resolve(resolvedOutputPath);
                 } catch (FileNotFoundException e) {
                     promise.reject(

@@ -1,0 +1,14 @@
+{
+  "name": "file-encryption-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "BSD-3-Clause",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
+    "multer": "^1.4.2"
+  }
+}

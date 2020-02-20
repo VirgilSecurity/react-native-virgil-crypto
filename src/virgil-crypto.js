@@ -190,7 +190,7 @@ export const virgilCrypto = {
     return new VirgilPublicKey(publicKeyBase64);
   },
 
-  encryptFile({ inputPath, outputPath, publicKeys }) {
+  encryptFile({ inputPath, outputPath, publicKeys, enablePadding }) {
     if (typeof inputPath !== 'string') {
       throw new TypeError('Expected "inputPath" parameter to be a string. Got ' + typeof inputPath);
     }
@@ -204,7 +204,8 @@ export const virgilCrypto = {
     return RNVirgilCrypto.encryptFile(
       normalizeFilePath(inputPath),
       outputPath != null ? normalizeFilePath(outputPath) : undefined,
-      publicKeysValues
+      publicKeysValues,
+      enablePadding || false,
     );
   },
 

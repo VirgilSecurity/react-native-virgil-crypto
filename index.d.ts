@@ -10,6 +10,7 @@ export type EncryptFileParams = {
     inputPath: string;
     publicKeys: IPublicKey | IPublicKey[];
     outputPath?: string;
+    enablePadding?: boolean;
 };
 
 export type DecryptFileParams = {

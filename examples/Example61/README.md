@@ -2,6 +2,7 @@
 Use this project as a reference for your own React Native 0.61.x project.
 
 ## Notable changes
+- Add `react-native-virgil-crypto` dependency.
 - Add `use_frameworks!` to [Podfile](ios/Podfile).
 
 ## Install

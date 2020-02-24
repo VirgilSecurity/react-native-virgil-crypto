@@ -8,7 +8,7 @@ This library is a replacement for [virgil-crypto-javascript](https://github.com/
 ## Install
 First, install the package:
 ```sh
-npm install react-native-virgil-crypto --save
+yarn add react-native-virgil-crypto
 ```
 
 Second, pick your version of React Native and use the provided project as a reference for your own project:

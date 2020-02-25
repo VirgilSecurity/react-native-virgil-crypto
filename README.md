@@ -1,7 +1,7 @@
 # React Native Virgil Crypto
 
 [![npm](https://img.shields.io/npm/v/react-native-virgil-crypto.svg)](https://www.npmjs.com/package/react-native-virgil-crypto)
-[![GitHub license](https://img.shields.io/github/license/VirgilSecurity/react-native-virgil-crypto)](https://github.com/VirgilSecurity/react-native-virgil-crypto/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/VirgilSecurity/react-native-virgil-crypto)](LICENSE)
 
 > This README is for 0.5.x version of the library. Check the [0.4.x branch](https://github.com/VirgilSecurity/react-native-virgil-crypto/tree/0.4.x) for 0.4.x docs.
 

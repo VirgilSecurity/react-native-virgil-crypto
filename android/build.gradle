@@ -75,8 +75,8 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'  // From node_modules
 
     implementation 'com.virgilsecurity.sdk:crypto-android:7.1.0'
-    implementation 'com.virgilsecurity.crypto:foundation-android:0.12.0'
-    implementation 'com.virgilsecurity.crypto:pythia-android:0.12.0'
+    implementation 'com.virgilsecurity.crypto:foundation-android:0.13.1'
+    implementation 'com.virgilsecurity.crypto:pythia-android:0.13.1'
 }
 
 def configureReactNativePom(def pom) {

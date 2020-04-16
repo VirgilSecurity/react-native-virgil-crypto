@@ -19,6 +19,7 @@ Second, pick your version of React Native and use the provided project as a refe
 - [React Native 0.59.x](examples/Example59)
 - [React Native 0.60.x](examples/Example60)
 - [React Native 0.61.x](examples/Example61)
+- [React Native 0.62.x](examples/Example62)
 
 Last, you need to get familiar with the usage examples below:
 

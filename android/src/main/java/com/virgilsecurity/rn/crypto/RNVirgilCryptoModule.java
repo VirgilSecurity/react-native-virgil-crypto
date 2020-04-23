@@ -270,11 +270,37 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod(isBlockingSynchronousMethod = true)
+    public WritableMap getPrivateKeyIdentifier(String privateKeyBase64) {
+        try {
+            VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
+            return ResponseFactory.createStringResponse(Encodings.encodeBase64(keypair.getPrivateKey().getIdentifier()));
+        }
+        catch (CryptoException e) {
+            return ResponseFactory.createErrorResponse(e);
+        }
+    }
+
+    @ReactMethod(isBlockingSynchronousMethod = true)
+    public WritableMap getPublicKeyIdentifier(String publicKeyBase64) {
+        try {
+            VirgilPublicKey publicKey = this.crypto.importPublicKey(Encodings.decodeBase64(publicKeyBase64));
+            return ResponseFactory.createStringResponse(Encodings.encodeBase64(publicKey.getIdentifier()));
+        }
+        catch (CryptoException e) {
+            return ResponseFactory.createErrorResponse(e);
+        }
+    }
+
+    @ReactMethod(isBlockingSynchronousMethod = true)
     public WritableMap extractPublicKey(String privateKeyBase64) {
         try {
             VirgilKeyPair keypair = this.crypto.importPrivateKey(Encodings.decodeBase64(privateKeyBase64));
-            byte[] publicKeyData = this.crypto.exportPublicKey(keypair.getPublicKey());
-            return ResponseFactory.createStringResponse(Encodings.encodeBase64(publicKeyData));
+            VirgilPublicKey publicKey = keypair.getPublicKey();
+            byte[] publicKeyData = this.crypto.exportPublicKey(publicKey);
+            WritableMap result = Arguments.createMap();
+            result.putString("publicKey", Encodings.encodeBase64(publicKeyData));
+            result.putString("identifier", Encodings.encodeBase64(publicKey.getIdentifier()));
+            return ResponseFactory.createMapResponse(result);
         }
         catch (CryptoException e) {
             return ResponseFactory.createErrorResponse(e);
@@ -616,11 +642,13 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
     }
 
     private WritableMap exportAndEncodeKeyPair(VirgilKeyPair keypair) throws CryptoException {
-        final byte[] privateKeyData = this.crypto.exportPrivateKey(keypair.getPrivateKey());
+        VirgilPrivateKey privateKey = keypair.getPrivateKey();
+        final byte[] privateKeyData = this.crypto.exportPrivateKey(privateKey);
         final byte[] publicKeyData = this.crypto.exportPublicKey(keypair.getPublicKey());
         WritableMap keypairMap = Arguments.createMap();
         keypairMap.putString("privateKey", Encodings.encodeBase64(privateKeyData));
         keypairMap.putString("publicKey", Encodings.encodeBase64(publicKeyData));
+        keypairMap.putString("identifier", Encodings.encodeBase64(privateKey.getIdentifier()));
         return keypairMap;
     }
 

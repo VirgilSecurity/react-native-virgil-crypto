@@ -168,8 +168,8 @@ export const virgilCrypto = {
 
   extractPublicKey(virgilPrivateKey) {
     const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
-    const publicKey = unwrapResponse(RNVirgilCrypto.extractPublicKey(privateKeyValue));
-    return new VirgilPublicKey(publicKey);
+    const { identifier, publicKey } = unwrapResponse(RNVirgilCrypto.extractPublicKey(privateKeyValue));
+    return new VirgilPublicKey(identifier, publicKey);
   },
 
   exportPrivateKey(virgilPrivateKey) {
@@ -182,12 +182,14 @@ export const virgilCrypto = {
 
   importPrivateKey(rawPrivateKey) {
     const privateKeyBase64 = dataToBase64(rawPrivateKey, 'base64', 'rawPrivateKey');
-    return new VirgilPrivateKey(privateKeyBase64);
+    const identifier = unwrapResponse(RNVirgilCrypto.getPrivateKeyIdentifier(rawPrivateKey));
+    return new VirgilPrivateKey(identifier, privateKeyBase64);
   },
 
   importPublicKey(rawPublicKey) {
     const publicKeyBase64 = dataToBase64(rawPublicKey, 'base64', 'rawPublicKey');
-    return new VirgilPublicKey(publicKeyBase64);
+    const identifier = unwrapResponse(RNVirgilCrypto.getPublicKeyIdentifier(rawPublicKey));
+    return new VirgilPublicKey(identifier, publicKeyBase64);
   },
 
   encryptFile({ inputPath, outputPath, publicKeys, enablePadding }) {

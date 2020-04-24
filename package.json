@@ -1,6 +1,6 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -27,7 +27,7 @@
     "test": "jest index.spec.js src"
   },
   "dependencies": {
-    "@virgilsecurity/crypto-types": "1.0.0",
+    "@virgilsecurity/crypto-types": "1.1.1",
     "buffer": "^5.4.3"
   },
   "peerDependencies": {

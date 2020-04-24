@@ -44,7 +44,8 @@ RCT_EXPORT_MODULE()
     }
     return @{
         @"privateKey": [privateKeyData stringUsingBase64],
-        @"publicKey": [publicKeyData stringUsingBase64]
+        @"publicKey": [publicKeyData stringUsingBase64],
+        @"identifier": [keyPair.identifier stringUsingBase64]
     };
 }
 
@@ -218,6 +219,24 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(decryptThenVerify:(NSString *)dataBase64 
     return [ResponseFactory fromResult:[decryptedData stringUsingBase64]];
 }
 
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getPrivateKeyIdentifier:(NSString *)privateKeyBase64) {
+    NSError *error;
+    VSMVirgilKeyPair *keyPair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&error];
+    if (keyPair == nil) {
+        return [ResponseFactory fromError:error];
+    }
+    return [ResponseFactory fromResult:[keyPair.identifier stringUsingBase64]];
+}
+
+RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getPublicKeyIdentifier:(NSString *)publicKeyBase64) {
+    NSError *error;
+    VSMVirgilPublicKey *publicKey = [self.crypto importPublicKeyFrom:[publicKeyBase64 dataUsingBase64] error:&error];
+    if (publicKey == nil) {
+        return [ResponseFactory fromError:error];
+    }
+    return [ResponseFactory fromResult:[publicKey.identifier stringUsingBase64]];
+}
+
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(extractPublicKey:(NSString *)privateKeyBase64) {
     NSError *error;
     VSMVirgilKeyPair *keyPair = [self.crypto importPrivateKeyFrom:[privateKeyBase64 dataUsingBase64] error:&error];
@@ -228,7 +247,10 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(extractPublicKey:(NSString *)privateKeyBa
     if (publicKeyData == nil) {
         return [ResponseFactory fromError:error];
     }
-    return [ResponseFactory fromResult:[publicKeyData stringUsingBase64]];
+    return [ResponseFactory fromResult:@{
+        @"publicKey": [publicKeyData stringUsingBase64],
+        @"identifier": [keyPair.identifier stringUsingBase64]
+    }];
 }
 
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(generateRandomData:(NSInteger)size) {

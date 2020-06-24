@@ -1,6 +1,6 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "index.js",
   "typings": "index.d.ts",

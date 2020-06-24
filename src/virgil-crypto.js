@@ -182,13 +182,13 @@ export const virgilCrypto = {
 
   importPrivateKey(rawPrivateKey) {
     const privateKeyBase64 = dataToBase64(rawPrivateKey, 'base64', 'rawPrivateKey');
-    const identifier = unwrapResponse(RNVirgilCrypto.getPrivateKeyIdentifier(rawPrivateKey));
+    const identifier = unwrapResponse(RNVirgilCrypto.getPrivateKeyIdentifier(privateKeyBase64));
     return new VirgilPrivateKey(identifier, privateKeyBase64);
   },
 
   importPublicKey(rawPublicKey) {
     const publicKeyBase64 = dataToBase64(rawPublicKey, 'base64', 'rawPublicKey');
-    const identifier = unwrapResponse(RNVirgilCrypto.getPublicKeyIdentifier(rawPublicKey));
+    const identifier = unwrapResponse(RNVirgilCrypto.getPublicKeyIdentifier(publicKeyBase64));
     return new VirgilPublicKey(identifier, publicKeyBase64);
   },
 

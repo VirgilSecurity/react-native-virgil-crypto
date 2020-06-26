@@ -1,0 +1,22 @@
+---
+os: osx
+language: node_js
+node_js: 12
+cache: yarn
+osx_image: xcode11.5
+
+before_install:
+  - yarn install
+  - cd E2ETests && yarn install
+
+install:
+  - yarn install:ios
+
+script:
+  - yarn build:ios
+  - yarn test:ios
+
+branches:
+  only:
+  - add-CI-tests
+  # - master

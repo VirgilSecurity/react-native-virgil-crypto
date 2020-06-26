@@ -2,7 +2,9 @@
 os: osx
 language: node_js
 node_js: 12
-cache: yarn
+cache:
+  yarn: true
+  cocoapods: true
 osx_image: xcode11.5
 
 before_install:
@@ -11,6 +13,8 @@ before_install:
 
 install:
   - yarn install:ios
+  - brew tap wix/brew
+  - brew install wix/brew/applesimutils
 
 script:
   - yarn build:ios

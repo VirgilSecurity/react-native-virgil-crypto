@@ -33,13 +33,13 @@
         "binaryPath": "ios/build/Build/Products/Debug-iphonesimulator/E2ETests.app",
         "build": "xcodebuild -workspace ios/E2ETests.xcworkspace -scheme E2ETests -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build -UseModernBuildSystem=YES -quiet",
         "type": "ios.simulator",
-        "name": "iPhone 7"
+        "name": "iPhone 8"
       },
       "ios.sim.release": {
         "binaryPath": "ios/build/Build/Products/Release-iphonesimulator/E2ETests.app",
         "build": "export RCT_NO_LAUNCH_PACKAGER=true && xcodebuild -workspace ios/E2ETests.xcworkspace -scheme E2ETests -configuration Release -sdk iphonesimulator -derivedDataPath ios/build -UseModernBuildSystem=YES -quiet",
         "type": "ios.simulator",
-        "name": "iPhone 7"
+        "name": "iPhone 8"
       },
       "android.emu.debug": {
         "binaryPath": "android/app/build/outputs/apk/debug/app-debug.apk",

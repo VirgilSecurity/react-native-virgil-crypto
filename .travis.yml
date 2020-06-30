@@ -8,16 +8,18 @@ cache:
   directories:
     - node_modules
 osx_image: xcode11
-xcode_sdk: iphonesimulator11.0
 podfile: $HOME/E2ETests/ios/Podfile
+
+before_install: 
+  - brew tap wix/brew
+  - brew install wix/brew/applesimutils
+  - xcrun simctl list
 
 install:
   - yarn install
   - cd E2ETests && yarn install
   - yarn install:ios
   - brew install watchman
-  - brew tap wix/brew
-  - brew install wix/brew/applesimutils
 
 script:
   - yarn build:ios

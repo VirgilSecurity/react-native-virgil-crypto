@@ -5,14 +5,16 @@ node_js: 12
 cache:
   yarn: true
   cocoapods: true
-osx_image: xcode11.5
-
-before_install:
-  - yarn install
-  - cd E2ETests && yarn install
+  directories:
+    - node_modules
+osx_image: xcode11
+podfile: $HOME/E2ETests/ios/Podfile
 
 install:
+  - yarn install
+  - cd E2ETests && yarn install
   - yarn install:ios
+  - brew install watchman
   - brew tap wix/brew
   - brew install wix/brew/applesimutils
 

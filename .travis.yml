@@ -8,6 +8,7 @@ cache:
   directories:
     - node_modules
 osx_image: xcode11
+xcode_sdk: iphonesimulator11.0
 podfile: $HOME/E2ETests/ios/Podfile
 
 install:

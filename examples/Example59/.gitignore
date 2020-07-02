@@ -21,6 +21,9 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+Example59.xcworkspace
+Pods
+Podfile.lock
 
 # Android/IntelliJ
 #

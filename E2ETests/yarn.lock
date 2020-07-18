@@ -838,10 +838,10 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/node@^12.7.2":
-  version "12.11.7"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.11.7.tgz#57682a9771a3f7b09c2497f28129a0462966524a"
-  integrity sha512-JNbGaHFCLwgHn/iCckiGSOZ1XYHsKFwREtzPwSGCVld1SGhOlmZw2D4ZI94HQCrBHbADzW9m4LER/8olJTRGHA==
+"@types/node@^13.1.8":
+  version "13.13.14"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-13.13.14.tgz#20cd7d2a98f0c3b08d379f4ea9e6b315d2019529"
+  integrity sha512-Az3QsOt1U/K1pbCQ0TXGELTuTkPLOiFIQf3ILzbOyo0FqgV9SxRnxbxM5QlAveERZMHpZY+7u3Jz2tKyl+yg6g==
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -860,12 +860,12 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@virgilsecurity/crypto-types@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-0.2.0.tgz#27040fbda702389bfc8396aa663f91dadf8605ec"
-  integrity sha512-17kDAM/rMrfB5uHuK1k+2ExIulRnnsyx8PL//FcTmT/xm8KNd+/7C2JztIJ1xdpIh8sgjrgnjZ+rVHcNaM54hQ==
+"@virgilsecurity/crypto-types@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@virgilsecurity/crypto-types/-/crypto-types-1.1.1.tgz#1b9a80aa137734aa627039e70df0b5c1dc1f8f3e"
+  integrity sha512-c/uoOcFIU+YV8w+om1VBergNkBTkqzbAakZCzp4hsYBjZw3EYVKcNBIyNFjPGgbFZdJ/ewE6Qt3wmbL1Yv4a2g==
   dependencies:
-    "@types/node" "^12.7.2"
+    "@types/node" "^13.1.8"
 
 abbrev@1:
   version "1.1.1"
@@ -1254,10 +1254,10 @@ buffer-from@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.1.tgz#32713bc028f75c02fdb710d7c7bcec1f2c6070ef"
   integrity sha512-MQcXEUbCKtEo7bhqEs6560Hyd4XaovZlO/k9V3hjVUF/zwW7KBVdSK4gIt/bzwS9MbR5qob+F5jusZsb0YQK2A==
 
-buffer@^5.2.1:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.4.3.tgz#3fbc9c69eb713d323e3fc1a895eee0710c072115"
-  integrity sha512-zvj65TkFeIt3i6aj5bIvJDzjjQQGs4o/sNoezg1F1kYap9Nu2jcUdpwzRSJTHMMzG0H7bZkn4rNQpImhuxWX2A==
+buffer@^5.4.3:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/buffer/-/buffer-5.6.0.tgz#a31749dc7d81d84db08abf937b6b8c4033f62786"
+  integrity sha512-/gDYp/UtU0eA1ys8bOs9J6a+E/KWIY+DZ+Q2WESNUA0jFRsJOc0SNUO6xJ5SGA1xueg3NL65W6s+NY5l9cunuw==
   dependencies:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
@@ -3027,9 +3027,9 @@ lodash.throttle@^4.1.1:
   integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
 lodash@4.x.x, lodash@^4.17.10, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.6.1:
-  version "4.17.15"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+  version "4.17.19"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
+  integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
 
 log-symbols@2.2.0, log-symbols@^2.2.0:
   version "2.2.0"
@@ -4200,10 +4200,10 @@ react-is@^16.8.1, react-is@^16.8.4:
   integrity sha512-INBT1QEgtcCCgvccr5/86CfD71fw9EPmDxgiJX4I2Ddr6ZsV6iFXsuby+qWJPtmNuMY0zByTsG4468P7nHuNWA==
 
 react-native-virgil-crypto@../:
-  version "0.3.2"
+  version "0.6.1"
   dependencies:
-    "@virgilsecurity/crypto-types" "^0.2.0"
-    buffer "^5.2.1"
+    "@virgilsecurity/crypto-types" "1.1.1"
+    buffer "^5.4.3"
 
 react-native@0.61.2:
   version "0.61.2"

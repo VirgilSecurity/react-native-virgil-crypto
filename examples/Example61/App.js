@@ -10,7 +10,7 @@ import React from 'react';
 import {SafeAreaView, ScrollView, Text} from 'react-native';
 import {virgilCrypto, KeyPairType} from 'react-native-virgil-crypto';
 
-const App: () => React$Node = () => {
+const App = () => {
   const keyPair = virgilCrypto.generateKeys(
     KeyPairType.CURVE25519_ROUND5_ED25519_FALCON,
   );

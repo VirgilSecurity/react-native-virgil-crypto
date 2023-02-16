@@ -1,4 +1,4 @@
-import { base64ToBuffer } from './utils/encoding';
+import {base64ToBuffer, dataToBase64} from './utils/encoding';
 
 export class VirgilPublicKey {
   constructor(identifierBase64, publicKeyBase64) {
@@ -11,7 +11,7 @@ export class VirgilPublicKey {
     Object.defineProperty(this, 'value', {
       configurable: false,
       enumerable: true,
-      value: publicKeyBase64,
+      value: publicKeyBase64 ?? dataToBase64(identifierBase64, 'base64', 'rawPrivateKey'),
       writable: false
     });
   }

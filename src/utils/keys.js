@@ -5,8 +5,8 @@ import { toArray } from '../utils/array';
 
 export function wrapKeyPair(keypair) {
   return {
-    privateKey: new VirgilPrivateKey(keypair.identifier, keypair.privateKey),
-    publicKey: new VirgilPublicKey(keypair.identifier, keypair.publicKey)
+    privateKey: new VirgilPrivateKey(keypair.identifier + '', keypair.privateKey + ''),
+    publicKey: new VirgilPublicKey(keypair.identifier + '', keypair.publicKey + '')
   };
 }
 

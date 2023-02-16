@@ -6,6 +6,8 @@ import { RNVirgilCryptoError } from './rn-virgil-crypto-error';
 import { VirgilPrivateKey } from './virgil-private-key';
 import { VirgilPublicKey } from './virgil-public-key';
 import { KeyPairType } from './key-pair-type';
+import expect from "expect";
+import {dataToBase64} from "./utils/encoding";
 
 jest.mock('react-native', () => ({
   NativeModules: {
@@ -256,7 +258,7 @@ describe('virgilCrypto', () => {
     it('accepts data as utf8 string', () => {
       NativeModules.RNVirgilCrypto.encrypt.mockReturnValue({ result: Buffer.from('ciphertext').toString('base64')});
       const data = 'data';
-      virgilCrypto.encrypt(data, new VirgilPublicKey('pubkey'));
+      virgilCrypto.encrypt(data, new VirgilPublicKey('pubkey'), false);
       expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey'], false);
     });
     it('accepts data as Buffer', () => {
@@ -490,7 +492,7 @@ describe('virgilCrypto', () => {
       NativeModules.RNVirgilCrypto.extractPublicKey.mockReturnValue({
         result: Buffer.from('pubkey').toString('base64')
       });
-      const privateKey = new VirgilPrivateKey('privatekey');
+      const privateKey = new VirgilPublicKey('pubkey');
       const publicKey = virgilCrypto.extractPublicKey(privateKey);
       expect(NativeModules.RNVirgilCrypto.extractPublicKey).toHaveBeenCalledWith('privatekey');
       expect(publicKey).toBeInstanceOf(VirgilPublicKey);

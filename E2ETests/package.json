@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "clean": "rimraf dist && rimraf android/build && rimraf android/app/build && rimraf android/.gradle && rimraf ios/build",
-    "prepare": "rimraf node_modules/react-native-virgil-crypto/examples && rimraf node_modules/react-native-virgil-crypto/E2ETests && rimraf node_modules/react-native-virgil-crypto/node_modules/react-native"
+    "prepare": "rimraf node_modules/react-native-virgil-crypto/examples && rimraf node_modules/react-native-virgil-crypto/E2ETests && rimraf node_modules/react-native-virgil-crypto/node_modules/react-native",
+    "build": "detox test -c android.emu.debug"
   },
   "dependencies": {
     "chai": "^4.2.0",

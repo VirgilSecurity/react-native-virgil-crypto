@@ -166,9 +166,9 @@ export const virgilCrypto = {
     ));
   },
 
-  extractPublicKey(virgilPrivateKey) {
-    const privateKeyValue = checkedGetPrivateKeyValue(virgilPrivateKey);
-    const { identifier, publicKey } = unwrapResponse(RNVirgilCrypto.extractPublicKey(privateKeyValue));
+  extractPublicKey(virgilPublicKey) {
+    const publicKeyValue = checkedGetPublicKeyValue(virgilPublicKey);
+    const { identifier, publicKey } = unwrapResponse(RNVirgilCrypto.extractPublicKey(publicKeyValue));
     return new VirgilPublicKey(identifier, publicKey);
   },
 

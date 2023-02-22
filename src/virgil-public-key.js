@@ -11,7 +11,7 @@ export class VirgilPublicKey {
     Object.defineProperty(this, 'value', {
       configurable: false,
       enumerable: true,
-      value: publicKeyBase64 ?? dataToBase64(identifierBase64, 'base64', 'rawPrivateKey'),
+      value: publicKeyBase64,
       writable: false
     });
   }

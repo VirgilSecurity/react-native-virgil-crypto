@@ -9,6 +9,6 @@ export class VirgilPrivateKey {
       value: base64ToBuffer(identifierBase64),
       writable: false
     });
-    setPrivateKeyValue(this, privateKeyBase64 ?? dataToBase64(identifierBase64, 'base64', 'rawPrivateKey'));
+    setPrivateKeyValue(this, privateKeyBase64);
   }
 }

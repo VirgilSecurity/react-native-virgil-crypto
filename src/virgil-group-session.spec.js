@@ -3,6 +3,7 @@ import { Buffer } from 'buffer';
 import { createVirgilGroupSession } from './virgil-group-session';
 import { VirgilPrivateKey } from './virgil-private-key';
 import { VirgilPublicKey } from './virgil-public-key';
+import {dataToBase64} from "./utils/encoding";
 
 jest.mock('react-native', () => ({
   NativeModules: {
@@ -60,7 +61,7 @@ describe('groupSession', () => {
         result: Buffer.from('ciphertext').toString('base64')
       });
       const session = createSession();
-      const privateKey = new VirgilPrivateKey('privateKey');
+      const privateKey = new VirgilPrivateKey('privateKey', dataToBase64('privateKey', 'base64', 'rawPrivateKey'));
       const result = session.encrypt('data', privateKey);
       expect(NativeModules.RNVirgilGroupSession.encrypt).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
@@ -76,7 +77,7 @@ describe('groupSession', () => {
         result: Buffer.from('ciphertext').toString('base64')
       });
       const session = createSession();
-      const privateKey = new VirgilPrivateKey('privateKey');
+      const privateKey = new VirgilPrivateKey('privateKey', dataToBase64('privateKey', 'base64', 'rawPrivateKey'));
       session.encrypt(Buffer.from('data'), privateKey);
       expect(NativeModules.RNVirgilGroupSession.encrypt).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
@@ -90,7 +91,7 @@ describe('groupSession', () => {
         result: Buffer.from('ciphertext').toString('base64')
       });
       const session = createSession();
-      const privateKey = new VirgilPrivateKey('privateKey');
+      const privateKey = new VirgilPrivateKey('privateKey', dataToBase64('privateKey', 'base64', 'rawPrivateKey'));
       session.encrypt({ value: 'data', encoding: 'utf8' }, privateKey);
       expect(NativeModules.RNVirgilGroupSession.encrypt).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
@@ -106,7 +107,7 @@ describe('groupSession', () => {
         result: Buffer.from('plaintext').toString('base64')
       });
       const session = createSession();
-      const publicKey = new VirgilPublicKey('pubkey');
+      const publicKey = new VirgilPublicKey('pubkey', dataToBase64('pubkey', 'base64', 'rawPrivateKey'));
       const ciphertext = Buffer.from('ciphertext').toString('base64');
 
       const result = session.decrypt(ciphertext, publicKey);
@@ -124,7 +125,7 @@ describe('groupSession', () => {
         result: Buffer.from('plaintext').toString('base64')
       });
       const session = createSession();
-      const publicKey = new VirgilPublicKey('pubkey');
+      const publicKey = new VirgilPublicKey('pubkey', dataToBase64('pubkey', 'base64', 'rawPrivateKey'));
       const ciphertext = Buffer.from('ciphertext');
 
       session.decrypt(ciphertext, publicKey);
@@ -140,7 +141,7 @@ describe('groupSession', () => {
         result: Buffer.from('plaintext').toString('base64')
       });
       const session = createSession();
-      const publicKey = new VirgilPublicKey('pubkey');
+      const publicKey = new VirgilPublicKey('pubkey', dataToBase64('pubkey', 'base64', 'rawPrivateKey'));
       const ciphertext = { value: 'ciphertext', encoding: 'utf8' };
 
       session.decrypt(ciphertext, publicKey);

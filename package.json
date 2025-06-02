@@ -32,8 +32,8 @@
     "buffer": "^6.0.3"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-native": "^0.74.1"
+    "react": ">=18.2.0",
+    "react-native": ">=0.74.1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",

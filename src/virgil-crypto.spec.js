@@ -36,6 +36,8 @@ jest.mock('react-native', () => ({
       decryptThenVerifyDetached: jest.fn(),
       generateGroupSession: jest.fn(),
       importGroupSession: jest.fn(),
+      getPrivateKeyIdentifier: jest.fn(),
+      getPublicKeyIdentifier: jest.fn(),
     },
   },
   Platform: {
@@ -70,6 +72,8 @@ describe('virgilCrypto', () => {
     NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReset();
     NativeModules.RNVirgilCrypto.generateGroupSession.mockReset();
     NativeModules.RNVirgilCrypto.importGroupSession.mockReset();
+    NativeModules.RNVirgilCrypto.getPrivateKeyIdentifier.mockReset();
+    NativeModules.RNVirgilCrypto.getPublicKeyIdentifier.mockReset();
   });
 
   describe('calculateHash', () => {
@@ -490,7 +494,10 @@ describe('virgilCrypto', () => {
   describe('extractPublicKey', () => {
     it('returns VirgilPublicKey', () => {
       NativeModules.RNVirgilCrypto.extractPublicKey.mockReturnValue({
-        result: Buffer.from('pubkey').toString('base64')
+        result: {
+          identifier: Buffer.from('identifier').toString('base64'),
+          publicKey: Buffer.from('pubkey').toString('base64')
+        }
       });
       const privateKey = new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey'));
       const publicKey = virgilCrypto.extractPublicKey(privateKey);
@@ -502,7 +509,10 @@ describe('virgilCrypto', () => {
   describe('exportPrivateKey', () => {
     it('returns key value as Buffer', () => {
       const expectedValueBuffer = Buffer.from('privateKey');
-      const privateKey = new VirgilPrivateKey(expectedValueBuffer.toString('base64'), dataToBase64('privateKey', 'base64', 'rawPrivateKey'));
+      const privateKey = new VirgilPrivateKey(
+        expectedValueBuffer.toString('base64'),
+        expectedValueBuffer.toString('base64')
+      );
       const actualValue = virgilCrypto.exportPrivateKey(privateKey);
       expect(Buffer.isBuffer(actualValue)).toBe(true);
       expect(actualValue.equals(expectedValueBuffer)).toBe(true);
@@ -512,7 +522,10 @@ describe('virgilCrypto', () => {
   describe('exportPublicKey', () => {
     it('returns key value as Buffer', () => {
       const expectedValueBuffer = Buffer.from('publicKey');
-      const publicKey = new VirgilPublicKey(expectedValueBuffer.toString('base64'), dataToBase64('publicKey', 'base64', 'rawPrivateKey'));
+      const publicKey = new VirgilPublicKey(
+        expectedValueBuffer.toString('base64'),
+        expectedValueBuffer.toString('base64')
+      );
       const actualValue = virgilCrypto.exportPublicKey(publicKey);
       expect(Buffer.isBuffer(actualValue)).toBe(true);
       expect(actualValue.equals(expectedValueBuffer)).toBe(true);
@@ -522,18 +535,27 @@ describe('virgilCrypto', () => {
   describe('importPrivateKey', () => {
     it('accepts raw key as base64 string', () => {
       const rawKey = Buffer.from('rawKey').toString('base64');
+      NativeModules.RNVirgilCrypto.getPrivateKeyIdentifier.mockReturnValue({
+        result: Buffer.from('identifier').toString('base64')
+      });
       const privateKey = virgilCrypto.importPrivateKey(rawKey);
       expect(privateKey).toBeInstanceOf(VirgilPrivateKey);
     });
 
     it('accepts raw key as Buffer', () => {
       const rawKey = Buffer.from('rawKey');
+      NativeModules.RNVirgilCrypto.getPrivateKeyIdentifier.mockReturnValue({
+        result: Buffer.from('identifier').toString('base64')
+      });
       const privateKey = virgilCrypto.importPrivateKey(rawKey);
       expect(privateKey).toBeInstanceOf(VirgilPrivateKey);
     });
 
     it('accepts raw key as object with value and encoding', () => {
       const rawKey = { value: 'rawKey', encoding: 'utf8' };
+      NativeModules.RNVirgilCrypto.getPrivateKeyIdentifier.mockReturnValue({
+        result: Buffer.from('identifier').toString('base64')
+      });
       const privateKey = virgilCrypto.importPrivateKey(rawKey);
       expect(privateKey).toBeInstanceOf(VirgilPrivateKey);
     });
@@ -542,18 +564,27 @@ describe('virgilCrypto', () => {
   describe('importPublicKey', () => {
     it('accepts raw key as base64 string', () => {
       const rawKey = Buffer.from('rawKey').toString('base64');
+      NativeModules.RNVirgilCrypto.getPublicKeyIdentifier.mockReturnValue({
+        result: Buffer.from('identifier').toString('base64')
+      });
       const publicKey = virgilCrypto.importPublicKey(rawKey);
       expect(publicKey).toBeInstanceOf(VirgilPublicKey);
     });
 
     it('accepts raw key as Buffer', () => {
       const rawKey = Buffer.from('rawKey');
+      NativeModules.RNVirgilCrypto.getPublicKeyIdentifier.mockReturnValue({
+        result: Buffer.from('identifier').toString('base64')
+      });
       const publicKey = virgilCrypto.importPublicKey(rawKey);
       expect(publicKey).toBeInstanceOf(VirgilPublicKey);
     });
 
     it('accepts raw key as object with value and encoding', () => {
       const rawKey = { value: 'rawKey', encoding: 'utf8' };
+      NativeModules.RNVirgilCrypto.getPublicKeyIdentifier.mockReturnValue({
+        result: Buffer.from('identifier').toString('base64')
+      });
       const publicKey = virgilCrypto.importPublicKey(rawKey);
       expect(publicKey).toBeInstanceOf(VirgilPublicKey);
     });
@@ -655,7 +686,7 @@ describe('virgilCrypto', () => {
   });
 
   describe('generateFileSignature', () => {
-    it('normalizes input file path', async () => {
+    it('normalizes input file path and returns a Buffer', async () => {
       const expectedSignature = Buffer.from('signature').toString('base64');
       NativeModules.RNVirgilCrypto.generateFileSignature.mockResolvedValue(expectedSignature);
 
@@ -664,7 +695,8 @@ describe('virgilCrypto', () => {
         privateKey: new VirgilPrivateKey('privateKey', dataToBase64('privateKey', 'base64', 'rawPrivateKey'))
       });
 
-      expect(signature).toBe(expectedSignature);
+      expect(Buffer.isBuffer(signature)).toBe(true);
+      expect(signature.toString()).toBe('signature');
       expect(NativeModules.RNVirgilCrypto.generateFileSignature).toHaveBeenCalledWith(
         '/path/to/file',
         'privateKey'

@@ -1,4 +1,4 @@
-import { virgilCrypto, Buffer, KeyPairType, HashAlgorithm } from './';
+import { virgilCrypto, Buffer, KeyPairType, HashAlgorithm } from './index';
 
 jest.mock('react-native', () => ({
   NativeModules: {

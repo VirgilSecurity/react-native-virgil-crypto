@@ -3,6 +3,7 @@
 
 # Node.js
 node_modules
+lib
 package-lock.json
 yarn.lock
 *.log

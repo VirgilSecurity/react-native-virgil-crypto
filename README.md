@@ -3,8 +3,6 @@
 [![npm](https://img.shields.io/npm/v/react-native-virgil-crypto.svg)](https://www.npmjs.com/package/react-native-virgil-crypto)
 [![GitHub license](https://img.shields.io/github/license/VirgilSecurity/react-native-virgil-crypto)](LICENSE)
 
-> This README is for 0.5.x version of the library. Check the [0.4.x branch](https://github.com/VirgilSecurity/react-native-virgil-crypto/tree/0.4.x) for 0.4.x docs.
-
 React Native bridge for Virgil Security Crypto Library for [iOS](https://github.com/VirgilSecurity/virgil-crypto-x) and [Android](https://github.com/VirgilSecurity/virgil-sdk-java-android).
 
 This library is a replacement for [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) and should be used in React Native projects. The main difference is that in [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) library a class named `VirgilCrypto` is exported from the module that you need to create instances of, whereas this library exports an "instance" of that class ready to be used. Also, stream encryption is not available as there is no stream implementation in React Native. We're investigating the options to support file encryption though.
@@ -15,13 +13,13 @@ First, install the package:
 yarn add react-native-virgil-crypto
 ```
 
-Second, pick your version of React Native and use the provided project as a reference for your own project:
-- [React Native 0.59.x](examples/Example59)
-- [React Native 0.60.x](examples/Example60)
-- [React Native 0.61.x](examples/Example61)
-- [React Native 0.62.x](examples/Example62)
+This package targets React Native `0.74+` on the classic bridge. It does not currently ship a TurboModule/New Architecture implementation.
 
-Last, you need to get familiar with the usage examples below:
+Autolinking is supported on both platforms, so no manual linking steps should be necessary in current React Native apps.
+
+The legacy sample projects in [`examples/`](examples) are kept for historical reference only and should not be treated as setup guides for modern React Native versions.
+
+Next, get familiar with the usage examples below:
 
 ### Generate a key pair
 Generate a Private Key with the default algorithm (ED25519):

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ES2019",
+    "module": "commonjs",
+    "lib": ["ES2019"],
+    "rootDir": ".",
+    "outDir": "lib",
+    "declaration": true,
+    "strict": true,
+    "ignoreDeprecations": "6.0",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "types": ["node", "react-native"]
+  },
+  "include": ["index.ts", "src/**/*.ts"],
+  "exclude": ["E2ETests", "examples", "ios", "android", "lib", "node_modules"]
+}

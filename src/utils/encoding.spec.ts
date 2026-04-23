@@ -16,7 +16,7 @@ describe('dataToBase64', () => {
 
   it('throws if "defaultEncoding" is not a valid encoding', () => {
     expect(() => {
-      dataToBase64('ignore', 'not_an_encoding', 'data');
+      dataToBase64('ignore', 'not_an_encoding' as never, 'data');
     }).toThrow(TypeError);
   });
 
@@ -36,19 +36,19 @@ describe('dataToBase64', () => {
   });
 
   it('converts object values to base64 string', () => {
-    const data = { value: 'data', encoding: 'utf8' };
+    const data = { value: 'data', encoding: 'utf8' } as const;
     expect(dataToBase64(data, 'utf8', 'data')).toBe('ZGF0YQ==');
   });
 
   it('throws if given an object value with the wrong format', () => {
     const notData = { x: 'invalid' };
     expect(() => {
-      dataToBase64(notData, 'utf8', 'data');
+      dataToBase64(notData as never, 'utf8', 'data');
     }).toThrow(TypeError);
   });
 
   it('throws if given an object value with invalid encoding', () => {
-    const data = { value: 'data', encoding: 'not_an_encoding' };
+    const data = { value: 'data', encoding: 'not_an_encoding' } as never;
     expect(() => {
       dataToBase64(data, 'utf8', 'data');
     }).toThrow(TypeError);
@@ -56,19 +56,19 @@ describe('dataToBase64', () => {
 
   it('throws if given value is not in any of the supported formats', () => {
     expect(() => {
-      dataToBase64(42, 'utf8', 'data');
+      dataToBase64(42 as never, 'utf8', 'data');
     }).toThrow(TypeError);
   });
 
   it('throws if given value is undefined', () => {
     expect(() => {
-      dataToBase64(undefined, 'utf8', 'data');
+      dataToBase64(undefined as never, 'utf8', 'data');
     }).toThrow(TypeError);
   });
 
   it('throws if given value is null', () => {
     expect(() => {
-      dataToBase64(null, 'utf8', 'data');
+      dataToBase64(null as never, 'utf8', 'data');
     }).toThrow();
   });
 });

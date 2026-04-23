@@ -17,5 +17,13 @@
     "types": ["node", "react-native"]
   },
   "include": ["index.ts", "src/**/*.ts"],
-  "exclude": ["E2ETests", "examples", "ios", "android", "lib", "node_modules"]
+  "exclude": [
+    "**/*.spec.ts",
+    "E2ETests",
+    "examples",
+    "ios",
+    "android",
+    "lib",
+    "node_modules"
+  ]
 }

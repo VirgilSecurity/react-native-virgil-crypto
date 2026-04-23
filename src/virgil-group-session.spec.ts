@@ -16,7 +16,7 @@ jest.mock('react-native', () => ({
   },
   Platform: {
     OS: 'ios',
-    select: ({ ios }) => {
+    select: ({ ios }: { ios: unknown }) => {
       return ios;
     }
   },
@@ -92,7 +92,7 @@ describe('groupSession', () => {
       });
       const session = createSession();
       const privateKey = new VirgilPrivateKey('privateKey', dataToBase64('privateKey', 'base64', 'rawPrivateKey'));
-      session.encrypt({ value: 'data', encoding: 'utf8' }, privateKey);
+      session.encrypt({ value: 'data', encoding: 'utf8' } as const, privateKey);
       expect(NativeModules.RNVirgilGroupSession.encrypt).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
         'privateKey',
@@ -142,7 +142,7 @@ describe('groupSession', () => {
       });
       const session = createSession();
       const publicKey = new VirgilPublicKey('pubkey', dataToBase64('pubkey', 'base64', 'rawPrivateKey'));
-      const ciphertext = { value: 'ciphertext', encoding: 'utf8' };
+      const ciphertext = { value: 'ciphertext', encoding: 'utf8' } as const;
 
       session.decrypt(ciphertext, publicKey);
       expect(NativeModules.RNVirgilGroupSession.decrypt).toHaveBeenCalledWith(
@@ -271,7 +271,7 @@ describe('groupSession', () => {
       });
 
       const session = createSession(sessionId);
-      const messageData = { value: 'messageData', encoding: 'utf8' };
+      const messageData = { value: 'messageData', encoding: 'utf8' } as const;
       session.parseMessage(messageData);
 
       expect(NativeModules.RNVirgilGroupSession.parseMessage).toHaveBeenCalledWith(

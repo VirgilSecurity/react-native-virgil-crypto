@@ -42,7 +42,7 @@ jest.mock('react-native', () => ({
   },
   Platform: {
     OS: 'ios',
-    select: ({ ios }) => {
+    select: ({ ios }: { ios: unknown }) => {
       return ios;
     }
   },
@@ -93,7 +93,7 @@ describe('virgilCrypto', () => {
     });
     it('accepts "data" as object with string value and encoding', () => {
       NativeModules.RNVirgilCrypto.computeHash.mockReturnValue({ result: Buffer.from('hash').toString('base64') });
-      const data = { value: Buffer.from('data').toString('base64'), encoding: 'base64' };
+      const data = { value: Buffer.from('data').toString('base64'), encoding: 'base64' } as const;
       const result = virgilCrypto.calculateHash(data);
       expect(Buffer.isBuffer(result)).toBe(true);
       expect(NativeModules.RNVirgilCrypto.computeHash).toHaveBeenCalledWith(Buffer.from('data').toString('base64'));
@@ -214,7 +214,7 @@ describe('virgilCrypto', () => {
           publicKey: Buffer.from('public_key').toString('base64')
         }
       });
-      const seed = { value: Buffer.from('seed').toString('hex'), encoding: 'hex' };
+      const seed = { value: Buffer.from('seed').toString('hex'), encoding: 'hex' } as const;
       virgilCrypto.generateKeysFromKeyMaterial(seed);
       expect(NativeModules.RNVirgilCrypto.generateKeyPairUsingSeed).toHaveBeenCalledWith(Buffer.from('seed').toString('base64'));
     });
@@ -273,7 +273,7 @@ describe('virgilCrypto', () => {
     });
     it('accepts data as object with string value and encoding', () => {
       NativeModules.RNVirgilCrypto.encrypt.mockReturnValue({ result: Buffer.from('ciphertext').toString('base64')});
-      const data = { value: Buffer.from('data').toString('base64'), encoding: 'base64' };
+      const data = { value: Buffer.from('data').toString('base64'), encoding: 'base64' } as const;
       virgilCrypto.encrypt(data, new VirgilPublicKey('pubkey',  dataToBase64('pubkey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.encrypt).toHaveBeenCalledWith(Buffer.from('data').toString('base64'), ['pubkey'], false);
     });
@@ -302,7 +302,7 @@ describe('virgilCrypto', () => {
 
     it('accepts data as object with value and encoding', () => {
       NativeModules.RNVirgilCrypto.decrypt.mockReturnValue({ result: Buffer.from('plaintext').toString('base64') });
-      const ciphertext = { value: 'ciphertext', encoding: 'utf8' };
+      const ciphertext = { value: 'ciphertext', encoding: 'utf8' } as const;
       virgilCrypto.decrypt(ciphertext, new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.decrypt).toHaveBeenCalledWith(Buffer.from('ciphertext').toString('base64'), 'privatekey');
     });
@@ -332,7 +332,7 @@ describe('virgilCrypto', () => {
 
     it('accepts data as object with value and encoding', () => {
       NativeModules.RNVirgilCrypto.generateSignature.mockReturnValue({ result: Buffer.from('signature').toString('base64') });
-      const data = { value: 'data', encoding: 'utf8' };
+      const data = { value: 'data', encoding: 'utf8' } as const;
       virgilCrypto.calculateSignature(data, new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.generateSignature).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
@@ -374,8 +374,8 @@ describe('virgilCrypto', () => {
     });
     it('accepts data and signature as objects with string value and encoding', () => {
       NativeModules.RNVirgilCrypto.verifySignature.mockReturnValue({ result: true });
-      const data = { value: 'data', encoding: 'utf8' };
-      const signature = { value: 'signature', encoding: 'utf8' };
+      const data = { value: 'data', encoding: 'utf8' } as const;
+      const signature = { value: 'signature', encoding: 'utf8' } as const;
       virgilCrypto.verifySignature(data, signature, new VirgilPublicKey('pubkey',  dataToBase64('pubkey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.verifySignature).toHaveBeenCalledWith(
         Buffer.from('signature').toString('base64'),
@@ -423,7 +423,7 @@ describe('virgilCrypto', () => {
       NativeModules.RNVirgilCrypto.signThenEncrypt.mockReturnValue({
         result: Buffer.from('ciphertext').toString('base64')
       });
-      const data = { value: 'data', encoding: 'utf8' };
+      const data = { value: 'data', encoding: 'utf8' } as const;
       virgilCrypto.signThenEncrypt(data, new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey')), new VirgilPublicKey('pubkey',  dataToBase64('pubkey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.signThenEncrypt).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
@@ -472,7 +472,7 @@ describe('virgilCrypto', () => {
       NativeModules.RNVirgilCrypto.decryptThenVerify.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
-      const data = { value: 'ciphertext', encoding: 'utf8' };
+      const data = { value: 'ciphertext', encoding: 'utf8' } as const;
       virgilCrypto.decryptThenVerify(data, new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey')), new VirgilPublicKey('pubkey',  dataToBase64('pubkey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.decryptThenVerify).toHaveBeenCalledWith(
         Buffer.from('ciphertext').toString('base64'),
@@ -552,7 +552,7 @@ describe('virgilCrypto', () => {
     });
 
     it('accepts raw key as object with value and encoding', () => {
-      const rawKey = { value: 'rawKey', encoding: 'utf8' };
+      const rawKey = { value: 'rawKey', encoding: 'utf8' } as const;
       NativeModules.RNVirgilCrypto.getPrivateKeyIdentifier.mockReturnValue({
         result: Buffer.from('identifier').toString('base64')
       });
@@ -581,7 +581,7 @@ describe('virgilCrypto', () => {
     });
 
     it('accepts raw key as object with value and encoding', () => {
-      const rawKey = { value: 'rawKey', encoding: 'utf8' };
+      const rawKey = { value: 'rawKey', encoding: 'utf8' } as const;
       NativeModules.RNVirgilCrypto.getPublicKeyIdentifier.mockReturnValue({
         result: Buffer.from('identifier').toString('base64')
       });
@@ -743,7 +743,7 @@ describe('virgilCrypto', () => {
 
     it('accepts signature as object with value and encoding', async () => {
       NativeModules.RNVirgilCrypto.verifyFileSignature.mockResolvedValue(true);
-      const signature = { value: 'signature', encoding: 'utf8' };
+      const signature = { value: 'signature', encoding: 'utf8' } as const;
 
       const isValid = await virgilCrypto.verifyFileSignature({
         inputPath: '/path/to/file',
@@ -817,7 +817,7 @@ describe('virgilCrypto', () => {
           metadata: Buffer.from('metadata').toString('base64')
         }
       });
-      const data = { value: 'data', encoding: 'utf8' };
+      const data = { value: 'data', encoding: 'utf8' } as const;
       virgilCrypto.signThenEncryptDetached(data, new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey')), new VirgilPublicKey('pubkey', dataToBase64('pubkey', 'base64', 'rawPrivateKey')));
       expect(NativeModules.RNVirgilCrypto.signThenEncryptDetached).toHaveBeenCalledWith(
         Buffer.from('data').toString('base64'),
@@ -885,8 +885,8 @@ describe('virgilCrypto', () => {
       NativeModules.RNVirgilCrypto.decryptThenVerifyDetached.mockReturnValue({
         result: Buffer.from('plaintext').toString('base64')
       });
-      const data = { value: 'ciphertext', encoding: 'utf8' };
-      const metadata = { value: 'metadata', encoding: 'utf8' };
+      const data = { value: 'ciphertext', encoding: 'utf8' } as const;
+      const metadata = { value: 'metadata', encoding: 'utf8' } as const;
 
       virgilCrypto.decryptThenVerifyDetached(
         data, metadata, new VirgilPrivateKey('privatekey', dataToBase64('privatekey', 'base64', 'rawPrivateKey')), new VirgilPublicKey('pubkey', dataToBase64('pubkey', 'base64', 'rawPrivateKey'))
@@ -959,7 +959,7 @@ describe('virgilCrypto', () => {
           epochMessages: [Buffer.from('epochMessage').toString('base64')]
         }
       });
-      virgilCrypto.generateGroupSession({ value: 'long_enough_to_be_a_group_id', encoding: 'utf8' });
+      virgilCrypto.generateGroupSession({ value: 'long_enough_to_be_a_group_id', encoding: 'utf8' } as const);
       expect(NativeModules.RNVirgilCrypto.generateGroupSession).toHaveBeenCalledWith(
         Buffer.from('long_enough_to_be_a_group_id').toString('base64')
       );
@@ -968,7 +968,7 @@ describe('virgilCrypto', () => {
 
   describe('importGroupSession', () => {
     it('throws if epoch messages array is empty', () => {
-      expect(() => virgilCrypto.importGroupSession(undefined)).toThrow(/epoch messages must be an array/i);
+      expect(() => virgilCrypto.importGroupSession(undefined as never)).toThrow(/epoch messages must be an array/i);
       expect(() => virgilCrypto.importGroupSession([])).toThrow(/epoch messages must not be empty/i);
     });
 
@@ -1039,9 +1039,9 @@ describe('virgilCrypto', () => {
         }
       });
       virgilCrypto.importGroupSession([
-        { value: 'epochMessage1', encoding: 'utf8' },
-        { value: 'epochMessage2', encoding: 'utf8' },
-        { value: 'epochMessage3', encoding: 'utf8' },
+        { value: 'epochMessage1', encoding: 'utf8' } as const,
+        { value: 'epochMessage2', encoding: 'utf8' } as const,
+        { value: 'epochMessage3', encoding: 'utf8' } as const,
       ]);
       expect(NativeModules.RNVirgilCrypto.importGroupSession).toHaveBeenCalledWith(
         [
@@ -1090,7 +1090,7 @@ describe('virgilCrypto', () => {
       NativeModules.RNVirgilCrypto.computeHashWithAlgorithm.mockReturnValue({
         result: groupIdHash.toString('base64')
       })
-      virgilCrypto.calculateGroupSessionId({ value: 'long_enough_to_be_a_group_id', encoding: 'utf8' });
+      virgilCrypto.calculateGroupSessionId({ value: 'long_enough_to_be_a_group_id', encoding: 'utf8' } as const);
       expect(NativeModules.RNVirgilCrypto.computeHashWithAlgorithm).toHaveBeenCalledWith(
         Buffer.from('long_enough_to_be_a_group_id').toString('base64'),
         'NativeHashAlgorigthm.SHA512'

@@ -18,7 +18,6 @@ Pod::Spec.new do |s|
   s.source       = { git: 'https://github.com/VirgilSecurity/react-native-virgil-crypto.git', tag: "#{s.version}" }
   s.source_files = 'ios/**/*.{h,m}'
   s.requires_arc = true
-  s.static_framework = true
 
   if respond_to?(:install_modules_dependencies, true)
     install_modules_dependencies(s)
@@ -26,7 +25,7 @@ Pod::Spec.new do |s|
     s.dependency 'React-Core'
   end
 
-  s.dependency 'VirgilCrypto', '5.3.0'
-  s.dependency 'VirgilCryptoFoundation', '0.12.0'
-  s.dependency 'VirgilCryptoPythia', '0.12.0'
+  s.dependency 'VirgilCrypto', '7.0.1'
+  s.dependency 'VirgilCryptoFoundation', '0.17.1'
+  s.dependency 'VirgilCryptoPythia', '0.17.1'
 end

@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
-#import <VirgilCrypto/VirgilCrypto-Swift.h>
+
+@import VirgilCrypto.Swift;
 
 @interface HashAlgorithm : NSObject
 

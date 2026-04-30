@@ -1,16 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React from 'react';
 import {SafeAreaView, ScrollView, Text} from 'react-native';
-import {virgilCrypto, KeyPairType} from 'react-native-virgil-crypto';
+import {KeyPairType, virgilCrypto} from 'react-native-virgil-crypto';
 
-const App = () => {
+function App(): React.JSX.Element {
   const keyPair = virgilCrypto.generateKeys(
     KeyPairType.CURVE25519_ROUND5_ED25519_FALCON,
   );
@@ -26,6 +18,7 @@ const App = () => {
     keyPair.privateKey,
     keyPair.publicKey,
   );
+
   return (
     <SafeAreaView>
       <ScrollView>
@@ -35,6 +28,6 @@ const App = () => {
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 export default App;

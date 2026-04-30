@@ -1,6 +1,7 @@
 #import <React/RCTBridgeModule.h>
-#import <VirgilCrypto/VirgilCrypto-Swift.h>
-#import <VirgilCryptoFoundation/VirgilCryptoFoundation-Swift.h>
+
+@import VirgilCrypto.Swift;
+@import VirgilCryptoFoundation.Swift;
 
 #import "FSUtils.h"
 #import "HashAlgorithm.h"

@@ -1,5 +1,6 @@
 #import <React/RCTBridgeModule.h>
-#import <VirgilCryptoPythia/VirgilCryptoPythia-Swift.h>
+
+@import VirgilCryptoPythia.Swift;
 
 #import "NSData+Encoding.h"
 #import "NSString+Encoding.h"

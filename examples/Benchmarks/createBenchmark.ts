@@ -1,20 +1,29 @@
 import _ from 'lodash';
-global._ = _;
 import _Benchmark from 'benchmark';
 import {
-  virgilCrypto,
-  virgilBrainKeyCrypto,
-  KeyPairType,
-  HashAlgorithm,
   Buffer,
+  HashAlgorithm,
+  type HashAlgorithmValue,
+  KeyPairType,
+  type KeyPairTypeValue,
+  virgilBrainKeyCrypto,
+  virgilCrypto,
 } from 'react-native-virgil-crypto';
 
-const Benchmark = _Benchmark.runInContext(global);
+(global as unknown as {_: typeof _})._ = _;
+
+const Benchmark = _Benchmark.runInContext(global) as typeof _Benchmark;
 const eightKbData = Buffer.alloc(8192, 'benchmark data', 'utf-8');
 const oneKbData = Buffer.alloc(1024, 'benchmark data', 'utf-8');
 
-export function createBenchmark() {
-  const suite = new Benchmark.Suite();
+type Suite = {
+  add: (name: string, fn: () => void) => Suite;
+  on: (event: string, fn: (event: {target: {name: string}}) => void) => Suite;
+  run: (options?: {async?: boolean}) => void;
+};
+
+export function createBenchmark(): Suite {
+  const suite: Suite = new Benchmark.Suite();
 
   addGenerateKeys(suite, KeyPairType.ED25519);
   addGenerateKeys(suite, KeyPairType.CURVE25519);
@@ -31,13 +40,9 @@ export function createBenchmark() {
   addEncryption(suite, KeyPairType.ED25519);
   addEncryption(suite, KeyPairType.CURVE25519);
   addEncryption(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
-  // addEncryption(suite, KeyPairType.SECP256R1);
-  // addEncryption(suite, KeyPairType.RSA_4096);
 
   addSignatures(suite, KeyPairType.ED25519);
   addSignatures(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
-  // addSignatures(suite, KeyPairType.SECP256R1);
-  // addSignatures(suite, KeyPairType.RSA_4096);
 
   addSignAndEncrypt(suite, KeyPairType.ED25519);
   addSignAndEncrypt(suite, KeyPairType.CURVE25519_ROUND5_ED25519_FALCON);
@@ -56,19 +61,19 @@ export function createBenchmark() {
   return suite;
 }
 
-function addGenerateKeys(suite, keyPairType) {
+function addGenerateKeys(suite: Suite, keyPairType: KeyPairTypeValue) {
   suite.add(`generateKeys (${keyPairType})`, () => {
     virgilCrypto.generateKeys(keyPairType);
   });
 }
 
-function addHash(suite, algorithm) {
+function addHash(suite: Suite, algorithm: HashAlgorithmValue) {
   suite.add(`calculateHash (${algorithm})`, () => {
     virgilCrypto.calculateHash(eightKbData, algorithm);
   });
 }
 
-function addEncryption(suite, keyPairType) {
+function addEncryption(suite: Suite, keyPairType: KeyPairTypeValue) {
   const keypair = virgilCrypto.generateKeys(keyPairType);
   const encryptedData = virgilCrypto.encrypt(oneKbData, keypair.publicKey);
 
@@ -81,7 +86,7 @@ function addEncryption(suite, keyPairType) {
   });
 }
 
-function addSignatures(suite, keyPairType) {
+function addSignatures(suite: Suite, keyPairType: KeyPairTypeValue) {
   const keypair = virgilCrypto.generateKeys(keyPairType);
   const signature = virgilCrypto.calculateSignature(
     oneKbData,
@@ -97,7 +102,7 @@ function addSignatures(suite, keyPairType) {
   });
 }
 
-function addSignAndEncrypt(suite, keyPairType) {
+function addSignAndEncrypt(suite: Suite, keyPairType: KeyPairTypeValue) {
   const keypair = virgilCrypto.generateKeys();
   const encryptedData = virgilCrypto.signAndEncrypt(
     oneKbData,
@@ -130,7 +135,7 @@ function addSignAndEncrypt(suite, keyPairType) {
   });
 }
 
-function addSignThenEncrypt(suite, keyPairType) {
+function addSignThenEncrypt(suite: Suite, keyPairType: KeyPairTypeValue) {
   const keypair = virgilCrypto.generateKeys();
   const encryptedData = virgilCrypto.signThenEncrypt(
     oneKbData,
@@ -163,7 +168,7 @@ function addSignThenEncrypt(suite, keyPairType) {
   });
 }
 
-function addKeyknoxCrypto(suite, keyPairType) {
+function addKeyknoxCrypto(suite: Suite, keyPairType: KeyPairTypeValue) {
   const keypair = virgilCrypto.generateKeys();
   const {encryptedData, metadata} = virgilCrypto.signThenEncryptDetached(
     oneKbData,
@@ -189,7 +194,7 @@ function addKeyknoxCrypto(suite, keyPairType) {
   });
 }
 
-function addBrainKeyCrypto(suite) {
+function addBrainKeyCrypto(suite: Suite) {
   const password = 'pa$$w0rd';
   const {blindingSecret} = virgilBrainKeyCrypto.blind(password);
   const transformedPassword =
@@ -212,7 +217,7 @@ function addBrainKeyCrypto(suite) {
   });
 }
 
-function addKeyExtraction(suite, keyPairType) {
+function addKeyExtraction(suite: Suite, keyPairType: KeyPairTypeValue) {
   const keypair = virgilCrypto.generateKeys(keyPairType);
 
   suite.add(`extractPublicKey (${keyPairType})`, () => {
@@ -220,7 +225,7 @@ function addKeyExtraction(suite, keyPairType) {
   });
 }
 
-function addGroupEncryption(suite) {
+function addGroupEncryption(suite: Suite) {
   const keypair = virgilCrypto.generateKeys();
   const groupId = virgilCrypto.getRandomBytes(16);
   const groupSession = virgilCrypto.generateGroupSession(groupId);

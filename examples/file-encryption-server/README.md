@@ -3,13 +3,17 @@ React Native project is available [here](../FileEncryptionExample).
 
 ## Install
 ```sh
-yarn install
+npm install
 ```
 
 ## Usage
-- Start the server
+- Start the server (runs the TypeScript source directly via `tsx`):
   ```sh
-  yarn start
+  npm start
+  ```
+- Or with auto-reload while editing:
+  ```sh
+  npm run dev
   ```
 
 ## License

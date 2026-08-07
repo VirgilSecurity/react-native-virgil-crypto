@@ -126,6 +126,13 @@ export interface NativeRNVirgilCryptoModule {
 
 export interface NativeRNVirgilBrainKeyCryptoModule {
   blind(passwordBase64: string): NativeResponse<{ blindedPoint: string; deblindFactor: string }>;
+  verify(
+    blindedPointBase64: string,
+    hardenedPointBase64: string,
+    serverPublicKeyBase64: string,
+    proofValueCBase64: string,
+    proofValueSBase64: string
+  ): NativeResponse<boolean>;
   deblind(
     passwordBase64: string,
     hardenedPointBase64: string,

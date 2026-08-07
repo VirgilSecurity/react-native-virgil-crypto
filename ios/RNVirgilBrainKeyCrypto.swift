@@ -5,8 +5,14 @@ import VirgilCryptoFoundation
 ///
 /// virgil-crypto-c 0.19.1 removed the Pythia module entirely; password
 /// hardening now lives in foundation as BrainkeyClient/BrainkeyServer. This
-/// module exposes only the raw primitives — the harden request and its DLEQ
-/// proof verification belong to a service client above this layer.
+/// module exposes the client-side primitives; the harden *request* itself is a
+/// service call and belongs above this layer.
+///
+/// `verify` is not a service call — it is local elliptic-curve arithmetic over
+/// the server's response, and nothing above this layer can perform it without
+/// the primitive. The full client sequence is blind -> harden -> verify ->
+/// deblind, and vscf_brainkey_client.h states verify "Must be called before
+/// deblind() to authenticate the server response".
 ///
 /// The `deblind` signature is genuinely different from Pythia's, not a rename:
 /// it takes the password again plus a `keyName` domain-separation tag.
@@ -32,6 +38,29 @@ class RNVirgilBrainKeyCrypto: NSObject {
                 "blindedPoint": result.blindedPoint.base64String,
                 "deblindFactor": result.deblindFactor.base64String
             ])
+        } catch {
+            return ResponseFactory.fromError(error)
+        }
+    }
+
+    @objc(verify:hardenedPoint:serverPublicKey:proofValueC:proofValueS:)
+    func verify(
+        _ blindedPointBase64: String,
+        hardenedPoint hardenedPointBase64: String,
+        serverPublicKey serverPublicKeyBase64: String,
+        proofValueC proofValueCBase64: String,
+        proofValueS proofValueSBase64: String
+    ) -> Any {
+        do {
+            let client = try makeClient()
+            let isValid = try client.verify(
+                blindedPoint: blindedPointBase64.base64Data,
+                hardenedPoint: hardenedPointBase64.base64Data,
+                serverPublicKey: serverPublicKeyBase64.base64Data,
+                proofValueC: proofValueCBase64.base64Data,
+                proofValueS: proofValueSBase64.base64Data
+            )
+            return ResponseFactory.fromResult(isValid)
         } catch {
             return ResponseFactory.fromError(error)
         }

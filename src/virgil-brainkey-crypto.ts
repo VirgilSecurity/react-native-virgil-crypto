@@ -21,8 +21,43 @@ export type DeblindParams = {
   keyName: Data;
 };
 
+export type VerifyParams = {
+  /** The `blindedPoint` from {@link IVirgilBrainKeyCrypto.blind}. */
+  blindedPoint: Data;
+  /** The hardened point returned by the harden service. */
+  hardenedPoint: Data;
+  /** The harden service's public key. */
+  serverPublicKey: Data;
+  /** DLEQ proof scalar `c`, as returned by the harden service. */
+  proofValueC: Data;
+  /** DLEQ proof scalar `s`, as returned by the harden service. */
+  proofValueS: Data;
+};
+
 export interface IVirgilBrainKeyCrypto {
   blind(password: Data): BlindResult;
+  /**
+   * Verifies the harden service's DLEQ proof that `hardenedPoint` was produced
+   * with the same secret behind `serverPublicKey`.
+   *
+   * Call this before {@link IVirgilBrainKeyCrypto.deblind}. Without it a
+   * malicious or faulty service can return any point it likes and `deblind`
+   * will happily derive a seed from it — one that is wrong, unrecoverable, and
+   * indistinguishable from a wrong password.
+   *
+   * @returns `true` when the proof holds.
+   *
+   * @throws {RNVirgilCryptoError} when the proof does **not** hold. Upstream
+   * reports a failed proof as `ERROR_BRAINKEY_INTERNAL`, which both the Swift
+   * and Java wrappers surface as a thrown `FoundationError` with the message
+   * "Brainkey internal error." — so this never returns `false`, it throws. The
+   * `boolean` return is kept to match `BrainkeyClient.verify` in every other
+   * Virgil SDK.
+   *
+   * Because that error is indistinguishable from a malformed-input error, treat
+   * any throw here as a rejected server response and do not deblind.
+   */
+  verify(params: VerifyParams): boolean;
   deblind(params: DeblindParams): NodeBuffer;
 }
 
@@ -45,6 +80,24 @@ export const virgilBrainKeyCrypto: IVirgilBrainKeyCrypto = {
       blindedPoint: base64ToBuffer(blindedPoint),
       deblindFactor: base64ToBuffer(deblindFactor),
     };
+  },
+
+  verify({
+    blindedPoint,
+    hardenedPoint,
+    serverPublicKey,
+    proofValueC,
+    proofValueS,
+  }: VerifyParams): boolean {
+    return unwrapResponse(
+      RNVirgilBrainKeyCrypto.verify(
+        dataToBase64(blindedPoint, 'base64', 'blindedPoint'),
+        dataToBase64(hardenedPoint, 'base64', 'hardenedPoint'),
+        dataToBase64(serverPublicKey, 'base64', 'serverPublicKey'),
+        dataToBase64(proofValueC, 'base64', 'proofValueC'),
+        dataToBase64(proofValueS, 'base64', 'proofValueS')
+      )
+    );
   },
 
   deblind({ password, hardenedPoint, deblindFactor, keyName }: DeblindParams): NodeBuffer {

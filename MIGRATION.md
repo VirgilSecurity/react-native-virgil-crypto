@@ -140,7 +140,18 @@ After:
 import { virgilBrainKeyCrypto } from 'react-native-virgil-crypto';
 
 const { blindedPoint, deblindFactor } = virgilBrainKeyCrypto.blind('password');
-// ... send blindedPoint to the harden service, receive hardenedPoint ...
+// ... send blindedPoint to the harden service; it returns hardenedPoint plus a
+// DLEQ proof (serverPublicKey, proofValueC, proofValueS) ...
+
+// New and mandatory: authenticate the server's response before using it.
+virgilBrainKeyCrypto.verify({
+  blindedPoint,
+  hardenedPoint,
+  serverPublicKey,
+  proofValueC,
+  proofValueS,
+}); // throws if the proof does not hold
+
 const seed = virgilBrainKeyCrypto.deblind({
   password: 'password',          // new: the password is needed again
   hardenedPoint,                 // was: transformedPassword
@@ -149,16 +160,39 @@ const seed = virgilBrainKeyCrypto.deblind({
 });
 ```
 
-Three things changed:
+Four things changed:
 
 - `blind` returns `{ blindedPoint, deblindFactor }` instead of
   `{ blindedPassword, blindingSecret }`.
+- There is a new **`verify`** step. `vscf_brainkey_client.h` states it "Must be
+  called before deblind() to authenticate the server response", and it is
+  client-side elliptic-curve arithmetic, not a service call — no layer above
+  this one can perform it. Pythia had no equivalent. See below.
 - `deblind` needs the **password** again. It is no longer derivable from the
   other arguments.
 - `deblind` takes a **`keyName`** domain-separation tag, and there is no default.
 
 Because `deblind` no longer satisfies `IBrainKeyCrypto` from
 `@virgilsecurity/crypto-types`, this module no longer declares that interface.
+
+#### Verify the DLEQ proof, always
+
+`verify` proves the service computed `hardenedPoint` with the same secret that
+backs `serverPublicKey`. Skip it and a compromised or simply buggy harden service
+can return an arbitrary point; `deblind` will accept it and produce a seed that
+is wrong, unrecoverable, and **indistinguishable from a wrong password**. There
+is no later check that catches this.
+
+`verify` returns `true` when the proof holds. When it does not, it **throws**
+rather than returning `false` — upstream reports a proof mismatch as
+`ERROR_BRAINKEY_INTERNAL`, which the Swift and Java wrappers raise as a
+`FoundationError` with the message "Brainkey internal error." The `boolean`
+return type is kept so the signature matches `BrainkeyClient.verify` in every
+other Virgil SDK. Because that error is indistinguishable from a
+malformed-input error, treat any throw as a rejected server response.
+
+`virgil-e3kit-x` (5.0.0) and `virgil-e3kit-kotlin` (3.0.0) added the same
+verification step when they moved off Pythia.
 
 #### `keyName` has no default, on purpose
 

@@ -288,11 +288,22 @@ const password = 'the user password';
 // 1. Blind the password locally.
 const { blindedPoint, deblindFactor } = virgilBrainKeyCrypto.blind(password);
 
-// 2. Send blindedPoint to your harden service; it returns hardenedPoint.
-//    This must be implemented by you — the library never talks to a service.
-const hardenedPoint = await hardenOnServer(blindedPoint);
+// 2. Send blindedPoint to your harden service. It returns hardenedPoint plus a
+//    DLEQ proof. This must be implemented by you — the library never talks to
+//    a service.
+const { hardenedPoint, serverPublicKey, proofValueC, proofValueS } =
+  await hardenOnServer(blindedPoint);
 
-// 3. Deblind to recover the seed, then derive a key pair from it.
+// 3. Verify the proof BEFORE deblinding. Throws if it does not hold.
+virgilBrainKeyCrypto.verify({
+  blindedPoint,
+  hardenedPoint,
+  serverPublicKey,
+  proofValueC,
+  proofValueS,
+});
+
+// 4. Deblind to recover the seed, then derive a key pair from it.
 const seed = virgilBrainKeyCrypto.deblind({
   password,
   hardenedPoint,
@@ -302,6 +313,13 @@ const seed = virgilBrainKeyCrypto.deblind({
 
 const keyPair = virgilCrypto.generateKeysFromKeyMaterial(seed);
 ```
+
+Step 3 is not optional. Without it a malicious or faulty harden service can return
+any point it likes and `deblind` will derive a seed from it — one that is wrong,
+unrecoverable, and indistinguishable from a wrong password. `verify` returns
+`true` when the proof holds and **throws** when it does not; upstream reports a
+failed proof as a generic `FoundationError` ("Brainkey internal error."), so treat
+any throw as a rejected server response.
 
 `keyName` is a domain-separation tag. It is **required and has no default**: it must be a
 stable, application-wide constant matching the value your harden service used. Changing it

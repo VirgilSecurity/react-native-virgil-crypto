@@ -6,6 +6,7 @@ jest.mock('react-native', () => ({
   NativeModules: {
     RNVirgilBrainKeyCrypto: {
       blind: jest.fn(),
+      verify: jest.fn(),
       deblind: jest.fn(),
     },
   },
@@ -53,6 +54,57 @@ describe('blind', () => {
     });
 
     expect(() => virgilBrainKeyCrypto.blind('password')).toThrow();
+  });
+});
+
+describe('verify', () => {
+  const params = {
+    blindedPoint: b64('blinded'),
+    hardenedPoint: b64('hardened'),
+    serverPublicKey: b64('serverKey'),
+    proofValueC: b64('proofC'),
+    proofValueS: b64('proofS'),
+  };
+
+  it('returns true when the proof holds', () => {
+    RNVirgilBrainKeyCrypto.verify.mockReturnValue({ result: true });
+
+    expect(virgilBrainKeyCrypto.verify(params)).toBe(true);
+  });
+
+  it('throws when the proof does not hold', () => {
+    // Upstream reports a failed proof as ERROR_BRAINKEY_INTERNAL, which the
+    // native wrappers surface as a thrown FoundationError rather than a false
+    // return. Verified on device: a tampered proof produces exactly this.
+    RNVirgilBrainKeyCrypto.verify.mockReturnValue({
+      error: { code: '-1', message: 'Brainkey internal error.' },
+    });
+
+    expect(() => virgilBrainKeyCrypto.verify(params)).toThrow(
+      /Brainkey internal error/,
+    );
+  });
+
+  it('passes all five arguments to the native module in order', () => {
+    RNVirgilBrainKeyCrypto.verify.mockReturnValue({ result: true });
+
+    virgilBrainKeyCrypto.verify(params);
+
+    expect(RNVirgilBrainKeyCrypto.verify).toHaveBeenCalledWith(
+      b64('blinded'),
+      b64('hardened'),
+      b64('serverKey'),
+      b64('proofC'),
+      b64('proofS'),
+    );
+  });
+
+  it('throws when the native module returns an error', () => {
+    RNVirgilBrainKeyCrypto.verify.mockReturnValue({
+      error: { code: '-1', message: 'boom' },
+    });
+
+    expect(() => virgilBrainKeyCrypto.verify(params)).toThrow();
   });
 });
 

@@ -86,7 +86,13 @@ public class RNVirgilCryptoModule extends ReactContextBaseJavaModule {
         keyPairTypeMap.put("RSA4096", KeyPairType.RSA_4096.name());
         keyPairTypeMap.put("RSA8192", KeyPairType.RSA_8192.name());
         keyPairTypeMap.put("CURVE25519_ED25519", KeyPairType.CURVE25519_ED25519.name());
-        keyPairTypeMap.put("CURVE25519_ROUND5_ED25519_FALCON", KeyPairType.CURVE25519_ROUND5_ED25519_FALCON.name());
+        // The JS-facing KEY is renamed to reflect ML-KEM-768, but the VALUE must
+        // keep the old enum name: virgil-sdk-java-android 7.5.1 still calls it
+        // CURVE25519_ROUND5_ED25519_FALCON (it maps internally to
+        // AlgId.ML_KEM_768), and generateKeyPair round-trips this string back
+        // through KeyPairType.valueOf. Renaming the value throws at runtime and
+        // no jest spec would catch it.
+        keyPairTypeMap.put("CURVE25519_MLKEM768_ED25519_FALCON", KeyPairType.CURVE25519_ROUND5_ED25519_FALCON.name());
 
         Map<String, String> hashAlgMap = new HashMap<>();
         hashAlgMap.put("SHA224", HashAlgorithm.SHA224.name());

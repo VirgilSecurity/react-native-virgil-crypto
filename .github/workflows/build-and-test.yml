@@ -1,0 +1,200 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  js:
+    name: JS (typecheck, build, test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+  android:
+    name: Android (assemble library)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # AGP 8.3 rejects JDK 21+; 17 is the supported toolchain.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # `main` is lib/index.js, produced by the build. The E2E app installs this
+      # package from `../`, so it has to exist before that install runs.
+      - name: Build the package
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install E2E app dependencies
+        working-directory: E2ETests
+        run: yarn install --frozen-lockfile
+
+      - name: Assemble the Android library
+        working-directory: E2ETests/android
+        run: ./gradlew :react-native-virgil-crypto:assembleRelease --no-daemon
+
+      # R1/R2 regression guard: the resolved graph must be on the 0.19.x
+      # generation with no Pythia artifact anywhere in it.
+      - name: Assert the resolved dependency graph
+        working-directory: E2ETests/android
+        run: |
+          ./gradlew :react-native-virgil-crypto:dependencies \
+            --configuration releaseRuntimeClasspath --no-daemon > deps.txt
+          cat deps.txt
+          grep -q 'com.virgilsecurity.crypto:foundation-android:0.19.1' deps.txt \
+            || { echo "::error::foundation-android 0.19.1 not in the resolved graph"; exit 1; }
+          if grep -qi 'pythia' deps.txt; then
+            echo "::error::a Pythia artifact is still in the resolved graph"; exit 1
+          fi
+
+  ios:
+    name: iOS (resolve SPM, build)
+    # macOS is required, not optional: virgil-crypto-c prebuilts are a direct
+    # dependency of the iOS build (see the workspace CI convention).
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: false
+
+      - run: gem install cocoapods -v '~> 1.16'
+
+      - name: Build the package
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install E2E app dependencies
+        working-directory: E2ETests
+        run: yarn install --frozen-lockfile
+
+      # USE_FRAMEWORKS=dynamic is mandatory, not a preference: a static
+      # libRNVirgilCrypto.a cannot resolve `direct field offset` symbols from
+      # the dynamic SPM PackageProduct. Consumers need this too — see MIGRATION.md.
+      - name: pod install
+        working-directory: E2ETests/ios
+        env:
+          USE_FRAMEWORKS: dynamic
+          LANG: en_US.UTF-8
+        run: pod install
+
+      # KTD2 regression guard. `pod install` only writes an unresolved package
+      # reference and never touches the network, so asserting on it would be
+      # inert. Resolution happens here.
+      - name: Resolve Swift package dependencies
+        working-directory: E2ETests/ios
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -workspace E2ETests.xcworkspace -scheme E2ETests
+
+      - name: Assert the resolved package versions
+        working-directory: E2ETests/ios
+        run: |
+          RESOLVED=E2ETests.xcworkspace/xcshareddata/swiftpm/Package.resolved
+          cat "$RESOLVED"
+          node -e '
+            const pins = require("./" + process.argv[1]).pins;
+            const want = {"virgil-crypto-x": "7.2.4", "virgil-crypto-c": "0.19.2"};
+            for (const [id, version] of Object.entries(want)) {
+              const pin = pins.find(p => p.identity === id);
+              if (!pin) throw new Error(`${id} missing from Package.resolved`);
+              if (pin.state.version !== version) {
+                throw new Error(`${id} resolved to ${pin.state.version}, expected ${version}`);
+              }
+            }
+            if (pins.some(p => /pythia/i.test(p.identity))) {
+              throw new Error("a Pythia package is still in the resolved graph");
+            }
+            console.log("resolved graph OK");
+          ' "$RESOLVED"
+
+      - name: Assert no CocoaPods-sourced Virgil pod
+        working-directory: E2ETests/ios
+        run: |
+          if grep -Ei '^\s+- (VirgilCrypto|VirgilCryptoFoundation|VirgilSDK|VirgilCryptoPythia|VSCCrypto)' Podfile.lock; then
+            echo "::error::a CocoaPods-published Virgil pod is back in the dependency path"
+            exit 1
+          fi
+
+      - name: Build for the simulator
+        working-directory: E2ETests/ios
+        run: |
+          set -o pipefail
+          SIM_ID=$(xcrun simctl list devices available --json \
+            | node -e '
+              let s = ""; process.stdin.on("data", d => s += d).on("end", () => {
+                const devices = Object.values(JSON.parse(s).devices).flat();
+                const d = devices.find(x => x.isAvailable && /^iPhone/.test(x.name));
+                if (!d) throw new Error("no available iPhone simulator");
+                process.stdout.write(d.udid);
+              });
+            ')
+          echo "Using simulator $SIM_ID"
+          xcodebuild \
+            -workspace E2ETests.xcworkspace \
+            -scheme E2ETests \
+            -configuration Debug \
+            -destination "id=$SIM_ID" \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      # Linking is not proof. The C layer ships as dynamic xcframeworks that are
+      # linked but not embedded by default, which fails at launch rather than at
+      # build. This asserts the embed phase from scripts/embed_virgil_frameworks.rb
+      # actually ran.
+      - name: Assert the Virgil frameworks were embedded
+        working-directory: E2ETests/ios
+        run: |
+          FRAMEWORKS=build/Build/Products/Debug-iphonesimulator/E2ETests.app/Frameworks
+          ls "$FRAMEWORKS"
+          for fw in VSCCommon VSCFoundation; do
+            test -d "$FRAMEWORKS/$fw.framework" \
+              || { echo "::error::$fw.framework was not embedded into the .app"; exit 1; }
+          done

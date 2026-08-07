@@ -8,6 +8,20 @@ import {expect} from 'chai';
 type TestContext = Record<string, any>;
 type TestCases = Record<string, (context: TestContext) => void>;
 
+/**
+ * Regenerated on virgil-crypto-c 0.19.2 with foundation's BrainkeyClient
+ * (iOS 26.4 simulator, Xcode 26.6). Not derived from the removed Pythia
+ * implementation — see the comment above the brainkey cases.
+ */
+const BRAINKEY_FIXTURE = {
+  password: 'password',
+  keyName: 'react-native-virgil-crypto-e2e',
+  hardenedPoint:
+    'BJOhE/70S52qRghkX4hFtUq3IjX02JcULEV38P7Fq7EcDu8KprQew6M/CJ21RzG5aA6he6vitu4ai4/MsP/tgdk=',
+  deblindFactor: 'qO//rwS5iXse4HncS+d1GV6RGVQY/ahM8BRA5UtYKUY=',
+  seed: 'nNiZLTlQVTGY2nTPKgCdcreREfREpjHx+D6qxInkDGU=',
+};
+
 const testCases: TestCases = {
   'generates key pair': ({virgilCrypto}) => {
     const keyPair = virgilCrypto.generateKeys();
@@ -228,31 +242,67 @@ const testCases: TestCases = {
     expect(decrypted.equals(data)).to.be.true;
   },
 
-  'brainKey - blind returns `blindedPassword` and `blindingSecret`': ({
+  // Brainkey fixtures below were produced by foundation's BrainkeyClient on
+  // virgil-crypto-c 0.19.2, NOT by Pythia. The pre-0.7.0 expectations could not
+  // be carried over: Pythia was removed upstream and the algorithms differ, so
+  // there is no value to edit toward — these were regenerated from scratch.
+  //
+  // `hardenedPoint` would normally come from a harden service. None is involved
+  // here: feeding the blinded point back in is still a well-formed group
+  // element, which is all `deblind` needs to be deterministic. That keeps the
+  // fixture reproducible with no network and no credentials.
+  'brainKey - blind returns `blindedPoint` and `deblindFactor`': ({
     virgilBrainKeyCrypto,
     Buffer,
   }) => {
     const result = virgilBrainKeyCrypto.blind('password');
     expect(Object.keys(result)).to.have.length(2);
-    expect(result.blindedPassword).to.be.instanceOf(Buffer);
-    expect(result.blindingSecret).to.be.instanceOf(Buffer);
+    expect(result.blindedPoint).to.be.instanceOf(Buffer);
+    expect(result.deblindFactor).to.be.instanceOf(Buffer);
   },
 
-  'brainKey - deblind produces correct deblinded password': ({
+  'brainKey - blind is randomized': ({virgilBrainKeyCrypto}) => {
+    const first = virgilBrainKeyCrypto.blind('password');
+    const second = virgilBrainKeyCrypto.blind('password');
+    expect(first.blindedPoint.equals(second.blindedPoint)).to.be.false;
+    expect(first.deblindFactor.equals(second.deblindFactor)).to.be.false;
+  },
+
+  'brainKey - deblind produces the regenerated fixture': ({
     virgilBrainKeyCrypto,
-    Buffer,
   }) => {
-    const blindingSecret = 'ASCgLTvcpI1qGGLzkPf/Aq7OGuPkDCtIt7AFqR0ihfWx';
-    const transformedPassword =
-      'CrgNKSe3uxubXrKRGjSI9DcPSmi6qluyE9Qbd104ZzWNS7v2/sEWnXQh7ePBZ/apBGQ+PW8C8VDbcixj78hGMVsWy4cIe3qk5Mqs6U8TfLqVtk1weap9k5ntT6AFi6J7D+gp+lGvoxBeRvKQuk6xDtd5wmUPcF9O1Jzi2rpArfggyM57oT5xnWHObuf7APBxAu3XGv3L0Oc84qGq1pjS6EmYDPYBHJQfPwDSvZCHdilCZOSAy/RCzitKwwgA+JCZFerdEM1e1SGjLAJ9Bh3B4p5URCzqRLuA9csoyVSkJy0Os34HqnvrVtAO2isr8QUbA8h9ZdSL85z6wGgBUhyk663Z5HEdBgyx/rzoE1K0eNxDTnUXFUDOhtqjuEQCQnK3BzoMDYPbXn4MkC1C8e2TGkKPTViLpbo6cI1TmlzkIp/Db/egmgeGA9Ev2SWcRUCeFbefaIy4n6O+tCtdDo9+DYKCGb7F6zdxoJUjUSv0KPo9NI21bXsH0YK4jDQ/JGn5';
-    const expectedDeblindedPassword =
-      'EycyOOMRkmL4bTITuOtrmcCT70hzffz66WIQ9zUOCWy8fmuZLk5vcFrD8KkV0WIsFkRZZAjj0WEm3fqc5ZTp82GyHvnIIwnlcUwJvNf37FwmZlkRNMZF1F7YyXA+cY7gBf5Ll/xA9ptCRyiDHQqInNOb4EaD3TgNqg32fDgnnjuf4y9sQHgDEfLfu26J/JDvFfsseVjjhxgtx+9X9xb90VKlisHT8NGb+i94kCQzOXbGn76eJLWNbNj6ScX01kKwD445DBmfN/ezEldY7yhK4Q/Zwtp+ooBVC6zNVdrdcIc6BjvPycrJB5BCr4ilQ6bMCarta6SVTW7ozMbhFFlEMoJmYWzQD4phbw555S3dLvlwyLqPj/zjVQXcZDyOK25DChR0ptBDpNr5tir4fB1FyplNI/kI94mKP0TKe7ZCEiCHyoGTCLPYr60Xyh9hSOh1CHAzbKaOt4PImw3J2SOS9FPGUOnwkjK5/P/RwsrSSxTStJUrf1RVIpXODoVJlpE8';
-    const actual = virgilBrainKeyCrypto.deblind({
-      transformedPassword,
-      blindingSecret,
+    const seed = virgilBrainKeyCrypto.deblind({
+      password: BRAINKEY_FIXTURE.password,
+      hardenedPoint: BRAINKEY_FIXTURE.hardenedPoint,
+      deblindFactor: BRAINKEY_FIXTURE.deblindFactor,
+      keyName: BRAINKEY_FIXTURE.keyName,
     });
-    expect(actual).to.be.instanceOf(Buffer);
-    expect(actual.toString('base64')).to.eq(expectedDeblindedPassword);
+    // Also the cross-platform check: iOS and Android must agree byte for byte.
+    expect(seed.toString('base64')).to.equal(BRAINKEY_FIXTURE.seed);
+  },
+
+  'brainKey - deblind requires a keyName': ({virgilBrainKeyCrypto}) => {
+    expect(() =>
+      virgilBrainKeyCrypto.deblind({
+        password: BRAINKEY_FIXTURE.password,
+        hardenedPoint: BRAINKEY_FIXTURE.hardenedPoint,
+        deblindFactor: BRAINKEY_FIXTURE.deblindFactor,
+      } as any),
+    ).to.throw(/keyName/);
+  },
+
+  'brainKey - a different keyName derives a different seed': ({
+    virgilBrainKeyCrypto,
+  }) => {
+    const seed = virgilBrainKeyCrypto.deblind({
+      password: BRAINKEY_FIXTURE.password,
+      hardenedPoint: BRAINKEY_FIXTURE.hardenedPoint,
+      deblindFactor: BRAINKEY_FIXTURE.deblindFactor,
+      keyName: BRAINKEY_FIXTURE.keyName + '-other',
+    });
+    // The failure this guards against is silent: a changed tag yields a
+    // valid-looking seed that opens nothing, with no error to catch.
+    expect(seed.toString('base64')).not.to.equal(BRAINKEY_FIXTURE.seed);
   },
 
   'throws correct error when decryption fails': ({

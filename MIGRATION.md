@@ -222,20 +222,28 @@ is no old output to reconcile.
 
 ### Existing ciphertext still decrypts
 
-virgil-crypto-c 0.19.x changed the default ECIES data cipher from AES-256-CBC to
-AES-256-GCM. **This applies to newly written data only.**
+**Every payload written by 0.6.x and earlier still decrypts after upgrading.**
+Do not discard old ciphertext.
 
-Virgil's CMS envelope is self-describing: `vscf_recipient_cipher` builds the
-decryption cipher from the message's own `data_encryption_alg_info`, and
-AES-256-CBC is still compiled in at 0.19.x. Ciphertext written by 0.6.x and
-earlier continues to decrypt after upgrading.
+You may have heard that 0.19.x changed the default ECIES data cipher from
+AES-256-CBC to AES-256-GCM. It did not. `vscf_recipient_cipher.c` has defaulted
+to AES-256-GCM since at least v0.13.1 — the version this library shipped on
+Android before 0.7.0 — so there is no cipher-default change in this migration at
+all, and nothing that would make old data unreadable.
 
-Do not treat this as a breaking change and do not discard old ciphertext. It is
-recoverable.
+Regardless of which cipher wrote a given payload, Virgil's CMS envelope is
+self-describing: `vscf_recipient_cipher` builds the decryption cipher from the
+message's own `data_encryption_alg_info` rather than from a compile-time default,
+and AES-256-CBC remains compiled in at 0.19.2.
 
-That said, AES-256-CBC without an AEAD tag is the weaker construction. Re-encrypt
-data at rest when convenient, so the GCM default actually takes effect on your
-stored payloads.
+This is verified rather than asserted. `E2ETests/e2e/test-cases.ts` commits two
+ciphertexts produced by an older stack — one deliberately AES-256-CBC, one the
+AES-256-GCM a pre-migration app would actually have written — and decrypts both
+on 0.19.2.
+
+If some of your data *is* AES-256-CBC because an older application explicitly
+selected that cipher, it stays readable, but CBC has no AEAD tag. Re-encrypting
+at rest is worth doing on its own merits, not because this release requires it.
 
 ### Group sessions are unaffected
 
@@ -250,9 +258,13 @@ That is a different library, and this package has never wrapped ratchet.
 ### File encryption
 
 `encryptFile`, `decryptFile`, `generateFileSignature`, and `verifyFileSignature`
-use the high-level stream API and inherit the new GCM default without any API
-change. Files encrypted by earlier versions still decrypt, for the same
-self-describing-envelope reason as above.
+use the high-level stream API and are unchanged by this release. Files encrypted
+by earlier versions still decrypt, for the same self-describing-envelope reason
+as above.
+
+These paths are not covered by an automated end-to-end round-trip: the E2E
+harness has no filesystem library to write a test file with. They were verified
+by inspection only — flagged here rather than left implied.
 
 ---
 

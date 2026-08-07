@@ -13,6 +13,42 @@ type TestCases = Record<string, (context: TestContext) => void>;
  * (iOS 26.4 simulator, Xcode 26.6). Not derived from the removed Pythia
  * implementation — see the comment above the brainkey cases.
  */
+/**
+ * Ciphertext produced by implementations that predate this migration, committed
+ * so the R15 continuity check does not depend on being able to rebuild the old
+ * library — which is impossible once both dependency graphs move.
+ *
+ * A note on what actually changed: the plan for this migration assumed the ECIES
+ * data cipher default moved from AES-256-CBC to AES-256-GCM at 0.19.x. It did
+ * not. `vscf_recipient_cipher.c` has defaulted to AES-256-GCM since at least
+ * v0.13.1 — the version Android shipped before this branch — so there is no
+ * default change to absorb. The CBC case below is therefore not a "legacy
+ * default"; it is a deliberately CBC-encrypted payload, included because it is
+ * the real test of the claim that matters: Virgil's CMS envelope is
+ * self-describing, so the decryption cipher comes from the message rather than
+ * from a compile-time default.
+ */
+const LEGACY_CIPHERTEXT = {
+  plaintext: 'legacy AES-256-CBC payload',
+
+  // Explicit AES-256-CBC via RecipientCipher.encryptionCipher, generated with
+  // virgil-crypto (JS) 4.2.2 / @virgilsecurity/core-foundation 1.2.1.
+  // Carries the AES-256-CBC OID (2.16.840.1.101.3.4.1.42) and no GCM OID.
+  cbc: {
+    privateKey: 'MC4CAQAwBQYDK2VwBCIEIFjNj1b0Km5GwVbFe7XeAF3tCsppVuqtAlzMDRhCBPPo',
+    ciphertext:
+      'MIIBSgIBADCCAUMGCSqGSIb3DQEHA6CCATQwggEwAgECMYH+MIH7AgECoAoECFUM2F+D02ZAMAUGAytlcASB4jCB3wIBADAqMAUGAytlcAMhAClSPB6DLi3zn/DH0fPIYGzl4hkkL4iYykDZhf3EyseyMBgGByiBjHECBQIwDQYJYIZIAWUDBAICBQAwQTANBglghkgBZQMEAgIFAAQw3aKzqL4+DCKvfNFW7TBANPVtsQ0IIx+H/V2c/tE1K9j9ez/0FXhibtDOAMO8JQTDMFEwHQYJYIZIAWUDBAEqBBCM8OzIAxULtlK8El5cCuYsBDASl7bGvMFRKFrvMmlSFO3wwk4il3ZPAd0LSGQLPWFVaDbepYfoEgCfDCcf8MxrS9YwKgYJKoZIhvcNAQcBMB0GCWCGSAFlAwQBKgQQRYYEHEDjLomZLavPtC+b7vkxnRObszmBw2rfuiMT9Zo4XBVmEMAGQboL/kW7+3ol',
+  },
+
+  // A plain `encrypt` from that same older stack, i.e. what a pre-migration app
+  // actually wrote. AES-256-GCM content cipher, as expected given the above.
+  gcm: {
+    privateKey: 'MC4CAQAwBQYDK2VwBCIEIMRjLyXvUJns8xMRBP2DhEYSoSXK27cNSNkd01KTQ1+P',
+    ciphertext:
+      'MIIBRgIBADCCAT8GCSqGSIb3DQEHA6CCATAwggEsAgECMYH+MIH7AgECoAoECAMJC5QnHVS1MAUGAytlcASB4jCB3wIBADAqMAUGAytlcAMhADiKVIJN+vQcMeFTZTLvrSVHVM380OrfTwqSTeIXB8UzMBgGByiBjHECBQIwDQYJYIZIAWUDBAICBQAwQTANBglghkgBZQMEAgIFAAQwJbb2sK0/yRM1rf5sJQsPLvI6wR/woKBfQoT/kQ2NT6f0cpFsMxA+nGcAAPDiud4AMFEwHQYJYIZIAWUDBAEqBBC/V1VXLXgrkCkwKxnCSB+oBDCOmlABCxwdOB/Dll3TGgO/kj8eUrRJI7rS3muioDxZLvlalated7Lzzraet6tMvOswJgYJKoZIhvcNAQcBMBkGCWCGSAFlAwQBLgQMLTREMj07JDOlLgk3VG2+d+h6LUHojLUVHnliY0YzA7aTG7OWpNSVEBrjB7FrtNsFDIfbDNOJ',
+  },
+};
+
 const BRAINKEY_FIXTURE = {
   password: 'password',
   keyName: 'react-native-virgil-crypto-e2e',
@@ -303,6 +339,46 @@ const testCases: TestCases = {
     // The failure this guards against is silent: a changed tag yields a
     // valid-looking seed that opens nothing, with no error to catch.
     expect(seed.toString('base64')).not.to.equal(BRAINKEY_FIXTURE.seed);
+  },
+
+  'legacy ciphertext: an AES-256-CBC payload still decrypts': ({
+    virgilCrypto,
+  }) => {
+    const privateKey = virgilCrypto.importPrivateKey({
+      value: LEGACY_CIPHERTEXT.cbc.privateKey,
+      encoding: 'base64',
+    });
+    const decrypted = virgilCrypto.decrypt(
+      {value: LEGACY_CIPHERTEXT.cbc.ciphertext, encoding: 'base64'},
+      privateKey,
+    );
+    // The envelope carries its own data_encryption_alg_info, so the cipher comes
+    // from the message rather than from whatever the library defaults to.
+    expect(decrypted.toString('utf8')).to.equal(LEGACY_CIPHERTEXT.plaintext);
+  },
+
+  'legacy ciphertext: a pre-migration AES-256-GCM payload still decrypts': ({
+    virgilCrypto,
+  }) => {
+    const privateKey = virgilCrypto.importPrivateKey({
+      value: LEGACY_CIPHERTEXT.gcm.privateKey,
+      encoding: 'base64',
+    });
+    const decrypted = virgilCrypto.decrypt(
+      {value: LEGACY_CIPHERTEXT.gcm.ciphertext, encoding: 'base64'},
+      privateKey,
+    );
+    expect(decrypted.toString('utf8')).to.equal(LEGACY_CIPHERTEXT.plaintext);
+  },
+
+  'newly written ciphertext round-trips': ({virgilCrypto}) => {
+    const keyPair = virgilCrypto.generateKeys();
+    const encrypted = virgilCrypto.encrypt(
+      {value: LEGACY_CIPHERTEXT.plaintext, encoding: 'utf8'},
+      keyPair.publicKey,
+    );
+    const decrypted = virgilCrypto.decrypt(encrypted, keyPair.privateKey);
+    expect(decrypted.toString('utf8')).to.equal(LEGACY_CIPHERTEXT.plaintext);
   },
 
   'throws correct error when decryption fails': ({

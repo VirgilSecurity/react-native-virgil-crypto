@@ -8,6 +8,11 @@ export type {
   VirgilCrypto,
 } from './src/virgil-crypto';
 export { virgilBrainKeyCrypto } from './src/virgil-brainkey-crypto';
+export type {
+  BlindResult,
+  DeblindParams,
+  IVirgilBrainKeyCrypto,
+} from './src/virgil-brainkey-crypto';
 export { KeyPairType } from './src/key-pair-type';
 export type { KeyPairTypeValue } from './src/key-pair-type';
 export { HashAlgorithm } from './src/hash-algorithm';

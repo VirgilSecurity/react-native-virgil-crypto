@@ -47,11 +47,19 @@ repositories {
     mavenCentral()
 }
 
+// Single source of truth for the Virgil versions, matching the convention in
+// virgil-e3kit-kotlin/build.gradle. crypto-android 7.5.1 resolves
+// foundation-android 0.19.1 transitively; it is pinned here so the resolved
+// version cannot drift under Gradle's newest-wins strategy.
+def virgilSdkVersion = '7.5.1'
+def virgilCryptoVersion = '0.19.1'
+
 dependencies {
     //noinspection GradleDynamicVersion
     implementation 'com.facebook.react:react-native:+'  // From node_modules
 
-    implementation 'com.virgilsecurity.sdk:crypto-android:7.1.0'
-    implementation 'com.virgilsecurity.crypto:foundation-android:0.13.1'
-    implementation 'com.virgilsecurity.crypto:pythia-android:0.13.1'
+    implementation "com.virgilsecurity.sdk:crypto-android:${virgilSdkVersion}"
+    implementation "com.virgilsecurity.crypto:foundation-android:${virgilCryptoVersion}"
+    // pythia-android is gone: virgil-crypto-c 0.19.1 removed the Pythia module
+    // and password hardening moved into foundation as BrainkeyClient.
 }

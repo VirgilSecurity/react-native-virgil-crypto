@@ -4,6 +4,8 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
+require_relative '../node_modules/react-native-virgil-crypto/scripts/embed_virgil_frameworks.rb'
+
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
@@ -31,5 +33,6 @@ target 'E2ETests' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
+    embed_virgil_frameworks!(installer)
   end
 end

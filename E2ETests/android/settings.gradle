@@ -1,4 +1,14 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+
+// RN 0.75's Gradle plugin drives autolinking from a JSON config it generates
+// itself; the legacy native_modules.gradle path this file used to apply never
+// writes that file, so :app:generateAutolinkingPackageList failed on a missing
+// input.
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+  ex.autolinkLibrariesFromCommand()
+}
+
 rootProject.name = 'E2ETests'
-apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')

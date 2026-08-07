@@ -1,0 +1,24 @@
+{
+  "originHash" : "9c7278f0f0c1469c5483a915397e7c0101a5ae759b82f403946a2fc2fa3e0942",
+  "pins" : [
+    {
+      "identity" : "virgil-crypto-c",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/VirgilSecurity/virgil-crypto-c.git",
+      "state" : {
+        "revision" : "438e76cb6021287316ac45191794e55c6b8369eb",
+        "version" : "0.19.2"
+      }
+    },
+    {
+      "identity" : "virgil-crypto-x",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/VirgilSecurity/virgil-crypto-x.git",
+      "state" : {
+        "revision" : "0bbd8c04998fdcab152ce1181f6d495c837c18b6",
+        "version" : "7.2.4"
+      }
+    }
+  ],
+  "version" : 3
+}

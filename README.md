@@ -7,15 +7,52 @@ React Native bridge for Virgil Security Crypto Library for [iOS](https://github.
 
 This library is a replacement for [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) and should be used in React Native projects. The main difference is that in [virgil-crypto-javascript](https://github.com/VirgilSecurity/virgil-crypto-javascript) library a class named `VirgilCrypto` is exported from the module that you need to create instances of, whereas this library exports an "instance" of that class ready to be used. Also, stream encryption is not available as there is no stream implementation in React Native. We're investigating the options to support file encryption though.
 
+> **Upgrading from 0.6.x?** Read [MIGRATION.md](MIGRATION.md) first. 0.7.0 moves both
+> platforms onto virgil-crypto-c 0.19.x, which removes Pythia, changes the
+> `virgilBrainKeyCrypto` signature, renames the Falcon key-type constant, and adds
+> two required iOS setup steps.
+
 ## Install
 First, install the package:
 ```sh
 yarn add react-native-virgil-crypto
 ```
 
-This package targets React Native `0.74+` on the classic bridge. It does not currently ship a TurboModule/New Architecture implementation.
+This package targets React Native `0.75.3+` on the classic bridge. It does not currently ship a TurboModule/New Architecture implementation.
 
 Autolinking is supported on both platforms, so no manual linking steps should be necessary in current React Native apps.
+
+### iOS setup
+
+iOS resolves Virgil through Swift Package Manager rather than CocoaPods — virgil-crypto-c dropped CocoaPods support at 0.17.2 — which needs two things beyond `pod install`.
+
+**1. Embed the Virgil C frameworks.** Add the helper to your `ios/Podfile`:
+
+```ruby
+require_relative '../node_modules/react-native-virgil-crypto/scripts/embed_virgil_frameworks.rb'
+
+target 'YourApp' do
+  # ...
+  post_install do |installer|
+    react_native_post_install(installer, config[:reactNativePath])
+    embed_virgil_frameworks!(installer)
+  end
+end
+```
+
+virgil-crypto-c ships its C layer as *dynamic* xcframeworks. React Native's `spm_dependency` attaches the package to the pod target only, so without this the frameworks are linked but never copied into your `.app` — the build stays green and the app dies at launch with `dyld: Library not loaded: @rpath/VSCCommon.framework/VSCCommon`.
+
+**2. Install pods with dynamic linkage:**
+
+```sh
+cd ios && USE_FRAMEWORKS=dynamic pod install
+```
+
+This is required, not optional: a statically linked `libRNVirgilCrypto.a` cannot resolve the `direct field offset` symbols the dynamic SPM products export.
+
+Your own Xcode compiles the Virgil Swift wrappers, which are SPM source targets. This release is verified on Xcode 26.6 / Swift 6.3.3.
+
+Because a green build says nothing about framework embedding, **launch your app on a simulator or device before releasing**.
 
 The legacy sample projects in [`examples/`](examples) are kept for historical reference only and should not be treated as setup guides for modern React Native versions.
 
@@ -232,6 +269,63 @@ shareGroupSession(groupSession.getSessionId(), serializedSession, groupMembers);
 ```
 
 Since this is pretty low-level we do not recommend using it directly. Instead, make sure to check out the higher-level API for group chats provided by [E3kit](https://github.com/VirgilSecurity/virgil-e3kit-js).
+
+### Brain key
+
+`virgilBrainKeyCrypto` implements the client half of the brainkey protocol — deriving a
+reproducible key seed from a password without the password ever leaving the device in
+usable form. Since 0.7.0 it is backed by foundation's `BrainkeyClient`; Pythia was removed
+upstream in virgil-crypto-c 0.19.1.
+
+```javascript
+import { virgilBrainKeyCrypto, virgilCrypto } from 'react-native-virgil-crypto';
+
+// Pick this once for your application and never change it. See below.
+const KEY_NAME = 'my-app-brainkey-v1';
+
+const password = 'the user password';
+
+// 1. Blind the password locally.
+const { blindedPoint, deblindFactor } = virgilBrainKeyCrypto.blind(password);
+
+// 2. Send blindedPoint to your harden service. It returns hardenedPoint plus a
+//    DLEQ proof. This must be implemented by you — the library never talks to
+//    a service.
+const { hardenedPoint, serverPublicKey, proofValueC, proofValueS } =
+  await hardenOnServer(blindedPoint);
+
+// 3. Verify the proof BEFORE deblinding. Throws if it does not hold.
+virgilBrainKeyCrypto.verify({
+  blindedPoint,
+  hardenedPoint,
+  serverPublicKey,
+  proofValueC,
+  proofValueS,
+});
+
+// 4. Deblind to recover the seed, then derive a key pair from it.
+const seed = virgilBrainKeyCrypto.deblind({
+  password,
+  hardenedPoint,
+  deblindFactor,
+  keyName: KEY_NAME,
+});
+
+const keyPair = virgilCrypto.generateKeysFromKeyMaterial(seed);
+```
+
+Step 3 is not optional. Without it a malicious or faulty harden service can return
+any point it likes and `deblind` will derive a seed from it — one that is wrong,
+unrecoverable, and indistinguishable from a wrong password. `verify` returns
+`true` when the proof holds and **throws** when it does not; upstream reports a
+failed proof as a generic `FoundationError` ("Brainkey internal error."), so treat
+any throw as a rejected server response.
+
+`keyName` is a domain-separation tag. It is **required and has no default**: it must be a
+stable, application-wide constant matching the value your harden service used. Changing it
+derives a different, unrecoverable seed, and no runtime check can distinguish that from a
+wrong password — you get no error, just a seed that opens nothing. That is why the library
+makes you supply it rather than shipping a default.
 
 ### Working with binary data
 All of the methods of `virgilCrypto` object that accept binary data, accept them in the form of `string` or `Buffer`. All of the methods that return binary data, return them in the form of `Buffer`. We use [this library](https://github.com/feross/buffer) as the native implementation is not available in react native. We re-export the `Buffer` from the module for your convenience:

@@ -22,9 +22,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
 
-      - run: npm ci
+      # The root package does not commit a lockfile, so `npm ci` is unusable.
+      - run: npm install --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
@@ -44,7 +44,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
 
       # AGP 8.3 rejects JDK 21+; 17 is the supported toolchain.
       - uses: actions/setup-java@v4
@@ -60,7 +59,7 @@ jobs:
       # package from `../`, so it has to exist before that install runs.
       - name: Build the package
         run: |
-          npm ci
+          npm install --no-audit --no-fund
           npm run build
 
       - name: Install E2E app dependencies
@@ -96,7 +95,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
 
       - uses: ruby/setup-ruby@v1
         with:
@@ -107,7 +105,7 @@ jobs:
 
       - name: Build the package
         run: |
-          npm ci
+          npm install --no-audit --no-fund
           npm run build
 
       - name: Install E2E app dependencies

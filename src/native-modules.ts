@@ -125,10 +125,13 @@ export interface NativeRNVirgilCryptoModule {
 }
 
 export interface NativeRNVirgilBrainKeyCryptoModule {
-  blind(
-    passwordBase64: string
-  ): NativeResponse<{ blindedPassword: string; blindingSecret: string }>;
-  deblind(transformedPasswordBase64: string, blindingSecretBase64: string): NativeResponse<string>;
+  blind(passwordBase64: string): NativeResponse<{ blindedPoint: string; deblindFactor: string }>;
+  deblind(
+    passwordBase64: string,
+    hardenedPointBase64: string,
+    deblindFactorBase64: string,
+    keyNameBase64: string
+  ): NativeResponse<string>;
 }
 
 export interface NativeRNVirgilGroupSessionModule {

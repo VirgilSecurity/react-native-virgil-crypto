@@ -137,7 +137,10 @@ jobs:
           RESOLVED=E2ETests.xcworkspace/xcshareddata/swiftpm/Package.resolved
           cat "$RESOLVED"
           node -e '
-            const pins = require("./" + process.argv[1]).pins;
+            // Read + JSON.parse rather than require(): the .resolved extension
+            // is unknown to Node, so require() would try to run it as JS.
+            const fs = require("fs");
+            const pins = JSON.parse(fs.readFileSync(process.argv[1], "utf8")).pins;
             const want = {"virgil-crypto-x": "7.2.4", "virgil-crypto-c": "0.19.2"};
             for (const [id, version] of Object.entries(want)) {
               const pin = pins.find(p => p.identity === id);

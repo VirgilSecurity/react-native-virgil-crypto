@@ -199,10 +199,18 @@ standardized Kyber). The constant follows:
 + KeyPairType.CURVE25519_MLKEM768_ED25519_FALCON
 ```
 
-This is not a rename of the same algorithm — it *is* a different KEM. Keys
-generated under the old constant use Round5 and are not interoperable with keys
-generated under the new one. There is no conversion. Rotate any Falcon-hybrid
-keys you issued.
+This is not a rename of the same algorithm — it *is* a different KEM. Upstream
+removed round5 and liboqs outright and replaced them with the standalone
+`mlkem-native` library; the algorithm identifier went from
+`vscf_alg_id_ROUND5_ND_1CCA_5D` to `vscf_alg_id_ML_KEM_768`. Keys generated under
+the old constant are not interoperable with keys generated under the new one,
+there is no conversion, and you should rotate any Falcon-hybrid keys you issued.
+
+One thing that may look wrong but is not: on Android the underlying Java enum is
+still spelled `KeyPairType.CURVE25519_ROUND5_ED25519_FALCON` at
+`foundation-android` 0.19.1, because upstream has not renamed the wrapper
+constant yet. It resolves to ML-KEM-768. If that name shows up in a stack trace
+or a serialized value, you are still on the new KEM — only the label lags.
 
 The default key type is unchanged: **Ed25519**.
 

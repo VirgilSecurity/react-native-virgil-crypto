@@ -1,6 +1,6 @@
 {
   "name": "react-native-virgil-crypto",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "description": "React Native Bridge for Virgil Crypto Library",
   "main": "lib/index.js",
   "react-native": "lib/index.js",
@@ -10,7 +10,8 @@
     "ios",
     "lib",
     "scripts",
-    "RNVirgilCrypto.podspec"
+    "RNVirgilCrypto.podspec",
+    "MIGRATION.md"
   ],
   "repository": "https://github.com/VirgilSecurity/react-native-virgil-crypto",
   "author": "Virgil Security Inc. <support@virgilsecurity.com>",

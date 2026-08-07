@@ -227,6 +227,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				39CC391832C3196A4EAC1FFA /* [CP] Embed Pods Frameworks */,
 				46625F3F1B88E34A4507EF6C /* [CP] Copy Pods Resources */,
+				D1BA65AD87082FB10E3EC854 /* [Virgil] Embed Virgil crypto frameworks */,
 			);
 			buildRules = (
 			);
@@ -676,6 +677,25 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-E2ETests-E2ETestsTests/Pods-E2ETests-E2ETestsTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		D1BA65AD87082FB10E3EC854 /* [Virgil] Embed Virgil crypto frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Virgil] Embed Virgil crypto frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "set -euo pipefail\n\n# Escape hatch for consumers who embed these frameworks by other means.\nif [ \"${SKIP_VIRGIL_FRAMEWORK_EMBED:-0}\" = \"1\" ]; then\n  echo \"note: SKIP_VIRGIL_FRAMEWORK_EMBED=1, skipping\"\n  exit 0\nfi\n\nDEST=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\"\nmkdir -p \"${DEST}\"\n\nshopt -s nullglob\nfound=0\nfor SRC in \"${BUILT_PRODUCTS_DIR}\"/VSC*.framework; do\n  found=1\n  NAME=\"$(basename \"${SRC}\")\"\n  echo \"note: embedding ${NAME}\"\n  rsync -av --delete --filter 'P .DS_Store' \"${SRC}/\" \"${DEST}/${NAME}/\"\n\n  if [ \"${CODE_SIGNING_REQUIRED:-NO}\" = \"YES\" ] \\\n     && [ -n \"${EXPANDED_CODE_SIGN_IDENTITY:-}\" ] \\\n     && [ \"${EXPANDED_CODE_SIGN_IDENTITY}\" != \"-\" ]; then\n    codesign --force --sign \"${EXPANDED_CODE_SIGN_IDENTITY}\" \\\n      --preserve-metadata=identifier,entitlements \\\n      ${OTHER_CODE_SIGN_FLAGS:-} \"${DEST}/${NAME}\"\n  fi\ndone\n\nif [ \"${found}\" -eq 0 ]; then\n  echo \"warning: no VSC*.framework found in ${BUILT_PRODUCTS_DIR}; react-native-virgil-crypto will fail at launch. Did you run 'USE_FRAMEWORKS=dynamic pod install'?\"\nfi\n";
 		};
 		D1D399745FE07EEFC50848BE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

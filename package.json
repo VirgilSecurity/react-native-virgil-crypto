@@ -9,6 +9,7 @@
     "android",
     "ios",
     "lib",
+    "scripts",
     "RNVirgilCrypto.podspec"
   ],
   "repository": "https://github.com/VirgilSecurity/react-native-virgil-crypto",

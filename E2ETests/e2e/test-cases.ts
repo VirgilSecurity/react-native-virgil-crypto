@@ -49,6 +49,31 @@ const LEGACY_CIPHERTEXT = {
   },
 };
 
+/**
+ * Captured on the iOS simulator (Xcode 26.6, iOS 26.4) and asserted on BOTH
+ * platforms. This is the cross-platform gate: a green build on either platform
+ * alone proves nothing, and the 0.13.1-vs-0.17.1 split this branch shipped with
+ * is exactly the class of bug it catches. The private key is the same one the
+ * legacy-ciphertext fixture uses.
+ */
+const XPLATFORM = {
+  privateKey: 'MC4CAQAwBQYDK2VwBCIEIFjNj1b0Km5GwVbFe7XeAF3tCsppVuqtAlzMDRhCBPPo',
+  message: "cross-platform payload",
+  encrypted:
+    "MIIBQgIBADCCATsGCSqGSIb3DQEHA6CCASwwggEoAgECMYH6MIH3AgECoAoECFUM2F+D02ZAMAUGAytlcASB3jCB2wIBADAqMAUGAytlcAMhAOmqgw3qNE43HTcfSB8JEh4CW/y+4xdFJbz387YeHROlMBgGByiBjHECBQIwDQYJYIZIAWUDBAICBQAwQTANBglghkgBZQMEAgIFAAQwWJ+UYCJfZzlJxY7nFSeJKXPIj1AUAoGAU31q4im83dGvX5A14uaAVVwsx1UwG7/IME0wGQYJYIZIAWUDBAEuBAwBxyZY60AsUFT5hQ4EMLYYRU/FwuN2e1J+7u0Hlq59oiALPfD9flLQCFk5E6VEhG2tojh0ztYXYKxuuf/wPzAmBgkqhkiG9w0BBwEwGQYJYIZIAWUDBAEuBAwxTkxDbvST/fa1wM6v8aIcd4ZwA5+G0pkP8Xvrb1mFILUgJWbp1RX8mggGa34nK2x8VQ==",
+  signature:
+    "MFEwDQYJYIZIAWUDBAIDBQAEQLfXI25RiQrrFiqCj4cYCX3jRxnMDz9heoVUDNWSGz536thhsgj7gBZPJELWU5pYEO1QaHSBzxumacatyGLHCQY=",
+  signedAndEncrypted:
+    "MIIB3QIBADCCATsGCSqGSIb3DQEHA6CCASwwggEoAgECMYH6MIH3AgECoAoECFUM2F+D02ZAMAUGAytlcASB3jCB2wIBADAqMAUGAytlcAMhAA2qu0zmXHWlnH3rnWb77HyY5O3GRP5GX1WhubPwoJTpMBgGByiBjHECBQIwDQYJYIZIAWUDBAICBQAwQTANBglghkgBZQMEAgIFAAQw96j08qXLc8aF7AVTupOgsT7dQl2kONQZ4czz4uLmtpEOYZI8sjOSXVv5MIHWR+V/ME0wGQYJYIZIAWUDBAEuBAz07A4McbhpvpT9uiMEMB5M0HuzCDZ8ynWl+H8SL2gOnzFuuJQv+c82LkdyAVZq8ly4ajYuRVJi8sbpQc6xXzAmBgkqhkiG9w0BBwEwGQYJYIZIAWUDBAEuBAwSSJynSuEzTb+0MluggZgxgZUwIwwVVklSR0lMLURBVEEtU0lHTkVSLUlEogoECFUM2F+D02ZAMG4MFVZJUkdJTC1EQVRBLVNJR05BVFVSRaJVBFMwUTANBglghkgBZQMEAgMFAARAt9cjblGJCusWKoKPhxgJfeNHGcwPP2F6hVQM1ZIbPnfq2GGyCPuAFk8kQtZTmlgQ7VBodIHPG6Zpxq3IYscJBv8TUPeuN25OKqiF3E1AbXaAqpPIY2TpHYOj45gzo8IByvu+cgrl",
+  groupSessionId: "2f5f4e3a8564e5969a09866387d14d0714af5797b423c0848d53e6d8a5dfcbf3",
+  groupEpochMessages: [
+    "CAASRgogL19OOoVk5ZaaCYZjh9FNBxSvV5e0I8CEjVPm2KXfy/MQABogYOrZCN5RIBwM7F18Fuq6u78OrOwNSzozUwNOwhC95bY=",
+    "CAASRgogL19OOoVk5ZaaCYZjh9FNBxSvV5e0I8CEjVPm2KXfy/MQARogSstTQv/s4BFfzdBtuXtpIkKBotUFSjnJNfxwM/qcLsQ=",
+  ],
+  groupMessage:
+    "CAAavQIKRgogL19OOoVk5ZaaCYZjh9FNBxSvV5e0I8CEjVPm2KXfy/MQARogjymuM49fvQoDX3Ndb2Sm/8vK3JhqQzDbgabXcGGnwjgSQNaOSC5fPgUVhCwiwuN01lvyRLv2fPUjnAfLBrkjmBX45Y9ErOPWi39kyO15jegIrKPHEALpLmijjWc13H1kYQ4asAEak2lZqtYMwc2GPL8PSiuvsVQ7LNAdzpKetRlS4DfTboqrH88lCJBXEGxzZngwt0E51kv3ZIwaLAHiNgFSPL7wBQbQN+UVEd6svVRl/KkkO2/Jw83DYhzI875Q2LMMkXiILXCf18KzxS9nuUkTtLXJH9GnlQtCKx/3qdn8zjxf1d/5Nk/Hwu1RwyOGUpUO8ZU1sG6uSQkS9IXBDDaa6F2zN1ZlY+6q08qL9HFKHxY0cg==",
+};
+
 const BRAINKEY_FIXTURE = {
   password: 'password',
   keyName: 'react-native-virgil-crypto-e2e',
@@ -380,6 +405,63 @@ const testCases: TestCases = {
     const decrypted = virgilCrypto.decrypt(encrypted, keyPair.privateKey);
     expect(decrypted.toString('utf8')).to.equal(LEGACY_CIPHERTEXT.plaintext);
   },
+
+  'cross-platform: decrypts a payload encrypted on iOS': ({virgilCrypto}) => {
+    const privateKey = virgilCrypto.importPrivateKey({
+      value: XPLATFORM.privateKey,
+      encoding: 'base64',
+    });
+    const decrypted = virgilCrypto.decrypt(
+      {value: XPLATFORM.encrypted, encoding: 'base64'},
+      privateKey,
+    );
+    expect(decrypted.toString('utf8')).to.equal(XPLATFORM.message);
+  },
+
+  'cross-platform: verifies a signature produced on iOS': ({virgilCrypto}) => {
+    const privateKey = virgilCrypto.importPrivateKey({
+      value: XPLATFORM.privateKey,
+      encoding: 'base64',
+    });
+    const isValid = virgilCrypto.verifySignature(
+      {value: XPLATFORM.message, encoding: 'utf8'},
+      {value: XPLATFORM.signature, encoding: 'base64'},
+      virgilCrypto.extractPublicKey(privateKey),
+    );
+    expect(isValid).to.be.true;
+  },
+
+  'cross-platform: decryptThenVerify on a payload signed and encrypted on iOS': ({
+    virgilCrypto,
+  }) => {
+    const privateKey = virgilCrypto.importPrivateKey({
+      value: XPLATFORM.privateKey,
+      encoding: 'base64',
+    });
+    const decrypted = virgilCrypto.decryptThenVerify(
+      {value: XPLATFORM.signedAndEncrypted, encoding: 'base64'},
+      privateKey,
+      virgilCrypto.extractPublicKey(privateKey),
+    );
+    expect(decrypted.toString('utf8')).to.equal(XPLATFORM.message);
+  },
+
+  'cross-platform: imports a group session exported on iOS and decrypts its message':
+    ({virgilCrypto}) => {
+      const privateKey = virgilCrypto.importPrivateKey({
+        value: XPLATFORM.privateKey,
+        encoding: 'base64',
+      });
+      const group = virgilCrypto.importGroupSession(
+        XPLATFORM.groupEpochMessages.map(m => ({value: m, encoding: 'base64'})),
+      );
+      expect(group.getSessionId()).to.equal(XPLATFORM.groupSessionId);
+      const decrypted = group.decrypt(
+        {value: XPLATFORM.groupMessage, encoding: 'base64'},
+        virgilCrypto.extractPublicKey(privateKey),
+      );
+      expect(decrypted.toString('utf8')).to.equal(XPLATFORM.message);
+    },
 
   'throws correct error when decryption fails': ({
     virgilCrypto,
